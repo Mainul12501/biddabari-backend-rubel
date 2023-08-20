@@ -1,0 +1,437 @@
+@extends('backend.master')
+
+@section('title', 'Courses')
+
+@section('body')
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h4 class="float-start text-white">Courses</h4>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 open-modal"><i class="fa-solid fa-circle-plus"></i></button>
+                </div>
+                <div class="card-body">
+                    <form action="" method="get">
+                        {{--                    @csrf--}}
+                        <div class="row pb-5 pt-3">
+                            <div class="col-md-6 mx-auto card card-body">
+                                <div class="row" >
+                                    <div class="col select2-div">
+                                        <label for="">Course Category </label>
+                                        <select name="category_id" class="form-control select2" id="categoryId" data-placeholder="Select Course Category">
+                                            <option value=""></option>
+                                            @foreach($courseCategories as $courseCategory)
+                                                <option value="{{ $courseCategory->id }}">{{ $courseCategory->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-success ms-4 " style="margin-top: 18px" >Search</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <table class="table" id="file-datatable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Links</th>
+                                <th>Price</th>
+                                <th>Duration</th>
+                                <th>Discount</th>
+                                <th>Partial Payment</th>
+                                <th>Extra Features</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(isset($courses))
+                                @foreach($courses as $course)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>
+                                            <div class="mt-3">
+                                                <a href="" >
+                                                    <div class="text-center">
+                                                        <img src="{{ asset($course->banner) }}" alt="" style="height: 100px;" />
+                                                    </div>
+                                                    {{--                                            <br>--}}
+                                                    <div class="text-center mt-2">{{ $course->title }}</div>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td class="nav flex-column course-links">
+                                            <a href="{{ route('assign-teacher-to-course', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Assigned Teachers">Teachers</a>
+                                            <a href="{{ route('assign-student-to-course', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Assigned Students">Students</a>
+                                            <a href="{{ route('course-routines.index', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Routines">Routines</a>
+                                            <a href="{{ route('course-coupons.index', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Coupons">Coupons</a>
+                                            <a href="{{ route('course-sections.index', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Content">Content</a>
+                                        </td>
+                                        <td> ৳ {{ $course->price }}</td>
+                                        <td>{{ $course->duration_in_month }} Months</td>
+                                        <td>
+                                            ৳ {{ $course->discount_type == 1 ? $course->discount_amount : ($course->price * $course->discount_amount)/100 }}
+                                        </td>
+                                        <td> ৳ {{ $course->partial_payment }}</td>
+                                        <td>
+                                            <a href="javascript:void(0)" class="nav-link">{{ $course->status == 1 ? 'Published' : 'Unpublished' }}</a>
+                                        </td>
+                                        <td class="">
+                                            <a href="" data-course-id="{{ $course->id }}" class="btn btn-sm mt-1 btn-primary show-btn" title="View Course">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
+                                            <br>
+                                            <a href="" data-course-id="{{ $course->id }}" class="btn btn-sm mt-1 btn-warning edit-btn" title="Edit Course">
+                                                <i class="fa-solid fa-edit"></i>
+                                            </a>
+                                            <br>
+                                            <form class="d-inline" action="{{ route('courses.destroy', $course->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="submit" class="btn btn-sm mt-1 btn-danger" title="Delete Course">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade modal-div" id="coursesModal" data-bs-backdrop="static" >
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" id="modalForm">
+                @include('backend.course-management.course.courses.form')
+            </div>
+        </div>
+    </div>
+@endsection
+@push('style')
+    <!-- DragNDrop Css -->
+{{--    <link href="{{ asset('/') }}backend/assets/css/dragNdrop.css" rel="stylesheet" type="text/css" />--}}
+    <style>
+        .course-links a:hover {
+            color: darkorange!important;
+        }
+        input[switch]+label {
+            margin-bottom: 0px;
+        }
+        .datetimepicker {z-index: 100009!important;}
+    </style>
+@endpush
+
+@push('script')
+    @include('backend.includes.assets.plugin-files.datatable')
+    @include('backend.includes.assets.plugin-files.editor')
+{{--    @include('backend.includes.assets.plugin-files.date-time-picker')--}}
+    <script src="{{ asset('/') }}backend/assets/plugins/amazeui-datetimepicker/js/amazeui.datetimepicker.min.js"></script>
+    <script>
+        $(function () {
+            $(".summernote").summernote({
+                height:70,
+                inheritPlaceholder: true
+                });
+            // $('#dateTime1').bootstrapMaterialDatePicker({
+            //     format: 'YYYY-MM-DD HH:mm',
+            //     minDate : new Date(),
+            // });
+            // $('#dateTime2').bootstrapMaterialDatePicker({
+            //     format: 'YYYY-MM-DD HH:mm',
+            //     minDate : new Date(),
+            // });
+            // $('#dateTime3').bootstrapMaterialDatePicker({
+            //     format: 'YYYY-MM-DD HH:mm',
+            //     minDate : new Date(),
+            // });
+            $("#dateTime").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+            $("#dateTime1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+            $("#dateTime2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+            $("#dateTime3").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+        })
+        $(document).on('click', '.dtp-btn-cancel', function () {
+            alert('sdfsdf');
+        })
+    </script>
+
+
+{{--    edit course category--}}
+    <script>
+        $(document).on('click', '.edit-btn', function () {
+            event.preventDefault();
+            var courseId = $(this).attr('data-course-id');
+            console.log(courseId);
+            $.ajax({
+                url: base_url+"courses/"+courseId+"/edit",
+                method: "GET",
+                // dataType: "JSON",
+                success: function (data) {
+                    // console.log(data);
+
+                    $('#modalForm').empty().append(data);
+                    $("#summernote").summernote({height:70, inheritPlaceholder: true});
+                    // $("#summernote1").summernote({height:70, inheritPlaceholder: true});
+
+                    // $('#dateTime').bootstrapMaterialDatePicker({format: 'YYYY-MM-DD HH:mm', minDate : new Date(),});
+                    // $('#dateTime1').bootstrapMaterialDatePicker({format: 'YYYY-MM-DD HH:mm', minDate : new Date(),});
+                    // $('#dateTime2').bootstrapMaterialDatePicker({format: 'YYYY-MM-DD HH:mm', minDate : new Date(),});
+                    // $('#dateTime3').bootstrapMaterialDatePicker({format: 'YYYY-MM-DD HH:mm', minDate : new Date(),});
+
+                    $("#dateTime").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+                    $("#dateTime1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+                    $("#dateTime2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+                    $("#dateTime3").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+
+                    $('.select2').select2({
+                        placeholder: $(this).attr('data-placeholder'),
+                        // dropdownParent: $('#'+$('.modal-fix').attr('data-modal-parent')),
+                        // dropdownParent: $('.modal').attr('data-modal-parent'),
+                    });
+                    $('.submit-btn').addClass('update-btn').removeClass('submit-btn');
+
+                    $('#coursesModal').modal('show');
+                }
+            })
+        })
+        $(document).on('click', '.show-btn', function () {
+            event.preventDefault();
+            var courseId = $(this).attr('data-course-id');
+            $.ajax({
+                url: base_url+"courses/"+courseId,
+                method: "GET",
+                // dataType: "JSON",
+                success: function (data) {
+                    // console.log(data);
+
+                    $('#modalForm').empty().append(data);
+                    $("#summernote").summernote({height:70, inheritPlaceholder: true});
+                    // $("#summernote1").summernote({height:70, inheritPlaceholder: true});
+
+                    // $('#dateTime').bootstrapMaterialDatePicker({format: 'YYYY-MM-DD HH:mm', minDate : new Date(),});
+                    // $('#dateTime1').bootstrapMaterialDatePicker({format: 'YYYY-MM-DD HH:mm', minDate : new Date(),});
+                    // $('#dateTime2').bootstrapMaterialDatePicker({format: 'YYYY-MM-DD HH:mm', minDate : new Date(),});
+                    // $('#dateTime3').bootstrapMaterialDatePicker({format: 'YYYY-MM-DD HH:mm', minDate : new Date(),});
+
+                    $("#dateTime").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+                    $("#dateTime1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+                    $("#dateTime2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+                    $("#dateTime3").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+
+                    $('.select2').select2({
+                        placeholder: $(this).attr('data-placeholder'),
+                        // dropdownParent: $('#'+$('.modal-fix').attr('data-modal-parent')),
+                        // dropdownParent: $('.modal').attr('data-modal-parent'),
+                    });
+                    // $('.submit-btn').addClass('update-btn').removeClass('submit-btn');
+
+                    $('#coursesModal').modal('show');
+                }
+            })
+        })
+    </script>
+{{-- update course category--}}
+    <script>
+        $(document).on('click', '.update-btn', function () {
+            event.preventDefault();
+
+            var discountAmount = Number($('input[name="discount_amount"]').val());
+            if(discountAmount != '')
+            {
+                var price = Number($('input[name="price"]').val());
+                if (discountAmount > price)
+                {
+                    $('#discountErrorMsg').text('Discount amount should be lower then Price.');
+                    return false;
+                }
+            }
+
+            var form = $('#coursesForm')[0];
+            var formData = new FormData(form);
+            $.ajax({
+                url: $('#coursesForm').attr('action'),
+                method: "POST",
+                data: formData,
+                // dataType: "JSON",
+                // async: false,
+                // cache: false,
+                contentType: false,
+                processData: false,
+                // enctype: 'multipart/form-data',
+                success: function (message) {
+                    console.log(message);
+                    toastr.success(message);
+                    $('.update-btn').addClass('submit-btn').removeClass('update-btn');
+                    $('#courseCategoryForm').attr('action', '');
+                    $('#courseCategoryModal').modal('hide');
+                    window.location.reload();
+                },
+                error: function (errors) {
+                    if (errors.responseJSON)
+                    {
+
+                        var allErrors = errors.responseJSON.errors;
+                        for (key in allErrors)
+                        {
+                            $('#'+key).empty().append(allErrors[key]);
+                        }
+                    }
+                }
+            })
+        })
+    </script>
+{{--    <script>--}}
+{{--        $(document).on('change', '#nestable-wrapper', function () {--}}
+{{--            setTimeout(function () {--}}
+{{--                var data = $('#nestedCategoryOrderForm').serialize();--}}
+{{--                $.ajax({--}}
+{{--                    url: "{{ route('courseCategories.saveNestedCategories') }}",--}}
+{{--                    method: "POST",--}}
+{{--                    data: data,--}}
+{{--                    dataType: "JSON",--}}
+{{--                    success: function (message) {--}}
+{{--                        toastr.success(message);--}}
+{{--                    }--}}
+{{--                })--}}
+{{--            }, 800)--}}
+{{--        })--}}
+{{--    </script>--}}
+
+{{--    store course--}}
+    <script>
+        $(document).on('click', '.submit-btn', function () {
+            event.preventDefault();
+            var discountAmount = Number($('input[name="discount_amount"]').val());
+            if(discountAmount != '')
+            {
+                var price = Number($('input[name="price"]').val());
+                if (discountAmount > price)
+                {
+                    $('#discountErrorMsg').text('Discount amount should be lower then Price.');
+                    return false;
+                }
+            }
+
+            var form = $('#coursesForm')[0];
+            var formData = new FormData(form);
+            $.ajax({
+                url: "{{ route('courses.store') }}",
+                method: "POST",
+                data: formData,
+                dataType: "JSON",
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    // console.log(result);
+                    // if (result.errors)
+                    // {
+                    //     $.each(result.errors, function(key, value){
+                    //         console.log(key+'<br>');
+                    //     });
+                    // }
+                        toastr.success(data);
+                        $('#coursesModal').modal('hide');
+                        window.location.reload();
+                },
+                error: function (errors) {
+                    if (errors.responseJSON)
+                    {
+                        $('span[class="text-danger"]').empty();
+                        var allErrors = errors.responseJSON.errors;
+                        for (key in allErrors)
+                        {
+                                $('#'+key).empty().append(allErrors[key]);
+                        }
+                    }
+                }
+            })
+        })
+    </script>
+    <!-- DragNDrop js -->
+
+    <script>
+        $(document).on('keyup', '#discountAmount', function () {
+            var discountAmount = Number($(this).val());
+            var discountType = $('select[name="discount_type"]').val();
+            var price = Number($('input[name="price"]').val());
+            var discountErrorMsg = $('#discountErrorMsg');
+            console.log('price-'+price);
+            console.log('d-a-'+discountAmount);
+            if (discountType == '')
+            {
+                toastr.error('Please select a Discount type.');
+                return false;
+            }
+            if (discountType == 1)
+            {
+                if (discountAmount > price)
+                {
+                    discountErrorMsg.empty().append('Discount can\'t be greater then Price');
+                }else if (discountAmount <= price){
+                    discountErrorMsg.empty();
+                }
+            } else if (discountType == 2)
+            {
+                if (discountAmount > 100)
+                {
+                    discountErrorMsg.empty().append('Discount can\'t be greater then 100%');
+                }else if (discountAmount <= 100){
+                    discountErrorMsg.empty();
+                }
+            }
+        })
+    </script>
+
+
+    <script>
+        $(document).on('change', '#courseImage', function () {
+            var imgURL = URL.createObjectURL(event.target.files[0]);
+            $('#courseImagePreview').attr('src', imgURL).css({
+                height: 150+'px',
+                width: 150+'px',
+                marginTop: '5px'
+            });
+        })
+    </script>
+
+{{--    hide error msgs--}}
+    <script>
+        $(document).on('keyup', 'input:not(#discountAmount),textarea', function () {
+            var selectorId = $(this).attr('name');
+            if ($('#'+selectorId).text().length)
+            {
+                $('#'+selectorId).text('');
+            }
+        })
+        $(document).on('change', 'select', function () {
+            var selectorId = $(this).attr('name');
+            if ($('#'+selectorId).text().length)
+            {
+                $('#'+selectorId).text('');
+            }
+        })
+{{--        // date time error empty not working--}}
+{{--        // $(document).on('click', '#dateTime', function () {--}}
+{{--        //     var selectorId = $(this).attr('name');--}}
+{{--        //     alert('hi');--}}
+{{--        //     if ($('#'+selectorId).text().length)--}}
+{{--        //     {--}}
+{{--        //         $('#'+selectorId).text('');--}}
+{{--        //     }--}}
+{{--        // })--}}
+    </script>
+
+    <script>
+        $(document).on('click', '.open-modal', function () {
+            event.preventDefault();
+                resetFromInputAndSelect("{{ route('courses.store') }}", 'coursesForm')
+            $('#summernote').summernote('reset');
+            $('#coursesModal').modal('show');
+        })
+
+    </script>
+@endpush
