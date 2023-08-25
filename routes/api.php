@@ -9,6 +9,8 @@ use App\Http\Controllers\Frontend\Pages\BasicViewController;
 use App\Http\Controllers\Frontend\Checkout\CheckoutController;
 use App\Http\Controllers\Frontend\Student\StudentController;
 
+use App\Http\Controllers\Frontend\FrontExam\FrontExamController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -48,10 +50,14 @@ Route::prefix('v1')->name('api.')->group(function (){
     Route::get('category-blogs/{slug}', [BasicViewController::class, 'categoryBlogs'])->name('category-blogs');
     Route::get('blog-details/{slug}', [BasicViewController::class, 'blogDetails'])->name('blog-details');
     Route::get('all-notices', [BasicViewController::class, 'allNotices'])->name('notices');
-    Route::post('send-otp', [CustomAuthController::class, 'sendOtp'])->name('send-otp');
-    Route::post('verify-otp', [CustomAuthController::class, 'verifyOtp'])->name('verify-otp');
-    Route::get('product-details/{slug}', [BasicViewController::class, 'productDetails'])->name('product-details');
-    Route::get('free-courses', [BasicViewController::class, 'freeCourses'])->name('free-courses');
+    Route::post('send-otp', [CustomAuthController::class, 'sendOtp']);
+    Route::post('verify-otp', [CustomAuthController::class, 'verifyOtp']);
+    Route::get('product-details/{slug}', [BasicViewController::class, 'productDetails']);
+    Route::get('free-courses', [BasicViewController::class, 'freeCourses']);
+
+
+//    temp routes
+    Route::post('check-user-status-for-app', [CustomAuthController::class, 'checkUserForApp']);
 
     Route::middleware([
         'auth:sanctum',
@@ -62,6 +68,19 @@ Route::prefix('v1')->name('api.')->group(function (){
         Route::prefix('student')->name('student.')->group(function (){
             Route::get('dashboard', [StudentController::class, 'dashboard'])->name('dashboard');
             Route::get('profile-update', [StudentController::class, 'profileUpdate'])->name('profile-update');
+
+            Route::get('my-courses', [StudentController::class, 'myCourses'])->name('my-courses');
+            Route::get('my-exams', [StudentController::class, 'myExams'])->name('my-exams');
+            Route::get('my-orders', [StudentController::class, 'myOrders'])->name('my-orders');
+            Route::get('course-contents/{course_id}/{slug?}', [StudentController::class, 'showCourseContents'])->name('course-contents');
+            Route::get('batch-exam-contents/{xm_id}/{master?}/{slug?}', [StudentController::class, 'showBatchExamContents'])->name('batch-exam-contents');
+
+            Route::post('get-course-exam-result/{content_id}/{slug?}', [FrontExamController::class, 'getCourseExamResult']);
+            Route::post('get-course-class-exam-result/{content_id}/{slug?}', [FrontExamController::class, 'getCourseClassExamResult']);
+            Route::post('get-batch-exam-result/{content_id}/{slug?}', [FrontExamController::class, 'getBatchExamResult']);
+            Route::get('show-course-exam-result/{xm_id}', [FrontExamController::class, 'showCourseExamResult']);
+            Route::get('show-course-class-exam-result/{xm_id}', [FrontExamController::class, 'showCourseClassExamResult']);
+            Route::get('show-batch-exam-result/{xm_id}', [FrontExamController::class, 'showBatchExamResult']);
         });
     });
 

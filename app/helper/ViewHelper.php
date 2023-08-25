@@ -33,6 +33,16 @@ class ViewHelper
         }
     }
 
+    public static function returEexceptionError ($message = null)
+    {
+        if (str()->contains(url()->current(), '/api/'))
+        {
+            return response()->json(['error' => $message], 400);
+        } else {
+            return back()->with('error', $message);
+        }
+    }
+
     public static function checkIfCourseIsEnrolled($course)
     {
         if (auth()->check())

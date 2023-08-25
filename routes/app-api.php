@@ -6,9 +6,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomAuth\CustomAuthController;
 use App\Http\Controllers\Frontend\Pages\BasicViewController;
 use App\Http\Controllers\AppApi\AppApiController;
+use App\Http\Controllers\AppApi\AppApiControllerTwo;
 
 use App\Http\Controllers\Frontend\Checkout\CheckoutController;
 use App\Http\Controllers\Frontend\Student\StudentController;
+
+use App\Http\Controllers\Frontend\FrontExam\FrontExamController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,14 +35,28 @@ Route::prefix('v1')->name('api.')->group(function (){
     Route::get('app-course-category-resources/{id}/{slug?}', [AppApiController::class, 'courseCategoryResources']);
     Route::get('app-category-wise-courses/{id}/{slug?}', [AppApiController::class, 'CategoryCoursesResources']);
     Route::get('app-all-courses', [AppApiController::class, 'allCourses']);
+    Route::get('app-all-courses-for-nav-tabs', [AppApiController::class, 'allCoursesForNavTabs']);
 
+    Route::get('batch-exam-details/{xm_id}', [AppApiController::class, 'showBatchDetailsWithSections']);
 
     Route::middleware([
         'auth:sanctum',
         config('jetstream.auth_session'),
         'verified'
     ])->group(function (){
+        Route::get('app-get-course-sections/{id}', [AppApiController::class, 'getCourseSections']);
+        Route::get('app-get-course-section-contents/{id}', [AppApiController::class, 'getCourseSectionContents']);
+        Route::get('app-get-course-section-content-details/{id}', [AppApiController::class, 'appCourseSectionContentDetails']);
 
+        Route::get('show-course-exam-ranking/{content_id}/{slug?}', [AppApiController::class, 'showCourseExamRanking']);
+        Route::get('show-batch-exam-ranking/{content_id}/{slug?}', [AppApiController::class, 'showBatchExamRanking']);
+
+
+        Route::get('app-get-user-info', [AppApiController::class, 'getUserInfo']);
+
+        Route::get('start-course-exam/{content_id}/{slug?}', [AppApiControllerTwo::class, 'startcourseExam']);
+        Route::get('start-batch-exam/{content_id}/{slug?}', [AppApiControllerTwo::class, 'startBatchExam']);
+        Route::get('start-class-exam/{content_id}/{slug?}', [AppApiControllerTwo::class, 'startClassExam']);
     });
 
 });

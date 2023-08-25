@@ -121,7 +121,7 @@ class CourseSectionContentController extends Controller
         return view('backend.course-management.course.section-contents.include-add-que-to-contents', [
             'content'   => CourseSectionContent::find($request->section_content_id),
             'examType'  => $request->exam_type,
-            'questionTopics'    => QuestionTopic::whereStatus(1)->whereType($request->exam_type == 'exam' ? 'mcq' : 'written')->select('id', 'question_topic_id', 'name')->get(),
+            'questionTopics'    => QuestionTopic::whereStatus(1)->where('question_topic_id', 0)->whereType($request->exam_type == 'exam' ? 'mcq' : 'written')->select('id', 'question_topic_id', 'name')->get(),
         ]);
     }
 
@@ -130,13 +130,14 @@ class CourseSectionContentController extends Controller
         return view('backend.course-management.course.section-contents.include-add-que-to-class-contents', [
             'content'   => CourseSectionContent::find($request->section_content_id),
             'examOf'  => $request->exam_of,
-            'questionTopics'    => QuestionTopic::whereStatus(1)->whereType('mcq')->where('question_topic_id', 0)->select('id', 'question_topic_id', 'name')->get(),
+            'questionTopics'    => QuestionTopic::whereStatus(1)->where('question_topic_id', 0)->whereType('mcq')->where('question_topic_id', 0)->select('id', 'question_topic_id', 'name')->get(),
         ]);
     }
 
     public function getQuesByTopic (Request $request)
     {
-        foreach ($request->question_topic_ids as $question_topic_id)
+        $question_topic_ids = explode(',', $request->question_topic_ids);
+        foreach ($question_topic_ids as $question_topic_id)
         {
             $this->questionTopic = QuestionTopic::whereId($question_topic_id)->select('id', 'question_topic_id', 'name')->with(['questionStores' => function($questions) use($request){
                 $questions->whereQuestionType($request->exam_type == 'exam' ? 'MCQ' : 'Written')->whereStatus(1)->select('id', 'question_type', 'question')->get();

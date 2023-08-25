@@ -97,14 +97,14 @@
         </div>
     </div>
 
-    <div class="modal fade modal-div" id="courseContentModal" data-modal-parent="courseContentModal" >
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal fade " id="courseContentModal" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg ">
             <div class="modal-content" id="courseSectionContentForm">
                 @include('backend.course-management.course.section-contents.form')
             </div>
         </div>
     </div>
-    <div class="modal fade modal-div" id="setQuestionOnSectionContentModal" data-modal-parent="courseContentModal" >
+    <div class="modal fade " id="setQuestionOnSectionContentModal" data-bs-backdrop="static" >
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content" id="">
                 <div class="modal-header">
@@ -142,7 +142,6 @@
 {{--    @include('backend.includes.assets.plugin-files.date-time-picker')--}}
     @include('backend.includes.assets.plugin-files.editor')
     <script src="{{ asset('/') }}backend/assets/plugins/amazeui-datetimepicker/js/amazeui.datetimepicker.min.js"></script>
-
     <script>
         $(function () {
             $('#summernote1').summernote({height:70,inheritPlaceholder: true});
@@ -373,7 +372,7 @@
                 method: "GET",
                 // dataType: "JSON",
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
                     var option = '';
                     $.each(data, function (key, val) {
                         option += '<option value="'+val.file_url+'">'+val.title+'</option>';
@@ -396,7 +395,7 @@
                 // dataType: "JSON",
                 data: {section_content_id:sectionContentId,exam_type:examType},
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
                     $('#addQueModalBody').empty().append(data);
                     $('.select2').select2();
                     $('#setQuestionOnSectionContentModal').modal('show');
@@ -430,7 +429,7 @@
                 // dataType: "JSON",
                 data: {question_topic_ids:questionTopicId,exam_type:xmType},
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
 
                     // var div = '';
                     // $.each(data, function (key, topic) {
@@ -498,7 +497,7 @@
                 // dataType: "JSON",
                 data: {question_id:questionId,content_id:contentId},
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
                     if (data.status == 'success')
                     {
                         $('#question'+questionId).remove();
@@ -520,7 +519,7 @@
                 // dataType: "JSON",
                 data: {question_id:questionId,content_id:contentId},
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
                     if (data.status == 'success')
                     {
                         $('#question'+questionId).remove();
@@ -545,4 +544,64 @@
             }
         })
     </script>
+
+
+{{--    set value to input fields from modal start--}}
+    <script>
+        var ids = [];
+        var topicNames = '';
+        $(document).on('click', '#questionTopicInputField', function () {
+            $('#questionTopicModal').modal('show');
+            // $('#questionTopicModal').css('display', 'block');
+        })
+        $(document).on('click', '.check', function () {
+            var existVal = $(this).val();
+            var topicName = $(this).parent().text();
+            if ($(this).is(':checked'))
+            {
+                if (!ids.includes(existVal))
+                {
+                    ids.push(existVal);
+                    topicNames += topicName+',';
+                }
+            } else {
+                if (ids.includes(existVal))
+                {
+                    ids.splice(ids.indexOf(existVal), 1);
+                    topicNames = topicNames.replace(topicName+',','');
+                    // topicNames = topicNames.split(topicName).join('');
+                }
+            }
+        })
+        $(document).on('click', '#okDone', function () {
+            $('#questionTopicInputField').val(topicNames.slice(0, -1));
+            $('#questionTopic').val(ids);
+            $('#questionTopicModal').modal('hide');
+        })
+    </script>
+{{--    set value to input fields from modal ends--}}
+    <!--show hide test start-->
+    <script>
+        $(document).on('click', '.drop-icon', function () {
+            var dataId = $(this).attr('data-id');
+            if ($(this).find('fa-circle-arrow-down'))
+            {
+                $(this).html('<i class="fa-solid fa-circle-arrow-up"></i>');
+            }
+            if($(this).find('fa-circle-arrow-up')) {
+                $(this).html('<i class="fa-solid fa-circle-arrow-down"></i>');
+            }
+            if($('.childDiv'+dataId).hasClass('d-none'))
+            {
+                $('.childDiv'+dataId).removeClass('d-none');
+            } else {
+                $('.childDiv'+dataId).addClass('d-none');
+            }
+        })
+        $(document).on('click', '.close-topic-modal', function () {
+            // $('#questionTopicModal').css('display', 'none');
+            $('#questionTopicModal').modal('hide');
+        })
+    </script>
+    <!--show hide test end-->
 @endpush

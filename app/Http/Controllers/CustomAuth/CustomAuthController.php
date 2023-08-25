@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\CustomAuth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Backend\UserManagement\Student;
 use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -61,6 +62,10 @@ class CustomAuthController extends Controller
         DB::beginTransaction();
         try {
             $this->user = User::createOrUpdateUser($request);
+            if ($request->roles == 4)
+            {
+                Student::createOrUpdateStudent($request, $this->user);
+            }
             DB::commit();
             if (isset($this->user)) {
                 Auth::login($this->user);
@@ -125,7 +130,9 @@ class CustomAuthController extends Controller
 
             if (isset($responseCode) && !empty($responseCode) && $responseCode === "\"445000\"")
             {
-                \session()->put('otp', $otpNumber);
+//                \session()->put('otp', $otpNumber);
+                session_start();
+                $_SESSION['otp'] = $otpNumber;
                 return response()->json(['otp' => $otpNumber, 'status' => 'success']);
             } else {
                 return response()->json(['status' => 'false']);
@@ -138,8 +145,10 @@ class CustomAuthController extends Controller
 
     public function verifyOtp (Request $request)
     {
+        session_start();
         try {
-            if (Session::get('otp') == $request->otp)
+//            if (Session::get('otp') == $request->otp)
+            if ($_SESSION['otp'] == $request->otp)
             {
                 \session()->forget('otp');
                 $existUser = User::whereMobile($request->mobile_number)->first();
@@ -147,7 +156,23 @@ class CustomAuthController extends Controller
                     'status' => 'success',
                     'user_status' => isset($existUser) ? 'exist' : 'not_exist',
                 ]);
+            } else {
+                return response()->json(['error'=> 'OTP mismatch. Please Try again.']);
             }
+        } catch (\Exception $exception)
+        {
+            return response()->json($exception->getMessage());
+        }
+    }
+    public function checkUserForApp (Request $request)
+    {
+
+        try {
+            $existUser = User::whereMobile($request->mobile_number)->first();
+            return response()->json([
+                'status' => 'success',
+                'user_status' => isset($existUser) ? 'exist' : 'not_exist',
+            ]);
         } catch (\Exception $exception)
         {
             return response()->json($exception->getMessage());

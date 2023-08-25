@@ -37,7 +37,8 @@ class StudentController extends Controller
         }
         if ($isStudent == false)
         {
-            return back()->with('error', 'You don\'t have permission to view this page.');
+            return redirect()->route('dashboard')->with('success', 'You logged in successfully.');
+//            return back()->with('error', 'You don\'t have permission to view this page.');
         }
         $this->orders = ParentOrder::whereUserId(auth()->id())->latest()->get();
         $totalEnrolledCourse = 0;
@@ -184,6 +185,8 @@ class StudentController extends Controller
     public function viewProfile ()
     {
         $isStudent = false;
+        $isTeacher = false;
+        $isStuff = false;
         $user = auth()->user();
         if (!empty($user->roles))
         {

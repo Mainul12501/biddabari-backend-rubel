@@ -15,7 +15,7 @@
                     <table class="table" id="file-datatable">
                         <thead>
                             <tr>
-{{--                                <th>#</th>--}}
+                                <th>#</th>
                                 <th>Date</th>
                                 <th>Day</th>
                                 <th>Time</th>
@@ -28,10 +28,10 @@
                             @if(isset($courseRoutines))
                                 @foreach($courseRoutines as $courseRoutine)
                                     <tr>
-{{--                                        <td>{{ $loop->iteration }}</td>--}}
-                                        <td>{{ $courseRoutine->date_time }}</td>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ showDate($courseRoutine->date_time) }}</td>
                                         <td>{{ $courseRoutine->day }}</td>
-                                        <td>{{ $courseRoutine->date_time }}</td>
+                                        <td>{{ showTime($courseRoutine->date_time) }}</td>
                                         <td>
                                             <a href="javascript:void(0)" class="nav-link">{{ $courseRoutine->is_fack == 1 ? 'Yes' : 'No' }}</a>
                                         </td>

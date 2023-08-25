@@ -153,6 +153,12 @@
             $("#dateTime1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $("#dateTime2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $("#dateTime3").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+            $('.select2').select2();
+            const date = new Date();
+            var currentDateTime = date.getFullYear()+'-'+date.getMonth()+1+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes();
+
+            $('input[name="starting_date_time"]').val(currentDateTime);
+            $('input[name="discount_start_date"]').val(currentDateTime);
         })
         $(document).on('click', '.dtp-btn-cancel', function () {
             alert('sdfsdf');
@@ -165,13 +171,11 @@
         $(document).on('click', '.edit-btn', function () {
             event.preventDefault();
             var courseId = $(this).attr('data-course-id');
-            console.log(courseId);
             $.ajax({
                 url: base_url+"courses/"+courseId+"/edit",
                 method: "GET",
                 // dataType: "JSON",
                 success: function (data) {
-                    // console.log(data);
 
                     $('#modalForm').empty().append(data);
                     $("#summernote").summernote({height:70, inheritPlaceholder: true});
@@ -263,7 +267,7 @@
                 processData: false,
                 // enctype: 'multipart/form-data',
                 success: function (message) {
-                    console.log(message);
+                    // console.log(message);
                     toastr.success(message);
                     $('.update-btn').addClass('submit-btn').removeClass('update-btn');
                     $('#courseCategoryForm').attr('action', '');
@@ -326,13 +330,7 @@
                 contentType: false,
                 processData: false,
                 success: function (data) {
-                    // console.log(result);
-                    // if (result.errors)
-                    // {
-                    //     $.each(result.errors, function(key, value){
-                    //         console.log(key+'<br>');
-                    //     });
-                    // }
+                    // console.log(data);
                         toastr.success(data);
                         $('#coursesModal').modal('hide');
                         window.location.reload();
@@ -344,7 +342,7 @@
                         var allErrors = errors.responseJSON.errors;
                         for (key in allErrors)
                         {
-                                $('#'+key).empty().append(allErrors[key]);
+                            $('#'+key).empty().append(allErrors[key]);
                         }
                     }
                 }
@@ -359,8 +357,8 @@
             var discountType = $('select[name="discount_type"]').val();
             var price = Number($('input[name="price"]').val());
             var discountErrorMsg = $('#discountErrorMsg');
-            console.log('price-'+price);
-            console.log('d-a-'+discountAmount);
+            // console.log('price-'+price);
+            // console.log('d-a-'+discountAmount);
             if (discountType == '')
             {
                 toastr.error('Please select a Discount type.');
@@ -428,10 +426,79 @@
     <script>
         $(document).on('click', '.open-modal', function () {
             event.preventDefault();
+
                 resetFromInputAndSelect("{{ route('courses.store') }}", 'coursesForm')
             $('#summernote').summernote('reset');
             $('#coursesModal').modal('show');
         })
 
     </script>
+
+    {{--    set value to input fields from modal start--}}
+    <script>
+        var ids = [];
+        var topicNames = '';
+        $(document).on('click', '#questionTopicInputField', function () {
+            $('#questionTopicModal').modal('show');
+            // $('#questionTopicModal').css('display', 'block');
+        })
+        $(document).on('click', '.check', function () {
+            var existVal = $(this).val();
+            var topicName = $(this).parent().text();
+            // console.log(existVal);
+            // console.log(topicName);
+            if ($(this).is(':checked'))
+            {
+                if (!ids.includes(existVal))
+                {
+                    ids.push(existVal);
+                    topicNames += topicName+',';
+
+                }
+            } else {
+                if (ids.includes(existVal))
+                {
+                    ids.splice(ids.indexOf(existVal), 1);
+                    topicNames = topicNames.replace(topicName+',','');
+                    // topicNames = topicNames.split(topicName).join('');
+                }
+            }
+        })
+        $(document).on('click', '#okDone', function () {
+            // console.log(topicNames);
+            // console.log(ids);
+            $('#questionTopicInputField').val(topicNames.slice(0, -1));
+            $('#questionTopic').val(ids);
+            $('#questionTopicModal').modal('hide');
+        })
+    </script>
+    {{--    set value to input fields from modal ends--}}
+    <!--show hide test start-->
+    <script>
+        $(document).on('click', '.drop-icon', function () {
+            var dataId = $(this).attr('data-id');
+            if ($(this).find('fa-circle-arrow-down'))
+            {
+                $(this).html('<i class="fa-solid fa-circle-arrow-up"></i>');
+            }
+            if($(this).find('fa-circle-arrow-up')) {
+                $(this).html('<i class="fa-solid fa-circle-arrow-down"></i>');
+            }
+            if($('.childDiv'+dataId).hasClass('d-none'))
+            {
+                $('.childDiv'+dataId).removeClass('d-none');
+            } else {
+                $('.childDiv'+dataId).addClass('d-none');
+            }
+        })
+        $(document).on('click', '.close-topic-modal', function () {
+            // $('#questionTopicModal').css('display', 'none');
+            $('#questionTopicModal').modal('hide');
+            // $('.select2').select2({
+            //     dropdownParent: $('#coursesModal'),
+            //     multiple: true
+            // });
+        })
+    </script>
+    <!--show hide test end-->
 @endpush

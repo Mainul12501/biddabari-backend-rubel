@@ -47,9 +47,8 @@ class CourseController extends Controller
      */
     public function store(CourseCreateFormRequest $request)
     {
-
         $this->course = Course::createOrUpdateCourse($request);
-        $this->course->courseCategories()->sync($request->course_categories);
+        $this->course->courseCategories()->sync(explode(',', $request->course_categories[0]));
 //        $this->course->teachers()->sync($request->teachers_id);
         if ($request->ajax())
         {
@@ -90,7 +89,7 @@ class CourseController extends Controller
     {
         try {
             $this->course = Course::createOrUpdateCourse($request, $id);
-            $this->course->courseCategories()->sync($request->course_categories);
+            $this->course->courseCategories()->sync(explode(',', $request->course_categories[0]));
 //        $this->course->teachers()->sync($request->teachers_id);
             if ($request->ajax())
             {
@@ -109,6 +108,7 @@ class CourseController extends Controller
      */
     public function destroy(string $id)
     {
+//        return back()->with('error', 'Feature temporary disabled. Please contact your admin to enable it.');
         $this->course = Course::find($id);
         if (file_exists($this->course->image))
         {

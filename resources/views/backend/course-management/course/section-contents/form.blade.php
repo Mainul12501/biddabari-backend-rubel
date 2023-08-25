@@ -59,24 +59,6 @@
                         <label for="someSwitchOptionWarning" class="label-info"></label>
                     </div>
                 </div>
-                <div class="col-sm-3 mt-2">
-                    <label for="">Has Class Xm</label>
-                    <div class="material-switch">
-                        <input id="classXm" name="has_class_xm" type="checkbox" >
-                        <label for="classXm" id="xx" class="label-info"></label>
-                    </div>
-                    <span class="text-danger" id="has_class_xm">{{ $errors->has('has_class_xm') ? $errors->first('has_class_xm') : '' }}</span>
-                </div>
-                <div class="col-sm-7 select2-div d-none mt-2" id="classContentOf">
-                    <label for="">Class Xm of?</label>
-                    <select name="course_section_content_id" required id="classXmOf" class="form-control select2" data-placeholder="Select a class">
-                        <option value=""></option>
-                        @foreach($sectionContents as $sectionContentSelect)
-                            <option value="{{ $sectionContentSelect->id }}">{{ $sectionContentSelect->title }}</option>
-                        @endforeach
-                    </select>
-                    <span class="text-danger" id="course_section_content_id">{{ $errors->has('course_section_content_id') ? $errors->first('course_section_content_id') : '' }}</span>
-                </div>
             </div>
 
 
@@ -251,17 +233,26 @@
             </div>
 
             <div class="d-none" id="typeExam">
-{{--                <div class="row mt-2">--}}
-{{--                    <div class="col-sm-6 mt-2 select2-div">--}}
-{{--                        <label for="">Exam Mode</label>--}}
-{{--                        <select name="exam_mode" id="examMode" class="form-control select2" data-placeholder="Select A Exam Mode">--}}
-{{--                            <option value=""></option>--}}
-{{--                            <option value="exam">exam</option>--}}
-{{--                            <option value="practice">practice</option>--}}
-{{--                            <option value="group">group</option>--}}
-{{--                        </select>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
+                <div class="row mt-2">
+                    <div class="col-sm-3 mt-2">
+                        <label for="">Has Class Xm</label>
+                        <div class="material-switch">
+                            <input id="classXm" name="has_class_xm" type="checkbox" >
+                            <label for="classXm" id="xx" class="label-info"></label>
+                        </div>
+                        <span class="text-danger" id="has_class_xm">{{ $errors->has('has_class_xm') ? $errors->first('has_class_xm') : '' }}</span>
+                    </div>
+                    <div class="col-sm-7 select2-div d-none mt-2" id="classContentOf">
+                        <label for="">Class Xm of?</label>
+                        <select name="course_section_content_id" id="classXmOf" class="form-control select2" data-placeholder="Select a class">
+                            <option value=""></option>
+                            @foreach($sectionContents as $sectionContentSelect)
+                                <option value="{{ $sectionContentSelect->id }}">{{ $sectionContentSelect->title }}</option>
+                            @endforeach
+                        </select>
+                        <span class="text-danger" id="course_section_content_id">{{ $errors->has('course_section_content_id') ? $errors->first('course_section_content_id') : '' }}</span>
+                    </div>
+                </div>
                 <div class="row mt-2">
                     <div class="col-sm-6 mt-2 select2-div">
                         <label for="">Exam Mode</label>

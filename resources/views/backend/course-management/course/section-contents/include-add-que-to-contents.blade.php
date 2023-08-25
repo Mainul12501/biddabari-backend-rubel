@@ -9,21 +9,12 @@
     @csrf
     <input type="hidden" name="xm_type" value="{{ $content->content_type }}">
     <input type="hidden" name="section_content_id" value="{{ $content->id }}">
-    <div class="" id="">
+    <div class="position-relative" id="">
         <div class="row mt-3">
             <div class="col-md-5 select2-div">
                 <label for="">Question Topics</label>
-                <select name="" id="questionTopic" multiple class="form-control select2" data-placeholder="Select a Question Type">
-                    <option disabled >Select a Question Type</option>
-                    @foreach($questionTopics as $questionTopic)
-                        <option value="{{ $questionTopic->id }}">{{ $questionTopic->name }}</option>
-                        @if(!empty($questionTopic))
-                            @if(count($questionTopic->questionTopics) > 0)
-                                @include('backend.course-management.course.section-contents.question-topic-loop', ['questionTopic' => $questionTopic, 'child' => 1])
-                            @endif
-                        @endif
-                    @endforeach
-                </select>
+                <input type="text" class="form-control" id="questionTopicInputField">
+                <input type="hidden" class="form-control" id="questionTopic">
             </div>
             <div class="col-md-2">
                 <button type="button" class="btn btn-primary mt-5 check-topics">Apply</button>
@@ -37,21 +28,6 @@
     </div>
 </form>
 
-{{--@if(!empty($content->questionStores))--}}
-{{--    <div class="card card-body">--}}
-{{--        <h2 class="text-center">Assigned Questions</h2>--}}
-{{--        <div class="row">--}}
-{{--            @foreach($content->questionStores as $questionStore)--}}
-{{--                <div class="col-md-6 mt-2 border  p-3 shadow" style="cursor: pointer">--}}
-{{--                    <input type="checkbox" id="que{{ $questionStore->id }}" class="" name="" value="{{ $questionStore->id }}" style="display: none">--}}
-{{--                    <label for="que{{ $questionStore->id }}" class="que-check"  style="cursor: pointer" data-question-id="{{ $questionStore->id }}">--}}
-{{--                        <span class="float-start">#{{ $loop->iteration }}&nbsp;</span> <span class="float-start">{!! $questionStore->question !!}</span>--}}
-{{--                    </label>--}}
-{{--                </div>--}}
-{{--            @endforeach--}}
-{{--        </div>--}}
-{{--    </div>--}}
-{{--@endif--}}
 
 @if(!empty($content->questionStores))
     <div class="card card-body">
@@ -69,8 +45,6 @@
                             <label class="float-end"><button type="button" class="btn btn-danger detach-question btn-sm" data-content-id="{{ $content->id }}" data-question-id="{{ $questionStore->id }}"><i class="fa-solid fa-trash"></i></button></label>
                         </div>
                     </div>
-                    {{--                    <input type="checkbox" id="que{{ $questionStore->id }}" class="" name="" value="{{ $questionStore->id }}" style="display: none">--}}
-
 
                     @if(!empty($questionStore->questionOptions) && count($questionStore->questionOptions) > 0)
                         <div class="">
@@ -88,3 +62,40 @@
         </div>
     </div>
 @endif
+
+
+<div class="modal fade" id="questionTopicModal" data-bs-backdrop="static" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Select Question Topic</h1>
+                <button type="button" class="btn-close close-topic-modal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="" id="">
+                    @foreach($questionTopics as $key => $questionTopic)
+                        <div class="parent-div">
+                            <div class="card card-body bg-transparent shadow-0 mb-2 p-1">
+                                <ul class="nav mb-0">
+                                    @if(count($questionTopic->questionTopics) > 0)
+                                        <li class="drop-icon f-s-15" style="cursor: pointer" data-id="{{ $questionTopic->id }}"><i class="fa-solid fa-circle-arrow-down"></i></li>
+                                    @endif
+                                    <li><label class="mb-0 f-s-15 ms-2"><input type="checkbox" class="check" value="{{ $questionTopic->id }}">{{ $questionTopic->name }}</label></li>
+                                </ul>
+                            </div>
+                            @if(!empty($questionTopic))
+                                @if(count($questionTopic->questionTopics) > 0)
+                                    @include('backend.course-management.course.section-contents.question-topic-loop', ['questionTopic' => $questionTopic, 'child' => 15])
+                                @endif
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-topic-modal" >Close</button>
+                <button type="button" class="btn btn-primary" id="okDone">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -17,7 +17,7 @@
                         <tr>
                             {{--                                <th>#</th>--}}
                             <th>Name</th>
-                            <th>Email</th>
+{{--                            <th>Email</th>--}}
                             <th>Phone</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -28,7 +28,7 @@
                             @foreach($course->students as $student)
                                 <tr>
                                     <td>{{ $student->user->name }}</td>
-                                    <td>{{ $student->user->email }}</td>
+{{--                                    <td>{{ $student->user->email }}</td>--}}
                                     <td>{{ $student->user->mobile }}</td>
                                     <td>{{ $student->status == 1 ? 'Active' : 'Inactive' }}</td>
                                     <td>

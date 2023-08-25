@@ -15,20 +15,20 @@
                 </div>
                 <div class="col-md-5 mt-2 select2-div">
                     <label for="courseCategories">Select Course Categories</label>
-{{--                    <input type="text" class="form-control">--}}
-                    <select name="course_categories[]" class="form-control select2" id="courseCategories" multiple data-placeholder="Select Course Categories" >
-{{--                        <option></option>--}}
-                        @if(isset($courseCategories))
-                            @foreach($courseCategories as $courseCategory)
-                                <option value="{{ $courseCategory->id }}" >{{ $courseCategory->name }}</option>
-                                @if(!empty($courseCategory))
-                                    @if(count($courseCategory->courseCategories) > 0)
-                                        @include('backend.course-management.course.courses.course-category-loop', ['courseCategory' => $courseCategory, 'child' => 1])
-                                    @endif
-                                @endif
-                            @endforeach
-                        @endif
-                    </select>
+                    <input type="text" class="form-control" id="questionTopicInputField">
+                    <input type="hidden" class="form-control" name="course_categories[]" id="questionTopic">
+{{--                    <select name="course_categories[]" class="form-control select2" id="courseCategories" multiple data-placeholder="Select Course Categories" >--}}
+{{--                        @if(isset($courseCategories))--}}
+{{--                            @foreach($courseCategories as $courseCategory)--}}
+{{--                                <option value="{{ $courseCategory->id }}" >{{ $courseCategory->name }}</option>--}}
+{{--                                @if(!empty($courseCategory))--}}
+{{--                                    @if(count($courseCategory->courseCategories) > 0)--}}
+{{--                                        @include('backend.course-management.course.courses.course-category-loop', ['courseCategory' => $courseCategory, 'child' => 1])--}}
+{{--                                    @endif--}}
+{{--                                @endif--}}
+{{--                            @endforeach--}}
+{{--                        @endif--}}
+{{--                    </select>--}}
                     <span class="text-danger" id="course_categories"></span>
                 </div>
                 <div class="col-md-12 mt-2">
@@ -41,7 +41,7 @@
                     <textarea name="description" class="form-control summernote" id="summernote" placeholder="Course Description" cols="30" rows="5"></textarea>
                     <span class="text-danger" id="description"></span>
                 </div>
-                <div class="col-md-6 mt-2 select2-div">
+                <div class="col-md-6 mt-2 select2-div position-relative">
                     <label for="">Teachers</label>
                     <select name="teachers_id[]" class="form-control select2" multiple data-placeholder="Select Teachers" >
 {{--                        <option value=""></option>--}}
@@ -51,7 +51,7 @@
                             @endforeach
                         @endif
                     </select>
-                    <span class="text-danger" id="teachers_id"></span>
+                    <span class="text-danger" id="teachers_id[]"></span>
                 </div>
                 <div class="col-md-6 mt-2">
                     <label for="">Featured Video</label>
@@ -233,3 +233,46 @@
         <button type="submit" class="btn btn-primary submit-btn" value="save">Save</button>
     </div>
 </form>
+
+
+
+
+<div class="modal fade" id="questionTopicModal" data-bs-backdrop="static" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Select Course Categories</h1>
+                <button type="button" class="btn-close close-topic-modal" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="" id="">
+                    @if(isset($courseCategories))
+                        @foreach($courseCategories as $key => $courseCategory)
+                            <div class="parent-div ">
+                                <div class="card card-body bg-transparent shadow-0 mb-2 p-1">
+                                    <ul class="nav mb-0">
+                                        @if(count($courseCategory->courseCategories) > 0)
+                                            <li class="drop-icon f-s-15" style="cursor: pointer" data-id="{{ $courseCategory->id }}"><i class="fa-solid fa-circle-arrow-down"></i></li>
+                                        @else
+                                            <li class="ms-3"></li>
+                                        @endif
+                                        <li><label class="mb-0 f-s-15 ms-2"><input type="checkbox" class="check" value="{{ $courseCategory->id }}">{{ $courseCategory->name }}</label></li>
+                                    </ul>
+                                </div>
+                                @if(!empty($courseCategory))
+                                    @if(count($courseCategory->courseCategories) > 0)
+                                        @include('backend.course-management.course.courses.course-category-loop', ['courseCategory' => $courseCategory, 'child' => 15])
+                                    @endif
+                                @endif
+                            </div>
+                        @endforeach
+                    @endif
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-topic-modal" >Close</button>
+                <button type="button" class="btn btn-primary" id="okDone">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

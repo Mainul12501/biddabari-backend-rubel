@@ -7679,25 +7679,22 @@ a
 .modal-body label {
     font-weight: 400;
 }
-
-/*monu comment start*/
-
-/*.modal-open {*/
-/*    display: block;*/
-/*    overflow: scroll;*/
-/*}*/
-/*.modal {*/
-/*    bottom: 0;*/
-/*    display: none;*/
-/*    left: 0;*/
-/*    margin: 0 !important;*/
-/*    outline: 0;*/
-/*    overflow: hidden;*/
-/*    position: fixed;*/
-/*    right: 0;*/
-/*    top: 0;*/
-/*    z-index: 1050;*/
-/*}*/
+.modal-open {
+    display: block;
+    overflow: scroll;
+}
+.modal {
+    bottom: 0;
+    display: none;
+    left: 0;
+    margin: 0 !important;
+    outline: 0;
+    overflow: hidden;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 1050;
+}
 .modal,
 .modal-backdrop.fade.show,
 .modal-open {
@@ -7729,9 +7726,6 @@ a
     .modal.fade .modal-dialog {
         transition: none;
     }
-}
-.select2-container--open {
-    z-index: 9999;
 }
 .modal-dialog-centered {
     align-items: center;
@@ -7834,9 +7828,6 @@ a
         max-width: 1140px;
     }
 }
-
-/*monu comment end*/
-
 .model-wrapper-demo {
     background: #f1f1f9;
     padding: 50px 0;
@@ -7844,9 +7835,6 @@ a
 .pos-static {
     position: static;
 }
-
-/*monu comment start*/
-
 .modal.animated .modal-dialog {
     transform: translate(0);
 }
@@ -8043,8 +8031,6 @@ a
 .modal-body {
     overflow-y: inherit !important;
 }
-/*monu comment end*/
-
 .modal-open .select2-container--open .select2-dropdown--below,
 .modal-open .select2-dropdown {
     z-index: 9999 !important;
@@ -16416,164 +16402,164 @@ a.custom-blog-content:hover {
     height: 20px;
     width: 1px;
 }
-/*.task-view-modal {*/
-/*    overflow: hidden;*/
-/*}*/
-/*.task-view-modal .modal-body {*/
-/*    padding: 1.5rem !important;*/
-/*}*/
-/*.task-view-modal .task-data {*/
-/*    margin-bottom: 20px;*/
-/*}*/
-/*.task-view-modal .modal-footer {*/
-/*    align-items: flex-start;*/
-/*    flex-direction: column;*/
-/*}*/
-/*.task-view-modal .modal-footer .tab-content {*/
-/*    padding: 1.5rem !important;*/
-/*}*/
-/*.task-view-modal .modal-footer a.text-primary:focus svg,*/
-/*.task-view-modal .modal-footer a.text-primary:hover svg {*/
-/*    fill: var(--primary-bg-color) !important;*/
-/*}*/
-/*.task-view-modal .modal-footer .no-data {*/
-/*    padding: 1rem;*/
-/*    text-align: center;*/
-/*}*/
-/*.task-view-modal .modal-footer .no-data svg {*/
-/*    width: 2.2rem;*/
-/*}*/
-/*.task-view-modal .modal-footer .task-files-tab label {*/
-/*    cursor: pointer;*/
-/*}*/
-/*.task-view-modal .modal-footer .task-files-tab label.text-primary:focus,*/
-/*.task-view-modal .modal-footer .task-files-tab label.text-primary:hover {*/
-/*    color: var(--primary-bg-color) !important;*/
-/*}*/
-/*.task-view-modal .modal-footer .task-files-tab label.text-primary:focus svg,*/
-/*.task-view-modal .modal-footer .task-files-tab label.text-primary:hover svg {*/
-/*    fill: var(--primary-bg-color) !important;*/
-/*}*/
-/*.task-view-modal*/
-/*.modal-footer*/
-/*.task-files-tab*/
-/*.file-upload-text*/
-/*#task-file-input {*/
-/*    display: none;*/
-/*}*/
-/*.task-view-modal*/
-/*.modal-footer*/
-/*.task-files-tab*/
-/*.file-upload-text*/
-/*label[for="task-file-input"]*/
-/** {*/
-/*    cursor: pointer;*/
-/*    vertical-align: middle;*/
-/*}*/
-/*.task-view-modal*/
-/*.modal-footer*/
-/*.task-files-tab*/
-/*.file-upload-text*/
-/*label[for="task-file-input"]*/
-/*span {*/
-/*    margin-left: 10px;*/
-/*}*/
-/*.task-view-modal .modal-footer .task-files-tab .file-upload-text i.remove {*/
-/*    cursor: pointer;*/
-/*    display: none;*/
-/*    margin-left: 5px;*/
-/*    vertical-align: middle;*/
-/*}*/
-/*.task-view-modal .modal-footer .sub-list-container .sub-list-item {*/
-/*    align-items: center;*/
-/*    display: flex;*/
-/*    padding: 0.4rem;*/
-/*}*/
-/*.task-view-modal*/
-/*.modal-footer*/
-/*.sub-list-container*/
-/*.sub-list-item*/
-/*.sub-list-main {*/
-/*    align-items: center;*/
-/*    display: flex;*/
-/*    flex: 1;*/
-/*}*/
-/*.task-view-modal*/
-/*.modal-footer*/
-/*.sub-list-container*/
-/*.sub-list-item*/
-/*.sub-list-main*/
-/*.check-btn {*/
-/*    align-self: flex-start;*/
-/*    border: 1px solid #707070;*/
-/*    border-radius: 50%;*/
-/*    height: 11px;*/
-/*    margin-right: 5px;*/
-/*    margin-top: 5px;*/
-/*    transition: all 0.3s ease;*/
-/*    width: 11px;*/
-/*}*/
-/*.task-view-modal*/
-/*.modal-footer*/
-/*.sub-list-container*/
-/*.sub-list-item*/
-/*.sub-list-main*/
-/*.sub-list-text {*/
-/*    cursor: pointer;*/
-/*}*/
-/*.task-view-modal*/
-/*.modal-footer*/
-/*.sub-list-container*/
-/*.sub-list-item.task-completed*/
-/*.sub-list-text {*/
-/*    text-decoration: line-through;*/
-/*}*/
-/*.task-view-modal*/
-/*.modal-footer*/
-/*.sub-list-container*/
-/*.sub-list-item.task-completed*/
-/*.check-btn {*/
-/*    background-color: var(--primary-bg-color);*/
-/*    border-color: var(--primary-bg-color);*/
-/*}*/
-/*.task-view-modal .modal-footer .sub-list-container li:focus,*/
-/*.task-view-modal .modal-footer .sub-list-container li:hover {*/
-/*    background-color: #f7f8f9;*/
-/*}*/
-/*.task-view-modal .modal-footer .sub-list-container .delete-main {*/
-/*    cursor: pointer;*/
-/*}*/
-/*.task-view-modal .modal-footer .sub-list-container .delete-main:focus,*/
-/*.task-view-modal .modal-footer .sub-list-container .delete-main:hover {*/
-/*    fill: #d12c47 !important;*/
-/*    color: #d12c47 !important;*/
-/*}*/
-/*.task-view-modal .modal-footer .add-task-container {*/
-/*    align-items: center;*/
-/*}*/
-/*.task-view-modal .project-type {*/
-/*    padding-bottom: 0;*/
-/*    width: 100%;*/
-/*}*/
-/*.task-view-modal .project-type .nav-link {*/
-/*    align-items: center;*/
-/*    border-bottom: 0 !important;*/
-/*    border-radius: 5px;*/
-/*    border-bottom-left-radius: 0;*/
-/*    border-bottom-right-radius: 0;*/
-/*    color: #495057;*/
-/*    justify-content: center;*/
-/*    margin-right: 10px;*/
-/*    min-width: 6.3rem;*/
-/*    padding: 0.4rem 0.8rem;*/
-/*    transition: all 0.3s ease;*/
-/*}*/
-/*.task-view-modal .project-type .nav-link.active,*/
-/*.task-view-modal .project-type .nav-link:focus,*/
-/*.task-view-modal .project-type .nav-link:hover {*/
-/*    background-color: var(--primary-bg-color);*/
-/*    color: #fff;*/
-/*}*/
+.task-view-modal {
+    overflow: hidden;
+}
+.task-view-modal .modal-body {
+    padding: 1.5rem !important;
+}
+.task-view-modal .task-data {
+    margin-bottom: 20px;
+}
+.task-view-modal .modal-footer {
+    align-items: flex-start;
+    flex-direction: column;
+}
+.task-view-modal .modal-footer .tab-content {
+    padding: 1.5rem !important;
+}
+.task-view-modal .modal-footer a.text-primary:focus svg,
+.task-view-modal .modal-footer a.text-primary:hover svg {
+    fill: var(--primary-bg-color) !important;
+}
+.task-view-modal .modal-footer .no-data {
+    padding: 1rem;
+    text-align: center;
+}
+.task-view-modal .modal-footer .no-data svg {
+    width: 2.2rem;
+}
+.task-view-modal .modal-footer .task-files-tab label {
+    cursor: pointer;
+}
+.task-view-modal .modal-footer .task-files-tab label.text-primary:focus,
+.task-view-modal .modal-footer .task-files-tab label.text-primary:hover {
+    color: var(--primary-bg-color) !important;
+}
+.task-view-modal .modal-footer .task-files-tab label.text-primary:focus svg,
+.task-view-modal .modal-footer .task-files-tab label.text-primary:hover svg {
+    fill: var(--primary-bg-color) !important;
+}
+.task-view-modal
+.modal-footer
+.task-files-tab
+.file-upload-text
+#task-file-input {
+    display: none;
+}
+.task-view-modal
+.modal-footer
+.task-files-tab
+.file-upload-text
+label[for="task-file-input"]
+* {
+    cursor: pointer;
+    vertical-align: middle;
+}
+.task-view-modal
+.modal-footer
+.task-files-tab
+.file-upload-text
+label[for="task-file-input"]
+span {
+    margin-left: 10px;
+}
+.task-view-modal .modal-footer .task-files-tab .file-upload-text i.remove {
+    cursor: pointer;
+    display: none;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+.task-view-modal .modal-footer .sub-list-container .sub-list-item {
+    align-items: center;
+    display: flex;
+    padding: 0.4rem;
+}
+.task-view-modal
+.modal-footer
+.sub-list-container
+.sub-list-item
+.sub-list-main {
+    align-items: center;
+    display: flex;
+    flex: 1;
+}
+.task-view-modal
+.modal-footer
+.sub-list-container
+.sub-list-item
+.sub-list-main
+.check-btn {
+    align-self: flex-start;
+    border: 1px solid #707070;
+    border-radius: 50%;
+    height: 11px;
+    margin-right: 5px;
+    margin-top: 5px;
+    transition: all 0.3s ease;
+    width: 11px;
+}
+.task-view-modal
+.modal-footer
+.sub-list-container
+.sub-list-item
+.sub-list-main
+.sub-list-text {
+    cursor: pointer;
+}
+.task-view-modal
+.modal-footer
+.sub-list-container
+.sub-list-item.task-completed
+.sub-list-text {
+    text-decoration: line-through;
+}
+.task-view-modal
+.modal-footer
+.sub-list-container
+.sub-list-item.task-completed
+.check-btn {
+    background-color: var(--primary-bg-color);
+    border-color: var(--primary-bg-color);
+}
+.task-view-modal .modal-footer .sub-list-container li:focus,
+.task-view-modal .modal-footer .sub-list-container li:hover {
+    background-color: #f7f8f9;
+}
+.task-view-modal .modal-footer .sub-list-container .delete-main {
+    cursor: pointer;
+}
+.task-view-modal .modal-footer .sub-list-container .delete-main:focus,
+.task-view-modal .modal-footer .sub-list-container .delete-main:hover {
+    fill: #d12c47 !important;
+    color: #d12c47 !important;
+}
+.task-view-modal .modal-footer .add-task-container {
+    align-items: center;
+}
+.task-view-modal .project-type {
+    padding-bottom: 0;
+    width: 100%;
+}
+.task-view-modal .project-type .nav-link {
+    align-items: center;
+    border-bottom: 0 !important;
+    border-radius: 5px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    color: #495057;
+    justify-content: center;
+    margin-right: 10px;
+    min-width: 6.3rem;
+    padding: 0.4rem 0.8rem;
+    transition: all 0.3s ease;
+}
+.task-view-modal .project-type .nav-link.active,
+.task-view-modal .project-type .nav-link:focus,
+.task-view-modal .project-type .nav-link:hover {
+    background-color: var(--primary-bg-color);
+    color: #fff;
+}
 .modal-open .datepicker {
     z-index: 1050 !important;
 }

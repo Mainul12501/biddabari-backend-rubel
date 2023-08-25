@@ -84,7 +84,7 @@ class CourseCouponController extends Controller
         CourseCoupon::createOrUpdateCourseCoupons($request, $id);
         if ($request->ajax())
         {
-            return response()->json('Course Coupon Created Successfully');
+            return response()->json('Course Coupon Updated Successfully');
         }
         return back()->with('success', 'Course Coupon Updated Successfully');
     }

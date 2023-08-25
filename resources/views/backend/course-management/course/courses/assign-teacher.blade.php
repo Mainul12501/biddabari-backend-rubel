@@ -17,7 +17,7 @@
                         <tr>
                             {{--                                <th>#</th>--}}
                             <th>Name</th>
-                            <th>Email</th>
+{{--                            <th>Email</th>--}}
                             <th>Phone</th>
                             <th>Commission</th>
                             <th>Status</th>
@@ -29,7 +29,7 @@
                             @foreach($course->teachers as $teacher)
                                 <tr>
                                     <td>{{ $teacher->user->name }}</td>
-                                    <td>{{ $teacher->user->email }}</td>
+{{--                                    <td>{{ $teacher->user->email }}</td>--}}
                                     <td>{{ $teacher->user->mobile }}</td>
                                     <td></td>
                                     <td>{{ $teacher->status == 1 ? 'Active' : 'Inactive' }}</td>

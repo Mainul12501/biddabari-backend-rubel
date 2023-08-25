@@ -80,9 +80,10 @@ class FrontExamController extends Controller
         if (auth()->check())
         {
             $this->sectionContent = CourseSectionContent::whereId($contentId)->with(['questionStoresForClassXm'])->first();
-            if ($this->sectionContent->is_class_xm_complete == 1)
+            $existUserClassXm = CourseClassExamResult::where(['course_section_content_id' => $this->sectionContent->id, 'user_id' => auth()->id()])->first();
+            if (isset($existUserClassXm))
             {
-                return back()->with('error', 'You already passed the class Exam.');
+                return back()->with('error' , 'You already passed the class Exam.');
             }
             $this->data = [
                 'exam'   => $this->sectionContent
@@ -198,11 +199,108 @@ class FrontExamController extends Controller
 
     public function getCourseExamResult(Request $request, $contentId, $slug = null)
     {
-        $this->resultNumber = 0;
-        $this->exam = CourseSectionContent::whereId($contentId)->first();
-        if ($this->exam)
+        try {
+            $this->resultNumber = 0;
+            $this->exam = CourseSectionContent::whereId($contentId)->first();
+            if ($this->exam)
+            {
+                if ($this->exam->content_type == 'exam')
+                {
+                    if (!empty($request->question))
+                    {
+                        $this->questionJson = $request->question;
+                        foreach ($request->question as $question_id => $answer)
+                        {
+                            if (!is_array($answer))
+                            {
+                                unset($this->questionJson[$question_id]);
+                            }
+                            $this->question = QuestionStore::whereId($question_id)->select('id', 'question_type', 'question_mark', 'negative_mark', 'has_all_wrong_ans', 'status')->first();
+                            if (is_array($answer))
+                            {
+                                if ($this->question->has_all_wrong_ans == 1)
+                                {
+                                    $this->resultNumber -= (int)$this->question->negative_mark;
+                                } else {
+                                    $this->questionOption = QuestionOption::whereId($answer['answer'])->select('id', 'is_correct')->first();
+                                    if ($this->questionOption->is_correct == 1)
+                                    {
+                                        $this->resultNumber += (int)$this->exam->exam_per_question_mark;
+                                    } else {
+                                        $this->resultNumber -= (int)$this->exam->exam_negative_mark;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    $this->examResult = [
+                        'course_section_content_id'       => $contentId,
+                        'user_id'       => auth()->id(),
+                        'xm_type'       => $this->exam->content_type,
+//                    'written_xm_file'       => fileUpload($request->file('written_xm_file'), 'xm-files/'.$this->exam->id.'/', 'file-'.auth()->id().'-'),
+                        'provided_ans'      => json_encode($this->questionJson),
+                        'result_mark'       => $this->resultNumber ?? 0,
+                        'is_reviewed'       => 0,
+                        'required_time'       => $request->required_time,
+                        'status'        => $this->exam->content_type == 'exam' ? ($this->resultNumber >= $this->exam->exam_pass_mark ? 'pass' : 'fail') : 'pending',
+                    ];
+
+                } elseif ($this->exam->content_type == 'written_exam')
+                {
+                    $imageUrl = '';
+                    $this->pdfFilePath = '';
+                    if (!empty($request->file('ans_files')))
+                    {
+                        foreach ($request->file('ans_files') as $ans_file)
+                        {
+                            $imageUrl = imageUpload($ans_file, 'course-xm-temp-file-upload/', 'tmp-', 600, 800);
+                            array_push($this->fileSessionPaths, $imageUrl);
+                            $this->filePathString .= public_path($imageUrl).' ';
+                        }
+                        $this->pdfFilePath = 'backend/assets/uploaded-files/course-written-xm-ans-files/'.rand(10000,99999).time().'.pdf';
+                        shell_exec('magick convert '. $this->filePathString.public_path($this->pdfFilePath));
+                        foreach ($this->fileSessionPaths as $fileSessionPath)
+                        {
+                            if (file_exists($fileSessionPath))
+                            {
+                                unlink($fileSessionPath);
+                            }
+                        }
+                    }
+
+                    $this->examResult = [
+                        'course_section_content_id'       => $contentId,
+                        'user_id'       => auth()->id(),
+                        'xm_type'       => $this->exam->content_type,
+                        'written_xm_file'       => $this->pdfFilePath,
+//                    'provided_ans'      => json_encode($this->questionJson),
+//                    'result_mark'       => $this->resultNumber ?? 0,
+                        'is_reviewed'       => 0,
+                        'required_time'       => $request->required_time,
+                        'status'        =>  'pending',
+                    ];
+                }
+                CourseExamResult::storeExamResult($this->examResult);
+                if (str()->contains(url()->current(), '/api/'))
+                {
+                    return response()->json(['status' => 'success', 'message' => 'Exam Data Saved Successfully.', 'exam_id' => $this->exam->id]);
+                } else {
+                    return redirect()->route('front.student.show-course-exam-result', ['xm_id' => $contentId])->with('success', 'You Successfully finished your exam.');
+                }
+            }
+            return ViewHelper::returEexceptionError('Exam Not Found.');
+        } catch (\Exception $exception)
         {
-            if ($this->exam->content_type == 'exam')
+            return ViewHelper::returEexceptionError($exception->getMessage());
+        }
+
+    }
+    public function getCourseClassExamResult(Request $request, $contentId, $slug = null)
+    {
+        try {
+            $this->resultNumber = 0;
+            $this->exam = CourseSectionContent::whereId($contentId)->first();
+            if ($this->exam)
             {
                 if (!empty($request->question))
                 {
@@ -218,14 +316,12 @@ class FrontExamController extends Controller
                         {
                             if ($this->question->has_all_wrong_ans == 1)
                             {
-                                $this->resultNumber -= (int)$this->question->negative_mark;
+                                $this->resultNumber -= 1;
                             } else {
                                 $this->questionOption = QuestionOption::whereId($answer['answer'])->select('id', 'is_correct')->first();
                                 if ($this->questionOption->is_correct == 1)
                                 {
-                                    $this->resultNumber += (int)$this->exam->exam_per_question_mark;
-                                } else {
-                                    $this->resultNumber -= (int)$this->exam->exam_negative_mark;
+                                    $this->resultNumber += 1;
                                 }
                             }
                         }
@@ -234,191 +330,128 @@ class FrontExamController extends Controller
                 $this->examResult = [
                     'course_section_content_id'       => $contentId,
                     'user_id'       => auth()->id(),
-                    'xm_type'       => $this->exam->content_type,
+//                'xm_type'       => $this->exam->content_type,
 //                    'written_xm_file'       => fileUpload($request->file('written_xm_file'), 'xm-files/'.$this->exam->id.'/', 'file-'.auth()->id().'-'),
                     'provided_ans'      => json_encode($this->questionJson),
                     'result_mark'       => $this->resultNumber ?? 0,
                     'is_reviewed'       => 0,
-                    'required_time'       => $request->required_time,
-                    'status'        => $this->exam->content_type == 'exam' ? ($this->resultNumber >= $this->exam->exam_pass_mark ? 'pass' : 'fail') : 'pending',
-                ];
-
-            } elseif ($this->exam->content_type == 'written_exam')
-            {
-                $imageUrl = '';
-                $this->pdfFilePath = '';
-                if (!empty($request->file('ans_files')))
-                {
-                    foreach ($request->file('ans_files') as $ans_file)
-                    {
-                        $imageUrl = imageUpload($ans_file, 'course-xm-temp-file-upload/', 'tmp-', 600, 800);
-                        array_push($this->fileSessionPaths, $imageUrl);
-                        $this->filePathString .= public_path($imageUrl).' ';
-                    }
-                    $this->pdfFilePath = 'backend/assets/uploaded-files/course-written-xm-ans-files/'.rand(10000,99999).time().'.pdf';
-                    shell_exec('magick convert '. $this->filePathString.public_path($this->pdfFilePath));
-                    foreach ($this->fileSessionPaths as $fileSessionPath)
-                    {
-                        if (file_exists($fileSessionPath))
-                        {
-                            unlink($fileSessionPath);
-                        }
-                    }
-                }
-
-                $this->examResult = [
-                    'course_section_content_id'       => $contentId,
-                    'user_id'       => auth()->id(),
-                    'xm_type'       => $this->exam->content_type,
-                    'written_xm_file'       => $this->pdfFilePath,
-//                    'provided_ans'      => json_encode($this->questionJson),
-//                    'result_mark'       => $this->resultNumber ?? 0,
-                    'is_reviewed'       => 0,
-                    'required_time'       => $request->required_time,
-                    'status'        =>  'pending',
-                ];
-            }
-            CourseExamResult::storeExamResult($this->examResult);
-            return redirect()->route('front.student.show-course-exam-result', ['xm_id' => $contentId])->with('success', 'You Successfully finished your exam.');
-        }
-        return back()->with('error', 'Exam Not Found.');
-    }
-    public function getCourseClassExamResult(Request $request, $contentId, $slug = null)
-    {
-        $this->resultNumber = 0;
-        $this->exam = CourseSectionContent::whereId($contentId)->first();
-        if ($this->exam)
-        {
-            if (!empty($request->question))
-            {
-                $this->questionJson = $request->question;
-                foreach ($request->question as $question_id => $answer)
-                {
-                    if (!is_array($answer))
-                    {
-                        unset($this->questionJson[$question_id]);
-                    }
-                    $this->question = QuestionStore::whereId($question_id)->select('id', 'question_type', 'question_mark', 'negative_mark', 'has_all_wrong_ans', 'status')->first();
-                    if (is_array($answer))
-                    {
-                        if ($this->question->has_all_wrong_ans == 1)
-                        {
-                            $this->resultNumber -= 1;
-                        } else {
-                            $this->questionOption = QuestionOption::whereId($answer['answer'])->select('id', 'is_correct')->first();
-                            if ($this->questionOption->is_correct == 1)
-                            {
-                                $this->resultNumber += 1;
-                            }
-                        }
-                    }
-                }
-            }
-            $this->examResult = [
-                'course_section_content_id'       => $contentId,
-                'user_id'       => auth()->id(),
-//                'xm_type'       => $this->exam->content_type,
-//                    'written_xm_file'       => fileUpload($request->file('written_xm_file'), 'xm-files/'.$this->exam->id.'/', 'file-'.auth()->id().'-'),
-                'provided_ans'      => json_encode($this->questionJson),
-                'result_mark'       => $this->resultNumber ?? 0,
-                'is_reviewed'       => 0,
-                'required_time'     => $request->required_time,
+                    'required_time'     => $request->required_time,
 //                'status'        => $this->resultNumber >= $this->exam->exam_pass_mark ? 'pass' : 'fail',
-                'status'            => 'pass',
-            ];
-            CourseClassExamResult::storeExamResult($this->examResult);
-            return redirect()->route('front.student.show-course-class-exam-result', ['xm_id' => $contentId])->with('success', 'You Successfully finished your exam.');
+                    'status'            => 'pass',
+                ];
+                CourseClassExamResult::storeExamResult($this->examResult);
+                if (str()->contains(url()->current(), '/api/'))
+                {
+                    return response()->json(['status' => 'success', 'message' => 'Exam Data Saved Successfully.', 'exam_id' => $this->exam->id]);
+                } else {
+                    return redirect()->route('front.student.show-course-class-exam-result', ['xm_id' => $contentId])->with('success', 'You Successfully finished your exam.');
+                }
+            }
+            return ViewHelper::returEexceptionError('Exam Not Found.');
+        } catch (\Exception $exception)
+        {
+            return ViewHelper::returEexceptionError($exception->getMessage());
         }
-        return back()->with('error', 'Exam Not Found.');
+
     }
 
     public function getBatchExamResult(Request $request, $contentId, $slug = null)
     {
-        $this->resultNumber = 0;
-        $this->exam = BatchExamSectionContent::whereId($contentId)->first();
-        if ($this->exam)
-        {
-            if ($this->exam->content_type == 'exam')
+        try {
+            $this->resultNumber = 0;
+            $this->exam = BatchExamSectionContent::whereId($contentId)->first();
+            if ($this->exam)
             {
-                if (!empty($request->question))
+                if ($this->exam->content_type == 'exam')
                 {
-                    $this->questionJson = $request->question;
-                    foreach ($request->question as $question_id => $answer)
+                    if (!empty($request->question))
                     {
-                        if (!is_array($answer))
+                        $this->questionJson = $request->question;
+                        foreach ($request->question as $question_id => $answer)
                         {
-                            unset($this->questionJson[$question_id]);
-                        }
-                        $this->question = QuestionStore::whereId($question_id)->select('id', 'question_type', 'question_mark', 'negative_mark', 'has_all_wrong_ans', 'status')->first();
-                        if (is_array($answer))
-                        {
-                            if ($this->question->has_all_wrong_ans == 1)
+                            if (!is_array($answer))
                             {
-//                                $this->resultNumber -= (int)$this->question->negative_mark;
-                                $this->resultNumber -= (int)$this->exam->exam_per_question_mark;
-                            } else {
-                                $this->questionOption = QuestionOption::whereId($answer['answer'])->select('id', 'is_correct')->first();
-                                if ($this->questionOption->is_correct == 1)
+                                unset($this->questionJson[$question_id]);
+                            }
+                            $this->question = QuestionStore::whereId($question_id)->select('id', 'question_type', 'question_mark', 'negative_mark', 'has_all_wrong_ans', 'status')->first();
+                            if (is_array($answer))
+                            {
+                                if ($this->question->has_all_wrong_ans == 1)
                                 {
-                                    $this->resultNumber += (int)$this->exam->exam_per_question_mark;
+//                                $this->resultNumber -= (int)$this->question->negative_mark;
+                                    $this->resultNumber -= (int)$this->exam->exam_per_question_mark;
                                 } else {
-                                    $this->resultNumber -= (int)$this->exam->exam_negative_mark;
+                                    $this->questionOption = QuestionOption::whereId($answer['answer'])->select('id', 'is_correct')->first();
+                                    if ($this->questionOption->is_correct == 1)
+                                    {
+                                        $this->resultNumber += (int)$this->exam->exam_per_question_mark;
+                                    } else {
+                                        $this->resultNumber -= (int)$this->exam->exam_negative_mark;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                $this->examResult = [
-                    'batch_exam_section_content_id'       => $contentId,
-                    'user_id'       => auth()->id(),
-                    'xm_type'       => $this->exam->content_type,
+                    $this->examResult = [
+                        'batch_exam_section_content_id'       => $contentId,
+                        'user_id'       => auth()->id(),
+                        'xm_type'       => $this->exam->content_type,
 //                    'written_xm_file'       => fileUpload($request->file('written_xm_file'), 'xm-files/'.$this->exam->id.'/', 'file-'.auth()->id().'-'),
-                    'provided_ans'      => json_encode($this->questionJson),
-                    'result_mark'       => $this->resultNumber ?? 0,
-                    'is_reviewed'       => 0,
-                    'required_time'       => $request->required_time,
-                    'status'        => $this->exam->content_type == 'exam' ? ($this->resultNumber >= $this->exam->exam_pass_mark ? 'pass' : 'fail') : 'pending',
-                ];
+                        'provided_ans'      => json_encode($this->questionJson),
+                        'result_mark'       => $this->resultNumber ?? 0,
+                        'is_reviewed'       => 0,
+                        'required_time'       => $request->required_time,
+                        'status'        => $this->exam->content_type == 'exam' ? ($this->resultNumber >= $this->exam->exam_pass_mark ? 'pass' : 'fail') : 'pending',
+                    ];
 
-            } elseif ($this->exam->content_type == 'written_exam')
-            {
-                $imageUrl = '';
-                $this->pdfFilePath = '';
-                if (!empty($request->file('ans_files')))
+                } elseif ($this->exam->content_type == 'written_exam')
                 {
-                    foreach ($request->file('ans_files') as $ans_file)
+                    $imageUrl = '';
+                    $this->pdfFilePath = '';
+                    if (!empty($request->file('ans_files')))
                     {
-                        $imageUrl = imageUpload($ans_file, 'batch-xm-temp-file-upload/', 'tmp-', 600, 800);
-                        array_push($this->fileSessionPaths, $imageUrl);
-                        $this->filePathString .= public_path($imageUrl).' ';
-                    }
-                    $this->pdfFilePath = 'backend/assets/uploaded-files/batch-written-xm-ans-files/'.rand(10000,99999).time().'.pdf';
-                    shell_exec('magick convert '. $this->filePathString.public_path($this->pdfFilePath));
-                    foreach ($this->fileSessionPaths as $fileSessionPath)
-                    {
-                        if (file_exists($fileSessionPath))
+                        foreach ($request->file('ans_files') as $ans_file)
                         {
-                            unlink($fileSessionPath);
+                            $imageUrl = imageUpload($ans_file, 'batch-xm-temp-file-upload/', 'tmp-', 600, 800);
+                            array_push($this->fileSessionPaths, $imageUrl);
+                            $this->filePathString .= public_path($imageUrl).' ';
+                        }
+                        $this->pdfFilePath = 'backend/assets/uploaded-files/batch-written-xm-ans-files/'.rand(10000,99999).time().'.pdf';
+                        shell_exec('magick convert '. $this->filePathString.public_path($this->pdfFilePath));
+                        foreach ($this->fileSessionPaths as $fileSessionPath)
+                        {
+                            if (file_exists($fileSessionPath))
+                            {
+                                unlink($fileSessionPath);
+                            }
                         }
                     }
-                }
 
-                $this->examResult = [
-                    'batch_exam_section_content_id'       => $contentId,
-                    'user_id'       => auth()->id(),
-                    'xm_type'       => $this->exam->content_type,
-                    'written_xm_file'       => $this->pdfFilePath,
+                    $this->examResult = [
+                        'batch_exam_section_content_id'       => $contentId,
+                        'user_id'       => auth()->id(),
+                        'xm_type'       => $this->exam->content_type,
+                        'written_xm_file'       => $this->pdfFilePath,
 //                    'provided_ans'      => json_encode($this->questionJson),
 //                    'result_mark'       => $this->resultNumber ?? 0,
-                    'is_reviewed'       => 0,
-                    'required_time'       => $request->required_time,
-                    'status'        =>  'pending',
-                ];
+                        'is_reviewed'       => 0,
+                        'required_time'       => $request->required_time,
+                        'status'        =>  'pending',
+                    ];
+                }
+                BatchExamResult::storeExamResult($this->examResult);
+                if (str()->contains(url()->current(), '/api/'))
+                {
+                    return response()->json(['status' => 'success', 'message' => 'Exam Data Saved Successfully.', 'exam_id' => $this->exam->id]);
+                } else {
+                    return redirect()->route('front.student.show-batch-exam-result', ['xm_id' => $contentId])->with('success', 'You Successfully finished your exam.');
+                }
             }
-            BatchExamResult::storeExamResult($this->examResult);
-            return redirect()->route('front.student.show-batch-exam-result', ['xm_id' => $contentId])->with('success', 'You Successfully finished your exam.');
+            return ViewHelper::returEexceptionError('Exam Not Found.');
+        } catch (\Exception $exception)
+        {
+            return ViewHelper::returEexceptionError($exception->getMessage());
         }
-        return back()->with('error', 'Exam Not Found.');
     }
 
     public function showExamResult ($xmId)
@@ -436,21 +469,22 @@ class FrontExamController extends Controller
 //        $this->exam = CourseSectionContent::whereId($xmId)->select('id', 'title', 'content_type', 'total_mark', 'xm_pass_mark', 'xm_duration')->first();
         $this->exam = CourseSectionContent::whereId($xmId)->first();
         $this->xmResult = CourseExamResult::where('course_section_content_id', $xmId)->latest()->first();
-        return view('frontend.exams.course.result', [
+        $this->data = [
             'exam'  => $this->exam,
             'examResult'    => $this->xmResult
-        ]);
+        ];
+        return ViewHelper::checkViewForApi($this->data, 'frontend.exams.course.result');
     }
 
     public function showCourseClassExamResult ($xmId)
     {
-//        $this->exam = CourseSectionContent::whereId($xmId)->select('id', 'title', 'content_type', 'total_mark', 'xm_pass_mark', 'xm_duration')->first();
         $this->exam = CourseSectionContent::whereId($xmId)->first();
         $this->xmResult = CourseClassExamResult::where('course_section_content_id', $xmId)->latest()->first();
-        return view('frontend.exams.course.class.result', [
+        $this->data = [
             'exam'  => $this->exam,
             'examResult'    => $this->xmResult
-        ]);
+        ];
+        return ViewHelper::checkViewForApi($this->data, 'frontend.exams.course.class.result');
     }
 
     public function showBatchExamResult ($xmId)
@@ -458,10 +492,11 @@ class FrontExamController extends Controller
 //        $this->exam = CourseSectionContent::whereId($xmId)->select('id', 'title', 'content_type', 'total_mark', 'xm_pass_mark', 'xm_duration')->first();
         $this->exam = BatchExamSectionContent::whereId($xmId)->first();
         $this->xmResult = BatchExamResult::where('batch_exam_section_content_id', $xmId)->latest()->first();
-        return view('frontend.exams.batch-exam.result', [
+        $this->data = [
             'exam'  => $this->exam,
             'examResult'    => $this->xmResult
-        ]);
+        ];
+        return ViewHelper::checkViewForApi($this->data, 'frontend.exams.batch-exam.result');
     }
 
     public function showAllExams ()
@@ -583,7 +618,10 @@ class FrontExamController extends Controller
     }
     public function showCourseExamRanking($contentId)
     {
-        $this->courseExamResults = CourseExamResult::where(['course_section_content_id' => $contentId])->orderBy('result_mark', 'DESC')->orderBy('required_time', 'ASC')->get();
+        $this->courseExamResults = CourseExamResult::where(['course_section_content_id' => $contentId])->orderBy('result_mark', 'DESC')->orderBy('required_time', 'ASC')->with(['courseSectionContent' => function($courseSectionContent) {
+            $courseSectionContent->select('id',  'course_section_id', 'exam_total_questions','exam_per_question_mark')->first();
+        },
+            'user'])->get();
         $myRank = [];
         foreach ($this->courseExamResults as $index => $courseExamResult)
         {

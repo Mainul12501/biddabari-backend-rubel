@@ -175,9 +175,9 @@
             var formData = new FormData(form);
             $.ajax({
                 url: $('#coursesForm').attr('action'),
-                method: "PUT",
+                method: "POST",
                 data: formData,
-                dataType: "JSON",
+                // dataType: "JSON",
                 // async: false,
                 // cache: false,
                 contentType: false,

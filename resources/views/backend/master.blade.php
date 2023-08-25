@@ -67,7 +67,7 @@
 
 
     <!--TASK MODAL-->
-    @include('backend.includes.modal.task-mdoal')
+{{--    @include('backend.includes.modal.task-mdoal')--}}
     <!--TASK MODAL ENDS-->
 
 
