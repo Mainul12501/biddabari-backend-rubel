@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class BatchExamSectionController extends Controller
 {
+    //    permission seed done
     /**
      * Display a listing of the resource.
      */

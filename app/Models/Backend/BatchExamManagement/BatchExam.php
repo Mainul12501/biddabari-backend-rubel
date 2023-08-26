@@ -106,9 +106,9 @@ class BatchExam extends Model
 //        self::$batchExam->discount_start_date_timestamp   = strtotime($request->discount_start_date);
 //        self::$batchExam->discount_end_date        = $request->discount_end_date;
 //        self::$batchExam->discount_end_date_timestamp     = strtotime($request->discount_end_date);
-        if (isset($request->featured_video_url))
+        if (!empty($request->featured_video_url))
         {
-            $vidUrlString = explode('https://www.youtube.com/watch?v=', $request->featured_video_url)[1];
+            $vidUrlString = explode('https://youtu.be/', $request->featured_video_url)[1];
         }
         self::$batchExam->featured_video_url       = isset($vidUrlString) ? $vidUrlString : (isset($id) ? self::$batchExam->featured_video_url : null);
 //        self::$batchExam->featured_video_vendor    = $request->featured_video_vendor;
@@ -123,7 +123,7 @@ class BatchExam extends Model
 
         if (empty(static::first()) || $id != 1)
         {
-            self::$batchExam->batchExamCategories()->sync($request->batch_exam_categories);
+            self::$batchExam->batchExamCategories()->sync(explode(',', $request->batch_exam_categories[0]));
         }
         return self::$batchExam;
     }

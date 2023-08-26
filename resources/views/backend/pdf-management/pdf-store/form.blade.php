@@ -14,6 +14,11 @@
                         <option value=""></option>
                         @foreach($pdfStoreCategories as $pdfStoreCategory)
                             <option value="{{ $pdfStoreCategory->id }}">{{ $pdfStoreCategory->title }}</option>
+                            @if(!empty($pdfStoreCategory))
+                                @if(count($pdfStoreCategory->pdfStoreCategories) > 0)
+                                    @include('backend.pdf-management.pdf-store.pdf-category-loop', ['pdfStoreCategory' => $pdfStoreCategory, 'child' => 1])
+                                @endif
+                            @endif
                         @endforeach
                     </select>
                     <span class="text-danger" id="pdf_store_category_id">{{ $errors->has('pdf_store_category_id') ? $errors->first('pdf_store_category_id') : "" }}</span>

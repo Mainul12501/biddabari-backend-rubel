@@ -131,7 +131,7 @@ class Course extends Model
 //        self::$course->featured_video_url       = $request->featured_video_url;
         if (isset($request->featured_video_url))
         {
-            $vidUrlString = explode('https://www.youtube.com/watch?v=', $request->featured_video_url)[1];
+            $vidUrlString = explode('https://youtu.be/', $request->featured_video_url)[1];
         }
         self::$course->featured_video_url       = isset($vidUrlString) ? $vidUrlString : (isset($id) ? self::$course->featured_video_url : null);
         self::$course->featured_video_vendor    = $request->featured_video_vendor;

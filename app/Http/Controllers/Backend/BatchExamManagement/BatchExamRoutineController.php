@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class BatchExamRoutineController extends Controller
 {
+    //    permission seed done
     protected $batchExamRoutines = [];
     /**
      * Display a listing of the resource.

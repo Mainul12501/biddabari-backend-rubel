@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
+    //    permission seed done
     private $permissionRoles, $permission, $permissions;
     /**
      * Display a listing of the resource.

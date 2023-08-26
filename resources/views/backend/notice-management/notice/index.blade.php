@@ -14,7 +14,7 @@
                     <table class="table" id="file-datatable">
                         <thead>
                         <tr>
-{{--                            <th>#</th>--}}
+                            <th>#</th>
                             <th>Title</th>
 {{--                            <th>Category</th>--}}
                             <th>Type</th>
@@ -28,7 +28,7 @@
                         @if(isset($notices))
                             @foreach($notices as $notice)
                                 <tr>
-{{--                                    <td>{{ $loop->iteration }}</td>--}}
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $notice->title }}</td>
 {{--                                    <td>{{ $notice->noticeCategory->name  }}</td>--}}
                                     <td>{{ $notice->type }}</td>
@@ -147,6 +147,18 @@
                     $('#noticeModal').modal('show');
                 }
             })
+        })
+    </script>
+    <script>
+        $(document).on('change', 'select[name="type"]', function () {
+            var noticeType = $(this).val();
+            if (noticeType == 'normal')
+            {
+                $('.image-row').removeClass('d-none');
+            } else if (noticeType == 'scroll')
+            {
+                $('.image-row').addClass('d-none');
+            }
         })
     </script>
 @endpush

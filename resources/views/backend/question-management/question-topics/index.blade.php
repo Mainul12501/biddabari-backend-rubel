@@ -17,7 +17,7 @@
                             <tr>
 {{--                                <th>#</th>--}}
                                 <th>Exam Name</th>
-                                <th>MCQ STORE</th>
+                                <th>{{ isset($_GET['q-type']) && $_GET['q-type'] == 'mcq' ? 'MCQ' : 'WRITTEN' }} STORE</th>
                                 <th>SUB CATEGORY</th>
                                 <th>Action</th>
                             </tr>

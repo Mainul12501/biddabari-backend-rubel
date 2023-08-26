@@ -40,12 +40,12 @@
                     </div>
                 </div>
             </div>
-            <div class="row mt-2">
+            <div class="row mt-2 ">
                 <div class="col-md-12">
                     <textarea name="body" id="summernote" placeholder="Notice Content" cols="30" rows="10">{!! $notice->body !!}</textarea>
                 </div>
             </div>
-            <div class="row mt-2">
+            <div class="row mt-2 image-row {{ $notice->type == 'scroll' ? 'd-none' : '' }}">
                 <div class="col-md-4 mt-2">
                     <label for="">Image</label>
                     <input type="file" name="image" class="form-control" id="imagex" accept="image/*" placeholder="Image" />

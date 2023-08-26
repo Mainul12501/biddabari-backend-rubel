@@ -96,45 +96,6 @@ class AppApiController extends Controller
         return response()->json(['courseSectionContentDetails' => $this->courseSectionContent]);
     }
 
-    public function showCourseExamRanking($contentId)
-    {
-        $this->courseExamResults = CourseExamResult::where(['course_section_content_id' => $contentId])->orderBy('result_mark', 'DESC')->orderBy('required_time', 'ASC')->get();
-        $myRank = [];
-        foreach ($this->courseExamResults as $index => $courseExamResult)
-        {
-            if ($courseExamResult->user_id == auth()->id())
-            {
-                $myRank = $courseExamResult;
-                $myRank['position'] = ++$index;
-            }
-            $courseExamResult->provided_ans = strip_tags($courseExamResult->provided_ans);
-        }
-        $this->data = [
-            'courseExamResults'     => $this->courseExamResults,
-            'myPosition'    => $myRank
-        ];
-        return response()->json($this->data);
-    }
-    public function showBatchExamRanking($contentId)
-    {
-        $this->courseExamResults = BatchExamResult::where(['batch_exam_section_content_id' => $contentId])->orderBy('result_mark', 'DESC')->orderBy('required_time', 'ASC')->get();
-        $myRank = [];
-        foreach ($this->courseExamResults as $index => $courseExamResult)
-        {
-            if ($courseExamResult->user_id == auth()->id())
-            {
-                $myRank = $courseExamResult;
-                $myRank['position'] = ++$index;
-            }
-            $courseExamResult->provided_ans = strip_tags($courseExamResult->provided_ans);
-        }
-        $this->data = [
-            'courseExamResults'     => $this->courseExamResults,
-            'myPosition'    => $myRank
-        ];
-        return response()->json($this->data);
-    }
-
     public function showBatchDetailsWithSections ($batchExamId)
     {
             $this->exam = BatchExam::whereId($batchExamId)->select('id', 'title', 'slug', 'status')->with(['batchExamSections' => function($batchExamSections){

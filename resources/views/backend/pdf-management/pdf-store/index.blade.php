@@ -33,7 +33,7 @@
                                         <td>{{ $pdfStore->title }}</td>
 {{--                                        <td><a href="{{ $pdfStore->file_external_link }}" target="_blank">External Link</a></td>--}}
                                         <td>
-                                            <a href="{{ asset($pdfStore->file_url) }}" target="_blank">{{ $pdfStore->title }}</a>
+                                            <a href="{{ asset($pdfStore->file_url) }}" class="show-pdf" data-id="{{ $pdfStore->id }}">{{ $pdfStore->title }}</a>
                                         </td>
                                         <td>{{ $pdfStore->slug }}</td>
                                         <td>
@@ -64,17 +64,198 @@
             </div>
         </div>
     </div>
+    <div class="modal fade show-pdf-modal" id="pdfModal" data-bs-backdrop="static" data-modal-parent="courseContentModal" >
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">View Class Pdf</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="card card-body p-0" id="pdfContentPrintDiv">
+                        <div class="my-box px-3 mx-auto mt-5" style="position: relative!important; height: auto;">
+                            <div id="pdf-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @push('style')
     <!-- DragNDrop Css -->
 {{--    <link href="{{ asset('/') }}backend/assets/css/dragNdrop.css" rel="stylesheet" type="text/css" />--}}
-
+    <style>
+        .mcq-xm th {font-size: 24px}
+        .mcq-xm td {font-size: 22px}
+        .written-xm th {font-size: 24px}
+        .written-xm td {font-size: 22px}
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ asset('/') }}backend/assets/plugins/pdf-draw/pdfannotate.css">
+    <link rel="stylesheet" href="{{ asset('/') }}backend/assets/plugins/pdf-draw/styles.css">
+    <style>
+        .canvas-container, canvas { /*width: 100%!important;*/ margin-top: 10px!important;}
+    </style>
 @endpush
 
 @push('script')
 {{--    datatable--}}
 @include('backend.includes.assets.plugin-files.datatable')
 @include('backend.includes.assets.plugin-files.editor')
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.3.0/fabric.min.js"></script>
+<script src="{{ asset('/') }}backend/assets/plugins/pdf-draw/arrow.fabric.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.2.0/jspdf.umd.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+<script src="{{ asset('/') }}backend/assets/plugins/pdf-draw/pdfannotate.js"></script>
+{{--    <script src="{{ asset('/') }}backend/assets/plugins/pdf-draw/functions.js"></script>--}}
+<script>
+    {{--var pdf = new PDFAnnotate("pdf-container", "{{ !empty($sectionContent->pdf_link) ? $sectionContent->pdf_link : asset($sectionContent->pdf_file) }}", {--}}
+    {{--    onPageUpdated(page, oldData, newData) {--}}
+    {{--        console.log(page, oldData, newData);--}}
+    {{--    },--}}
+    {{--    ready() {--}}
+    {{--        console.log("Plugin initialized successfully");--}}
+    {{--    },--}}
+    {{--    scale: 1.5,--}}
+    {{--    pageImageCompression: "MEDIUM", // FAST, MEDIUM, SLOW(Helps to control the new PDF file size)--}}
+    {{--});--}}
+
+    function changeActiveTool(event) {
+        var element = $(event.target).hasClass("tool-button")
+            ? $(event.target)
+            : $(event.target).parents(".tool-button").first();
+        $(".tool-button.active").removeClass("active");
+        $(element).addClass("active");
+    }
+
+    function enableSelector(event) {
+        event.preventDefault();
+        changeActiveTool(event);
+        pdf.enableSelector();
+    }
+
+    function enablePencil(event) {
+        event.preventDefault();
+        changeActiveTool(event);
+        pdf.enablePencil();
+    }
+
+    function enableAddText(event) {
+        event.preventDefault();
+        changeActiveTool(event);
+        pdf.enableAddText();
+    }
+
+    function enableAddArrow(event) {
+        event.preventDefault();
+        changeActiveTool(event);
+        pdf.enableAddArrow();
+    }
+
+    function addImage(event) {
+        event.preventDefault();
+        pdf.addImageToCanvas()
+    }
+
+    function enableRectangle(event) {
+        event.preventDefault();
+        changeActiveTool(event);
+        pdf.setColor('rgba(255, 0, 0, 0.3)');
+        pdf.setBorderColor('blue');
+        pdf.enableRectangle();
+    }
+
+    function deleteSelectedObject(event) {
+        event.preventDefault();
+        pdf.deleteSelectedObject();
+    }
+
+    function savePDF() {
+        // pdf.savePdf();
+        pdf.savePdf("written-ans"); // save with given file name
+    }
+
+    function clearPage() {
+        pdf.clearActivePage();
+    }
+
+    function showPdfData() {
+        var string = pdf.serializePdf();
+        $('#dataModal .modal-body pre').first().text(string);
+        PR.prettyPrint();
+        $('#dataModal').modal('show');
+    }
+
+    $(function () {
+        $('.color-tool').click(function () {
+            $('.color-tool.active').removeClass('active');
+            $(this).addClass('active');
+            color = $(this).get(0).style.backgroundColor;
+            pdf.setColor(color);
+        });
+
+        $('#brush-size').change(function () {
+            var width = $(this).val();
+            pdf.setBrushSize(width);
+        });
+
+        $('#font-size').change(function () {
+            var font_size = $(this).val();
+            pdf.setFontSize(font_size);
+        });
+    });
+
+</script>
+
+<script>
+    $(document).on('click', '.show-pdf', function () {
+        event.preventDefault();
+        var sectionContentId = $(this).attr('data-id');
+        $.ajax({
+            url: base_url+"get-pdf-store-file/"+sectionContentId,
+            method: "GET",
+            success: function (data) {
+                console.log(data);
+                var pdflink = '';
+                if(data.file_url != null )
+                {
+                    pdflink = base_url+data.file_url;
+                }
+                var pdf = new PDFAnnotate("pdf-container", pdflink, {
+                    onPageUpdated(page, oldData, newData) {
+                        console.log(page, oldData, newData);
+                    },
+                    ready() {
+                        console.log("Plugin initialized successfully");
+                    },
+                    scale: 1.5,
+                    pageImageCompression: "MEDIUM", // FAST, MEDIUM, SLOW(Helps to control the new PDF file size)
+                });
+                // $('#pdfContentPrintDiv').html(data);
+                $('.show-pdf-modal').modal('show');
+            }
+        })
+
+    })
+    function LoadCss(url) {
+        var link = document.createElement("link");
+        link.type = "text/css";
+        link.rel = "stylesheet";
+        link.href = url;
+        document.getElementsByTagName("head")[0].appendChild(link);
+    }
+    function LoadScript(url) {
+        var script = document.createElement('script');
+        script.setAttribute('src', url);
+        script.setAttribute('async', false);
+        document.body.appendChild(script);
+    }
+
+</script>
 
 <script>
     $(document).on('click', '.open-modal', function () {

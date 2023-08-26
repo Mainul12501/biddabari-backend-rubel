@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class PermissionCategoryController extends Controller
 {
+//    permission seed done
     protected $permissionCategory;
     /**
      * Display a listing of the resource.

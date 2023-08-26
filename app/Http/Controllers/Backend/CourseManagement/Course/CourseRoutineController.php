@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class CourseRoutineController extends Controller
 {
+    //    permission seed done
     /**
      * Display a listing of the resource.
      */

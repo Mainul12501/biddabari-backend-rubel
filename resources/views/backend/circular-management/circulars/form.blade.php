@@ -10,24 +10,29 @@
             <div class="row mt-2">
                 <div class="col-md-6 mt-2 select2-div">
                     <label for="">Category</label>
-                    <select name="circular_category_id" class="form-control select2" data-placeholder="Select a Category" >
+                    <select name="circular_category_id" required class="form-control select2" data-placeholder="Select a Category" >
                         <option value=""></option>
                         @foreach($circularCategories as $circularCategory)
                             <option value="{{ $circularCategory->id }}">{{ $circularCategory->title }}</option>
+                            @if(!empty($circularCategory))
+                                @if(count($circularCategory->circularCategories) > 0)
+                                    @include('backend.circular-management.circulars.circular-category-loop', ['circularCategory' => $circularCategory, 'child' => 1])
+                                @endif
+                            @endif
                         @endforeach
                     </select>
                 </div>
                 <div class="col-md-6 mt-2">
                     <label for="">Post Title</label>
-                    <input type="text" class="form-control" name="post_title" value="" placeholder="Post Title" />
+                    <input type="text" class="form-control" required name="post_title" value="" placeholder="Post Title" />
                 </div>
                 <div class="col-md-6 mt-2">
                     <label for="">Job Title</label>
-                    <input type="text" class="form-control" name="job_title" value="" placeholder="Job Title" />
+                    <input type="text" class="form-control" required name="job_title" value="" placeholder="Job Title" />
                 </div>
                 <div class="col-md-6 mt-2">
                     <label for="">Vacancy</label>
-                    <input type="text" class="form-control" name="vacancy" value="" placeholder="Vacancy" />
+                    <input type="text" class="form-control" required name="vacancy" value="" placeholder="Vacancy" />
                 </div>
             </div>
             <div class="row mt-2">

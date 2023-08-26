@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class BatchExamCategoryController extends Controller
 {
+    //    permission seed done
     public $batchExamCategory;
     /**
      * Display a listing of the resource.

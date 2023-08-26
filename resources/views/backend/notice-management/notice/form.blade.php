@@ -22,7 +22,7 @@
                     <label for="">Notice Type</label>
                     <select name="type" required class="form-control select2" data-placeholder="Select A Type" >
                         <option value=""></option>
-                        <option value="normal">Normal</option>
+                        <option value="normal" selected>Normal</option>
                         <option value="scroll">Scroll</option>
                     </select>
                     <span class="text-danger" id="type">{{ $errors->has('type') ? $errors->first('type') : '' }}</span>
@@ -45,7 +45,7 @@
                     <textarea name="body" id="summernote" placeholder="Notice Content" cols="30" rows="10"></textarea>
                 </div>
             </div>
-            <div class="row mt-2">
+            <div class="row mt-2 image-row ">
                 <div class="col-md-4 mt-2">
                     <label for="">Image</label>
                     <input type="file" name="image" class="form-control" id="imagex" accept="image/*" placeholder="Image" />

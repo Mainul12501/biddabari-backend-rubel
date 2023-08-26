@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class BatchExamController extends Controller
 {
+    //    permission seed done
     protected $batchExam, $batchExams = [];
     /**
      * Display a listing of the resource.
@@ -87,7 +88,7 @@ class BatchExamController extends Controller
     {
         return view('backend.batch-exam-management.batch-exams.edit', [
             'batchExam'    => BatchExam::where('id',$id)->with('batchExamCategories')->first(),
-            'batchExamCategories'  => BatchExamCategory::whereStatus(1)->get(),
+            'batchExamCategories'  => BatchExamCategory::whereStatus(1)->where('parent_id', 0)->get(),
 //            'teachers'  => Teacher::whereStatus(1)->get()
         ]);
     }
@@ -105,9 +106,8 @@ class BatchExamController extends Controller
                     $this->batchExam->batchExamSubscriptions->each->delete();
                 }
                 BatchExamSubscription::createOrUpdateSubscription($request, $this->batchExam->id);
+
             });
-//            $this->batchExam->batchExamCategories()->sync($request->batch_exam_categories);
-//        $this->course->teachers()->sync($request->teachers_id);
             if ($request->ajax())
             {
                 return response()->json('Batch Exam Updated Successfully.');
@@ -134,7 +134,7 @@ class BatchExamController extends Controller
         return back()->with('success', 'Batch Exam deleted Successfully.');
     }
 
-    public function assignTeacherToCourse ($batchExamId)
+    public function assignTeacherToBatchExam ($batchExamId)
     {
         return view('backend.batch-exam-management.batch-exams.assign-teacher', [
             'batchExam'   => BatchExam::find($batchExamId),
@@ -160,7 +160,7 @@ class BatchExamController extends Controller
         return back()->with('error', 'You must assign one teacher for this Batch Exam.');
     }
 
-    public function assignStudentToCourse ($batchExamId)
+    public function assignStudentToBatchExam ($batchExamId)
     {
         return view('backend.batch-exam-management.batch-exams.assign-student', [
             'batchExam'   => BatchExam::find($batchExamId),

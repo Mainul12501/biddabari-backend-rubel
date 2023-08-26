@@ -137,6 +137,12 @@
                 height:70,
                 inheritPlaceholder: true
                 });
+
+            const date = new Date();
+            var currentDateTime = date.getFullYear()+'-'+date.getMonth()+1+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes();
+
+            $('input[name="starting_date_time"]').val(currentDateTime);
+            $('input[name="discount_start_date"]').val(currentDateTime);
             // $('#dateTime1').bootstrapMaterialDatePicker({
             //     format: 'YYYY-MM-DD HH:mm',
             //     minDate : new Date(),
@@ -154,17 +160,12 @@
             $("#dateTime2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $("#dateTime3").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $('.select2').select2();
-            const date = new Date();
-            var currentDateTime = date.getFullYear()+'-'+date.getMonth()+1+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes();
 
-            $('input[name="starting_date_time"]').val(currentDateTime);
-            $('input[name="discount_start_date"]').val(currentDateTime);
         })
         $(document).on('click', '.dtp-btn-cancel', function () {
             alert('sdfsdf');
         })
     </script>
-
 
 {{--    edit course category--}}
     <script>
@@ -465,8 +466,6 @@
             }
         })
         $(document).on('click', '#okDone', function () {
-            // console.log(topicNames);
-            // console.log(ids);
             $('#questionTopicInputField').val(topicNames.slice(0, -1));
             $('#questionTopic').val(ids);
             $('#questionTopicModal').modal('hide');
@@ -492,12 +491,7 @@
             }
         })
         $(document).on('click', '.close-topic-modal', function () {
-            // $('#questionTopicModal').css('display', 'none');
             $('#questionTopicModal').modal('hide');
-            // $('.select2').select2({
-            //     dropdownParent: $('#coursesModal'),
-            //     multiple: true
-            // });
         })
     </script>
     <!--show hide test end-->

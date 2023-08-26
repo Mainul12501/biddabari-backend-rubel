@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 
 class CourseSectionContentController extends Controller
 {
+    //    permission seed done
     protected $sectionContent,$sectionContents;
     protected $questionTopics = [], $questionTopic, $questions;
     /**

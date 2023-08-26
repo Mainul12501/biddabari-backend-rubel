@@ -26,7 +26,7 @@
             @else
                 <li class="ms-3"></li>
             @endif
-            <li><label class="ms-2 mb-0 f-s-15"><input type="checkbox" class="check" value="{{ $subCategory->id }}">{{ $subCategory->name }}</label></li>
+            <li><label class="ms-2 mb-0 f-s-15"><input type="checkbox" class="check" @if(isset($course) && count($course->courseCategories) > 0)  @foreach($course->courseCategories as $courseSelectedCategory) {{ $courseCategory->id == $courseSelectedCategory->id ? 'checked' : '' }} @endforeach @endif value="{{ $subCategory->id }}">{{ $subCategory->name }}</label></li>
         </ul>
     </div>
     @if(!empty($subCategory))

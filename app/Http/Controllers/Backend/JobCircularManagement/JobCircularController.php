@@ -16,7 +16,7 @@ class JobCircularController extends Controller
     public function index()
     {
         return view('backend.circular-management.circulars.index', [
-            'circularCategories'    => CircularCategory::whereStatus(1)->get(),
+            'circularCategories'    => CircularCategory::whereStatus(1)->where('parent_id', 0)->get(),
             'circulars'             => Circular::all(),
         ]);
     }
@@ -55,7 +55,7 @@ class JobCircularController extends Controller
     public function edit(string $id)
     {
         return view('backend.circular-management.circulars.edit', [
-            'circularCategories'    => CircularCategory::whereStatus(1)->get(),
+            'circularCategories'    => CircularCategory::whereStatus(1)->where('parent_id', 0)->get(),
             'circular'             => Circular::find($id),
         ]);
     }
@@ -80,6 +80,6 @@ class JobCircularController extends Controller
             unlink($this->circular->image);
         }
         $this->circular->delete();
-        return back()->with('success', 'Circular Category Deleted Successfully.');
+        return back()->with('success', 'Circular Deleted Successfully.');
     }
 }

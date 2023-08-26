@@ -15,6 +15,7 @@ use function PHPUnit\Runner\validate;
 
 class CourseController extends Controller
 {
+    //    permission seed done
     protected $course, $courses = [];
     /**
      * Display a listing of the resource.
@@ -77,7 +78,7 @@ class CourseController extends Controller
     {
         return view('backend.course-management.course.courses.edit', [
             'course'    => Course::where('id',$id)->with('courseCategories')->first(),
-            'courseCategories'  => CourseCategory::whereStatus(1)->get(),
+            'courseCategories'  => CourseCategory::whereStatus(1)->where('parent_id', 0)->get(),
             'teachers'  => Teacher::whereStatus(1)->get()
         ]);
     }
@@ -108,7 +109,7 @@ class CourseController extends Controller
      */
     public function destroy(string $id)
     {
-//        return back()->with('error', 'Feature temporary disabled. Please contact your admin to enable it.');
+        return back()->with('error', 'Feature temporary disabled. Please contact your admin to enable it.');
         $this->course = Course::find($id);
         if (file_exists($this->course->image))
         {

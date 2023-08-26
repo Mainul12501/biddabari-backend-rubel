@@ -16,7 +16,7 @@ class PdfStoreController extends Controller
     public function index()
     {
         return view('backend.pdf-management.pdf-store.index', [
-            'pdfStoreCategories'    => PdfStoreCategory::whereStatus(1)->select('id', 'title')->get(),
+            'pdfStoreCategories'    => PdfStoreCategory::whereStatus(1)->select('id', 'title', 'parent_id')->whereParentId(0)->get(),
             'pdfStores'             => PdfStore::all(),
         ]);
     }
@@ -90,5 +90,10 @@ class PdfStoreController extends Controller
     {
         $this->blog = PdfStore::find($id)->delete();
         return back()->with('success', 'Pdf Deleted Successfully.');
+    }
+
+    public function getPdfStoreFile($id)
+    {
+        return response()->json(PdfStore::find($id));
     }
 }

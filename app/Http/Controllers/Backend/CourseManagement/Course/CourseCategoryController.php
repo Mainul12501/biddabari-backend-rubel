@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class CourseCategoryController extends Controller
 {
+    //    permission seed done
     public $courseCategory;
     /**
      * Display a listing of the resource.

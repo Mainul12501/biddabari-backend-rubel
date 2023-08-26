@@ -85,14 +85,17 @@
 @push('style')
     <!-- DragNDrop Css -->
 {{--    <link href="{{ asset('/') }}backend/assets/css/dragNdrop.css" rel="stylesheet" type="text/css" />--}}
-
+    <style>
+        .datetimepicker {z-index: 100009!important;}
+    </style>
 @endpush
 
 @push('script')
 {{--    datatable--}}
 @include('backend.includes.assets.plugin-files.datatable')
 @include('backend.includes.assets.plugin-files.editor')
-@include('backend.includes.assets.plugin-files.date-time-picker')
+{{--@include('backend.includes.assets.plugin-files.date-time-picker')--}}
+<script src="{{ asset('/') }}backend/assets/plugins/amazeui-datetimepicker/js/amazeui.datetimepicker.min.js"></script>
 
 <script>
     $(document).on('click', '.open-modal', function () {
@@ -102,7 +105,9 @@
     })
     $(function () {
         $('#summernote1').summernote({height:70,inheritPlaceholder: true});
-        $('#dateTime1').bootstrapMaterialDatePicker({ format: 'YYYY-MM-DD HH:mm' });
+        // $('#dateTime1').bootstrapMaterialDatePicker({ format: 'YYYY-MM-DD HH:mm' });
+        $("#dateTime").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+        $("#dateTime1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
     })
 </script>
 
@@ -147,8 +152,11 @@
                     $('#summernote').summernote({height:70,inheritPlaceholder: true});
                     $('#summernote1').summernote({height:70,inheritPlaceholder: true});
 
-                    $('#dateTime').bootstrapMaterialDatePicker({ format: 'YYYY-MM-DD HH:mm' });
-                    $('#dateTime1').bootstrapMaterialDatePicker({ format: 'YYYY-MM-DD HH:mm' });
+                    // $('#dateTime').bootstrapMaterialDatePicker({ format: 'YYYY-MM-DD HH:mm' });
+                    // $('#dateTime1').bootstrapMaterialDatePicker({ format: 'YYYY-MM-DD HH:mm' });
+
+                    $("#dateTime").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+                    $("#dateTime1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
 
                     $('#coursesModal').modal('show');
                 }

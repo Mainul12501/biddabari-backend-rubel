@@ -48,8 +48,8 @@ Route::prefix('v1')->name('api.')->group(function (){
         Route::get('app-get-course-section-contents/{id}', [AppApiController::class, 'getCourseSectionContents']);
         Route::get('app-get-course-section-content-details/{id}', [AppApiController::class, 'appCourseSectionContentDetails']);
 
-        Route::get('show-course-exam-ranking/{content_id}/{slug?}', [AppApiController::class, 'showCourseExamRanking']);
-        Route::get('show-batch-exam-ranking/{content_id}/{slug?}', [AppApiController::class, 'showBatchExamRanking']);
+        Route::get('show-course-exam-ranking/{content_id}/{slug?}', [FrontExamController::class, 'showCourseExamRanking']);
+        Route::get('show-batch-exam-ranking/{content_id}/{slug?}', [FrontExamController::class, 'showBatchExamRanking']);
 
 
         Route::get('app-get-user-info', [AppApiController::class, 'getUserInfo']);

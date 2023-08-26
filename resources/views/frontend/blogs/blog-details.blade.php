@@ -24,8 +24,13 @@
                     <div class="blog-details-content pr-20">
                         <div class="blog-preview-img text-center">
                             @if(!empty($blog->video_url))
-                                <div oncontextmenu="return false;">
-                                    <iframe width="100%" height="500" src="{{ $blog->video_url }}" rel="0"  title="{{ $blog->title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+{{--                                <div oncontextmenu="return false;">--}}
+{{--                                    <iframe width="100%" height="500" src="{{ $blog->video_url }}" rel="0"  title="{{ $blog->title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>--}}
+{{--                                </div>--}}
+                                <div class="video-container" >
+                                    <div class="video-foreground">
+                                        <iframe style="width: 100%;" height="500" src="https://www.youtube.com/embed/{{ $blog->video_url }}?rel=0&amp;modestbranding=1" title="blog video title" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ></iframe>
+                                    </div>
                                 </div>
                                 @else
                             <img src="{{ asset($blog->image) }}" alt="Blog Details" class="img-fluid" style="max-height: 400px">
@@ -98,8 +103,6 @@
                             </div>
                         </div>
 
-
-
                         {{--dynamic data--}}
                         @foreach($comments as $comment)
                             <div class="py-2">
@@ -121,8 +124,6 @@
                                 </div>
                             </div>
                         @endforeach
-
-
 
 
                     </div>
@@ -186,6 +187,33 @@
         .bb-1px {
             border-bottom: 1px solid black;
         }
+    </style>
+    <style>
+        .video-container{
+            width:100%;
+            height:500px;
+            overflow:hidden;
+            position:relative;
+        }
+        .video-container iframe{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .video-container iframe{
+            position: absolute;
+            top: -60px;
+            left: 0;
+            width: 100%;
+            /*height: calc(50% + 100px);*/
+            height: 500px;
+        }
+        .video-foreground{
+            pointer-events:auto;
+        }
+
     </style>
 @endpush
 @push('script')

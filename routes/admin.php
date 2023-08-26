@@ -119,11 +119,11 @@ Route::middleware([
     Route::post('/assign-question-to-batch-exam-content', [BatchExamSectionContentController::class, 'assignQuestionToContent'])->name('assign-question-to-batch-exam-content');
 
     //    Assign Teacher student to Batch Exams
-    Route::get('assign-teacher-to-batch-exam/{batch_exam_id}', [BatchExamController::class, 'assignTeacherToCourse'])->name('assign-teacher-to-batch-exam');
+    Route::get('assign-teacher-to-batch-exam/{batch_exam_id}', [BatchExamController::class, 'assignTeacherToBatchExam'])->name('assign-teacher-to-batch-exam');
     Route::post('assign-batch-exam-teacher/{batch_exam_id}', [BatchExamController::class, 'assignTeacher'])->name('assign-batch-exam-teacher');
     Route::post('detach-batch-exam-teacher/{batch_exam_id}', [BatchExamController::class, 'detachTeacher'])->name('detach-batch-exam-teacher');
 //    Assign student to Batch Exams
-    Route::get('assign-student-to-batch-exam/{batch_exam_id}', [BatchExamController::class, 'assignStudentToCourse'])->name('assign-student-to-batch-exam');
+    Route::get('assign-student-to-batch-exam/{batch_exam_id}', [BatchExamController::class, 'assignStudentToBatchExam'])->name('assign-student-to-batch-exam');
     Route::post('assign-batch-exam-student/{batch_exam_id}', [BatchExamController::class, 'assignStudent'])->name('assign-batch-exam-student');
     Route::post('detach-batch-exam-student/{batch_exam_id}', [BatchExamController::class, 'detachStudent'])->name('detach-batch-exam-student');
 
@@ -135,6 +135,7 @@ Route::middleware([
     Route::post('/pdf-store-categories/update/{id}', [PdfStoreCategoryController::class, 'update'])->name('pdf-store-categories.update');
     Route::post('pdf-store-categories/save-nested-categories', [PdfStoreCategoryController::class, 'saveNestedCategories'])->name('pdfCategories.saveNestedCategories');
     Route::get('get-pdf-by-cat/{id}', [PdfStoreCategoryController::class, 'getCatWisePdf'])->name('get-pdf-by-cat');
+    Route::get('get-pdf-store-file/{id}', [PdfStoreController::class, 'getPdfStoreFile'])->name('get-pdf-store-file');
 
 //    order management
     Route::resources([

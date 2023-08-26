@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 
 class RoleController extends Controller
 {
+    //    permission seed done
     public $role;
     /**
      * Display a listing of the resource.

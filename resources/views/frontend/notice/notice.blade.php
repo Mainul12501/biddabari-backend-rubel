@@ -31,8 +31,15 @@
                                 @if($notice->id == $_GET['notice-id'])
                                     <div class="courses-item notice-content">
                                         <div class="content ">
-                                            <h3><a href="javascript:void(0)">{{ $notices[0]->title }}</a></h3>
-                                            <span class="dis-course-amount">{!! $notices[0]->body !!}</span>
+                                            <h3><a href="javascript:void(0)">{{ $notice->title }}</a></h3>
+                                            @if(isset($notice->image))
+                                                <div class="row">
+                                                    <div class="col-md-6 mx-auto">
+                                                        <img src="{{ asset($notice->image) }}" alt="" class="img-fluid" />
+                                                    </div>
+                                                </div>
+                                            @endif
+                                            <span class="dis-course-amount">{!! $notice->body !!}</span>
                                         </div>
                                     </div>
                                 @endif
@@ -40,6 +47,13 @@
                                 <div class="courses-item notice-content">
                                     <div class="content ">
                                         <h3><a href="javascript:void(0)">{{ $notices[0]->title }}</a></h3>
+                                        @if(isset($notices[0]->image))
+                                            <div class="row">
+                                                <div class="col-md-6 mx-auto">
+                                                    <img src="{{ asset($notices[0]->image) }}" alt="" class="img-fluid" />
+                                                </div>
+                                            </div>
+                                        @endif
                                         <span class="dis-course-amount">{!! $notices[0]->body !!}</span>
                                     </div>
                                 </div>

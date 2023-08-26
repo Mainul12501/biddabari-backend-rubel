@@ -20,10 +20,13 @@
                                 @if($key == 0)
                                     <div class="tab-pane px-1 fade show active" id="allCourses">
                                         <div class="row">
-                                            @foreach($courseCategories as $allIndex => $courseCategoryx)
-                                                @foreach($courseCategoryx->courses as $course)
-                                                    @include('frontend.courses.include-courses-course', $course)
-                                                @endforeach
+{{--                                            @foreach($courseCategories as $allIndex => $courseCategoryx)--}}
+{{--                                                @foreach($courseCategoryx->courses as $courset)--}}
+{{--                                                    @include('frontend.courses.include-courses-course', ['course' => $courset])--}}
+{{--                                                @endforeach--}}
+{{--                                            @endforeach--}}
+                                            @foreach($allCourses as $allIndex => $singleCourse)
+                                                @include('frontend.courses.include-courses-course', ['course' => $singleCourse])
                                             @endforeach
                                         </div>
                                     </div>
@@ -49,15 +52,17 @@
                                         </div>
                                     @endif
                                     <div class="row">
-                                        @forelse($courseCategory->courses as $course)
-                                            @include('frontend.courses.include-courses-course', $course)
-                                        @empty
-                                        <div class="col-md-12">
-                                            <div class="text-center">
-                                                <h2>কোনো কোর্স চালু হয়নি।  খুব দ্রুত কোর্স চালু হবে। </h2>
+                                        @if(count($courseCategory->courses) > 0)
+                                            @forelse($courseCategory->courses as $course)
+                                                @include('frontend.courses.include-courses-course', ['course' => $course])
+                                            @empty
+                                            <div class="col-md-12">
+                                                <div class="text-center">
+                                                    <h2>কোনো কোর্স চালু হয়নি।  খুব দ্রুত কোর্স চালু হবে। </h2>
+                                                </div>
                                             </div>
-                                        </div>
-                                        @endforelse
+                                            @endforelse
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach

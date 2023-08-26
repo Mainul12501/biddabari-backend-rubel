@@ -545,4 +545,64 @@
             $(this).closest('.row').remove();
         })
     </script>
+    {{--    set value to input fields from modal start--}}
+    <script>
+        var ids = [];
+        var topicNames = '';
+        $(document).on('click', '#questionTopicInputField', function () {
+            $('#questionTopicModal').modal('show');
+            // $('#questionTopicModal').css('display', 'block');
+        })
+        $(document).on('click', '.check', function () {
+            var existVal = $(this).val();
+            var topicName = $(this).parent().text();
+            // console.log(existVal);
+            // console.log(topicName);
+            if ($(this).is(':checked'))
+            {
+                if (!ids.includes(existVal))
+                {
+                    ids.push(existVal);
+                    topicNames += topicName+',';
+
+                }
+            } else {
+                if (ids.includes(existVal))
+                {
+                    ids.splice(ids.indexOf(existVal), 1);
+                    topicNames = topicNames.replace(topicName+',','');
+                    // topicNames = topicNames.split(topicName).join('');
+                }
+            }
+        })
+        $(document).on('click', '#okDone', function () {
+            $('#questionTopicInputField').val(topicNames.slice(0, -1));
+            $('#questionTopic').val(ids);
+            $('#questionTopicModal').modal('hide');
+        })
+    </script>
+    {{--    set value to input fields from modal ends--}}
+    <!--show hide test start-->
+    <script>
+        $(document).on('click', '.drop-icon', function () {
+            var dataId = $(this).attr('data-id');
+            if ($(this).find('fa-circle-arrow-down'))
+            {
+                $(this).html('<i class="fa-solid fa-circle-arrow-up"></i>');
+            }
+            if($(this).find('fa-circle-arrow-up')) {
+                $(this).html('<i class="fa-solid fa-circle-arrow-down"></i>');
+            }
+            if($('.childDiv'+dataId).hasClass('d-none'))
+            {
+                $('.childDiv'+dataId).removeClass('d-none');
+            } else {
+                $('.childDiv'+dataId).addClass('d-none');
+            }
+        })
+        $(document).on('click', '.close-topic-modal', function () {
+            $('#questionTopicModal').modal('hide');
+        })
+    </script>
+    <!--show hide test end-->
 @endpush
