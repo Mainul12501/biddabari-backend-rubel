@@ -9,13 +9,13 @@
                         <div class="row align-items-center">
                             <div class="col-lg-6 c-dnone">
                                 <div class="hero-content ms-3">
-                                    <h1>{{ $homeSliderCourse->title }}</h1>
+                                    <h1 style="font-size: 36px">{{ \Illuminate\Support\Str::words($homeSliderCourse->title, 8, '....') }}</h1>
                                     <p>
                                         {!! str()->words(strip_tags($homeSliderCourse->description), 25) !!}
                                     </p>
                                     <div class="banner-btn">
 {{--                                        <a href="{{ route('front.course-details', ['id' => $homeSliderCourse->id, 'slug' => $homeSliderCourse->slug]) }}" class="default-btn border-radius-50">Read More</a>--}}
-                                        <a href="{{ $homeSliderCourse->link }}" class="default-btn border-radius-50">Read More</a>
+                                        <a href="{{ $homeSliderCourse->link }}" class="default-btn border-radius-50 text-dark f-s-22" style="background-color: #dedede!important;">ভর্তি হতে এখানে ক্লিক করুন</a>
                                     </div>
                                 </div>
                             </div>
@@ -39,7 +39,7 @@
             <div class="row">
                 <div class="col-lg-3 col-6">
                     <div class="featured-item-two">
-                        <a href="javascript:void(0)" class="p-2">
+                        <a href="{{ route('front.student.today-classes') }}" class="p-2">
                             <i class="flaticon-web-development"></i>
                             <h3>আজকের ক্লাস</h3>
                         </a>
@@ -47,7 +47,7 @@
                 </div>
                 <div class="col-lg-3 col-6">
                     <div class="featured-item-two">
-                        <a href="javascript:void(0)" class="p-2">
+                        <a href="{{ route('front.student.today-exams') }}" class="p-2">
                             <i class="flaticon-design"></i>
                             <h3>আজকের এক্সাম</h3>
                         </a>
@@ -63,7 +63,7 @@
                 </div>
                 <div class="col-lg-3 col-6">
                     <div class="featured-item-two">
-                        <a href="javascript:void(0)" class="p-2">
+                        <a href="{{ route('front.guideline') }}" class="p-2">
                             <i class="flaticon-heart-beat"></i>
                             <h3>গাইড লাইন</h3>
                         </a>
@@ -71,7 +71,7 @@
                 </div>
                 <div class="col-lg-3 col-6">
                     <div class="featured-item-two">
-                        <a href="javascript:void(0)" class="p-2">
+                        <a href="{{ route('front.instructors') }}" class="p-2">
                             <i class="flaticon-corporate"></i>
                             <h3>শিক্ষকবৃন্দ</h3>
                         </a>
@@ -87,7 +87,7 @@
                 </div>
                 <div class="col-lg-3 col-6">
                     <div class="featured-item-two">
-                        <a href="javascript:void(0)" class="p-2">
+                        <a href="{{ route('front.all-gallery-images') }}" class="p-2">
                             <i class="flaticon-user"></i>
                             <h3>ফটো গ্যালারি</h3>
                         </a>
@@ -95,7 +95,7 @@
                 </div>
                 <div class="col-lg-3 col-6">
                     <div class="featured-item-two">
-                        <a href="javascript:void(0)" class="p-2">
+                        <a href="{{ route('front.all-job-circulars') }}" class="p-2">
                             <i class="flaticon-folder"></i>
                             <h3>জব সার্কুলার</h3>
                         </a>
@@ -171,7 +171,11 @@
                                             </div>
                                         </ul>
                                         <div class="bottom-content">
-                                            <a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}" class="btn btn-warning">বিস্তারিত দেখুন</a>
+                                            @if($course->order_status != 'true')
+                                                <a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}" class="btn btn-warning">বিস্তারিত দেখুন</a>
+                                            @else
+                                                <a href="javascript:void(0)" class=""></a>
+                                            @endif
                                                 <div class="rating ">
                                                     @if($course->order_status == 'true')
                                                         <a href="javascript:void(0)" class="btn text-success">Active</a>

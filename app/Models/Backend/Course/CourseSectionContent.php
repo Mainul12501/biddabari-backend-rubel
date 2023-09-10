@@ -132,11 +132,11 @@ class CourseSectionContent extends Model
 
         self::$courseSectionContent->is_paid                                        = $request->is_paid == 'on' ? 1 : 0;
         self::$courseSectionContent->status                                         = $request->status == 'on' ? 1 : 0;
-        if ($request->has_class_xm == 'on')
-        {
+//        if ($request->has_class_xm == 'on')
+//        {
             self::$courseSectionContent->has_class_xm                               = $request->has_class_xm == 'on' ? 1 : 0;
-            self::$courseSectionContent->course_section_content_id                  = $request->course_section_content_id;
-        }
+            self::$courseSectionContent->course_section_content_id                  = $request->has_class_xm == 'on' ? $request->course_section_content_id : null;
+//        }
         if ($request->content_type == 'pdf')
         {
             self::$courseSectionContent->pdf_link                                   = $request->pdf_link;

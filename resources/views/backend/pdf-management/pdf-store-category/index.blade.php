@@ -8,7 +8,9 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">PDF Store Category</h4>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#courseCategoryModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 open-modal"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-pdf-category')
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#courseCategoryModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 open-modal"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
 
@@ -19,13 +21,19 @@
                                     <li class="dd-item list-group-item" data-id="{{ $category['id'] }}" >
                                         <div class="dd-handle" >{{ $category['title'] }}</div>
                                         <div class="dd-option-handle">
-                                            <a href="" data-category-id="{{ $category['id'] }}" class="btn btn-primary btn-sm category-add-btn" >Add</a>
-                                            <a href="{{ route('pdf-store-categories.edit', $category['id']) }}" data-category-id="{{ $category['id'] }}" class="btn btn-success btn-sm category-edit-btn" >Edit</a>
-                                            <form action="{{ route('pdf-store-categories.destroy', $category['id']) }}" method="post" class="d-inline" onsubmit="return confirm('Are you sure to delete this?')">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" data-category-id="{{ $category['id'] }}" class="btn btn-danger btn-sm" >Delete</button>
-                                            </form>
+                                            @can('create-pdf-category')
+                                                <a href="" data-category-id="{{ $category['id'] }}" class="btn btn-primary btn-sm category-add-btn" >Add</a>
+                                            @endcan
+                                            @can('edit-pdf-category')
+                                                <a href="{{ route('pdf-store-categories.edit', $category['id']) }}" data-category-id="{{ $category['id'] }}" class="btn btn-success btn-sm category-edit-btn" >Edit</a>
+                                                @endcan
+                                            @can('delete-pdf-category')
+                                                <form action="{{ route('pdf-store-categories.destroy', $category['id']) }}" method="post" class="d-inline" onsubmit="return confirm('Are you sure to delete this?')">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" data-category-id="{{ $category['id'] }}" class="btn btn-danger btn-sm" >Delete</button>
+                                                </form>
+                                                @endcan
 {{--                                            <a href="{{ route('course-categories.edit', ['id' => $category['id'] ]) }}" class="btn btn-success btn-sm" >Edit</a>--}}
 {{--                                            <a href="{{ route('course-categories.destroy', ['category_id' => $category['category_id'] ]) }}" class="btn btn-danger btn-sm" >Delete</a>--}}
                                         </div>

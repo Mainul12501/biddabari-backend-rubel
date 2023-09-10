@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\CustomAuth\CustomAuthController;
 use App\Http\Controllers\Frontend\Pages\BasicViewController;
+use App\Http\Controllers\Frontend\Pages\FrontendViewController;
+use App\Http\Controllers\Frontend\Pages\FrontViewTwoController;
 
 use App\Http\Controllers\Frontend\Checkout\CheckoutController;
 use App\Http\Controllers\Frontend\Student\StudentController;
@@ -38,7 +40,6 @@ Route::prefix('v1')->name('api.')->group(function (){
     Route::get('app-home-popup-notification', [BasicViewController::class, 'appHomePopupNotification']);
 
 
-
     Route::get('web-home', [BasicViewController::class, 'home'])->name('web-home');
     Route::get('all-courses', [BasicViewController::class, 'allCourses'])->name('all-courses');
     Route::get('course-details/{id}/{slug?}', [BasicViewController::class, 'courseDetails'])->name('course-details');
@@ -46,15 +47,35 @@ Route::prefix('v1')->name('api.')->group(function (){
     Route::get('category-courses/{id}/{slug?}', [BasicViewController::class, 'categoryCourses'])->name('category-courses');
     Route::get('all-instructors', [BasicViewController::class, 'instructors'])->name('instructors');
     Route::get('instructor-details/{slug}', [BasicViewController::class, 'instructorDetails'])->name('instructor-details');
-    Route::get('all-blogs', [BasicViewController::class, 'allBLogs'])->name('all-blogs');
-    Route::get('category-blogs/{slug}', [BasicViewController::class, 'categoryBlogs'])->name('category-blogs');
-    Route::get('blog-details/{slug}', [BasicViewController::class, 'blogDetails'])->name('blog-details');
-    Route::get('all-notices', [BasicViewController::class, 'allNotices'])->name('notices');
+    Route::get('all-blogs', [FrontendViewController::class, 'allBLogs']);
+    Route::get('category-blogs/{slug}', [BasicViewController::class, 'categoryBlogs']);
+    Route::get('/blog-details/{id}/{slug?}', [FrontendViewController::class, 'blogDetails']);
+    Route::get('all-notices', [BasicViewController::class, 'allNotices']);
+    Route::get('notice-details/{id}', [BasicViewController::class, 'noticeDetails']);
     Route::post('send-otp', [CustomAuthController::class, 'sendOtp']);
     Route::post('verify-otp', [CustomAuthController::class, 'verifyOtp']);
-    Route::get('product-details/{slug}', [BasicViewController::class, 'productDetails']);
+//    Route::get('product-details/{slug}', [BasicViewController::class, 'productDetails']);
     Route::get('free-courses', [BasicViewController::class, 'freeCourses']);
 
+    Route::get('/all-exams', [FrontExamController::class, 'showAllExams']);
+    Route::get('/category-exams/{xm_cat_id}/{name?}', [FrontExamController::class, 'categoryExams']);
+    Route::post('order-exam/{xm_cat_id}', [FrontExamController::class, 'orderXm']);
+
+    Route::post('/add-to-cart', [FrontendViewController::class, 'addToCart']);
+    Route::get('/remove-from-cart/{id}', [FrontendViewController::class, 'removeFromCart']);
+    Route::get('/view-cart', [FrontendViewController::class, 'viewCart']);
+    Route::get('/all-products', [FrontendViewController::class, 'allProducts']);
+    Route::get('/product-details/{id}/{slug?}', [FrontendViewController::class, 'productDetails']);
+    Route::post('/place-product-order', [FrontendViewController::class, 'placeProductOrder']);
+
+    Route::get('/free-courses', [BasicViewController::class, 'freeCourses']);
+    Route::get('/all-job-circulars', [FrontendViewController::class, 'allJobCirculars']);
+    Route::get('/job-circular-details/{id}/{slug?}', [FrontendViewController::class, 'jobCircularDetail']);
+    Route::get('/view-profile', [StudentController::class, 'viewProfile']);
+
+    Route::get('/all-gallery-images', [FrontViewTwoController::class, 'GalleryImageView']);
+    Route::get('/gallery-images/{id}/{title?}', [FrontViewTwoController::class, 'GalleryImages']);
+    Route::post('/new-comment', [FrontendViewController::class, 'newComment']);
 
 //    temp routes
     Route::post('check-user-status-for-app', [CustomAuthController::class, 'checkUserForApp']);
@@ -67,13 +88,13 @@ Route::prefix('v1')->name('api.')->group(function (){
         Route::post('place-course-order/{course_id}', [CheckoutController::class, 'placeCourseOrder'])->name('place-course-order');
         Route::prefix('student')->name('student.')->group(function (){
             Route::get('dashboard', [StudentController::class, 'dashboard'])->name('dashboard');
-            Route::get('profile-update', [StudentController::class, 'profileUpdate'])->name('profile-update');
+            Route::post('profile-update', [StudentController::class, 'profileUpdate'])->name('profile-update');
 
-            Route::get('my-courses', [StudentController::class, 'myCourses'])->name('my-courses');
-            Route::get('my-exams', [StudentController::class, 'myExams'])->name('my-exams');
-            Route::get('my-orders', [StudentController::class, 'myOrders'])->name('my-orders');
-            Route::get('course-contents/{course_id}/{slug?}', [StudentController::class, 'showCourseContents'])->name('course-contents');
-            Route::get('batch-exam-contents/{xm_id}/{master?}/{slug?}', [StudentController::class, 'showBatchExamContents'])->name('batch-exam-contents');
+            Route::get('my-courses', [StudentController::class, 'myCourses']);
+            Route::get('my-exams', [StudentController::class, 'myExams']);
+            Route::get('my-orders', [StudentController::class, 'myOrders']);
+            Route::get('course-contents/{course_id}/{slug?}', [StudentController::class, 'showCourseContents']);
+            Route::get('batch-exam-contents/{xm_id}/{master?}/{slug?}', [StudentController::class, 'showBatchExamContents']);
 
             Route::post('get-course-exam-result/{content_id}/{slug?}', [FrontExamController::class, 'getCourseExamResult']);
             Route::post('get-course-class-exam-result/{content_id}/{slug?}', [FrontExamController::class, 'getCourseClassExamResult']);
@@ -81,6 +102,9 @@ Route::prefix('v1')->name('api.')->group(function (){
             Route::get('show-course-exam-result/{xm_id}', [FrontExamController::class, 'showCourseExamResult']);
             Route::get('show-course-class-exam-result/{xm_id}', [FrontExamController::class, 'showCourseClassExamResult']);
             Route::get('show-batch-exam-result/{xm_id}', [FrontExamController::class, 'showBatchExamResult']);
+
+            Route::get('today-classes', [FrontViewTwoController::class, 'todayClasses']);
+            Route::get('today-exams', [FrontViewTwoController::class, 'todayExams']);
         });
     });
 

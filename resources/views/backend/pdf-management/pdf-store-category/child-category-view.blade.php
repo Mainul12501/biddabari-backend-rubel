@@ -4,13 +4,19 @@
             <li class="dd-item list-group-item" data-id="{{ $sub_category['id'] }}" >
                 <div class="dd-handle" >{{ $sub_category['title'] }}</div>
                 <div class="dd-option-handle">
-                    <a href="" data-category-id="{{ $sub_category['id'] }}" class="btn btn-primary btn-sm category-add-btn" >Add</a>
-                    <a href="{{ route('pdf-store-categories.edit', $sub_category['id']) }}" data-category-id="{{ $sub_category['id'] }}" class="btn btn-success btn-sm category-edit-btn" >Edit</a>
-                    <form action="{{ route('pdf-store-categories.destroy', $sub_category['id']) }}" method="post" class="d-inline" onsubmit="return confirm('Are you sure to delete this?')">
-                        @csrf
-                        @method('delete')
-                        <button type="submit" data-category-id="{{ $sub_category['id'] }}" class="btn btn-danger btn-sm " >Delete</button>
-                    </form>
+                    @can('create-pdf-category')
+                        <a href="" data-category-id="{{ $sub_category['id'] }}" class="btn btn-primary btn-sm category-add-btn" >Add</a>
+                    @endcan
+                    @can('edit-pdf-category')
+                        <a href="{{ route('pdf-store-categories.edit', $sub_category['id']) }}" data-category-id="{{ $sub_category['id'] }}" class="btn btn-success btn-sm category-edit-btn" >Edit</a>
+                        @endcan
+                    @can('delete-pdf-category')
+                        <form action="{{ route('pdf-store-categories.destroy', $sub_category['id']) }}" method="post" class="d-inline" onsubmit="return confirm('Are you sure to delete this?')">
+                            @csrf
+                            @method('delete')
+                            <button type="submit" data-category-id="{{ $sub_category['id'] }}" class="btn btn-danger btn-sm " >Delete</button>
+                        </form>
+                        @endcan
 {{--                    <a href="{{ route('course-categories.edit', ['category_id' => $sub_category['category_id'] ]) }}" class="btn btn-success btn-sm" >Edit</a>--}}
 {{--                    <a href="{{ route('course-categories.remove', ['category_id' => $sub_category['category_id'] ]) }}" class="btn btn-danger btn-sm" >Delete</a>--}}
                 </div>

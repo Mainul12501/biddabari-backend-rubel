@@ -7,7 +7,9 @@ use App\Models\Backend\RoleManagement\Permission;
 use App\Models\Backend\RoleManagement\PermissionCategory;
 use App\Models\Backend\RoleManagement\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
 
 class RoleController extends Controller
 {
@@ -20,6 +22,7 @@ class RoleController extends Controller
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-role'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.role-management.role.index',[
             'roles'   => Role::all(),
         ]);
@@ -32,6 +35,7 @@ class RoleController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-role'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.role-management.role.create',[
             'permissionCategories'  => PermissionCategory::whereStatus(1)->with('permissions')->get()
         ]);
@@ -45,6 +49,7 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-role'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         Role::saveData($request);
         return back()->with('success', 'Role created successfully.');
     }
@@ -57,6 +62,7 @@ class RoleController extends Controller
      */
     public function show($id)
     {
+        abort_if(Gate::denies('show-role'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -68,6 +74,7 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
+        abort_if(Gate::denies('edit-role'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.role-management.role.create',[
             'role'          => Role::findOrFail($id),
             'permissionCategories'  => PermissionCategory::where('status', 1)->with('permissions')->get()
@@ -83,6 +90,7 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
+        abort_if(Gate::denies('update-role'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->role = Role::updateOrCreate(['id' => $id],[
             'title' => $request->title,
             'note' => $request->note,
@@ -101,6 +109,7 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
+        abort_if(Gate::denies('delete-role'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->role = Role::find($id);
         if ($this->role->is_default == 1)
         {

@@ -5,81 +5,19 @@ namespace App\Http\Controllers\Backend\JobCircularManagement;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\CircularManagement\CircularCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class JobCircularCategoryController extends Controller
 {
+    //    permission seed done
     protected $circularCategory;
-//    /**
-//     * Display a listing of the resource.
-//     */
-//    public function index()
-//    {
-//        return view('backend.circular-management.circular-category.index', [
-//            'circularCategories'    => CircularCategory::all(),
-//        ]);
-//    }
-//
-//    /**
-//     * Show the form for creating a new resource.
-//     */
-//    public function create()
-//    {
-//        //
-//    }
-//
-//    /**
-//     * Store a newly created resource in storage.
-//     */
-//    public function store(Request $request)
-//    {
-//        CircularCategory::saveOrUpdateCircularCategory($request);
-//        return back()->with('success', 'Circular Category Created Successfully.');
-//    }
-//
-//    /**
-//     * Display the specified resource.
-//     */
-//    public function show(string $id)
-//    {
-//        //
-//    }
-//
-//    /**
-//     * Show the form for editing the specified resource.
-//     */
-//    public function edit(string $id)
-//    {
-//        return response()->json(CircularCategory::find($id));
-//    }
-//
-//    /**
-//     * Update the specified resource in storage.
-//     */
-//    public function update(Request $request, string $id)
-//    {
-//        CircularCategory::saveOrUpdateCircularCategory($request, $id);
-//        return back()->with('success', 'Circular Category Updated Successfully.');
-//    }
-//
-//    /**
-//     * Remove the specified resource from storage.
-//     */
-//    public function destroy(string $id)
-//    {
-//        $this->circularCategory = CircularCategory::find($id);
-//        if (file_exists($this->circularCategory->image))
-//        {
-//            unlink($this->circularCategory->image);
-//        }
-//        $this->circularCategory->delete();
-//        return back()->with('success', 'Circular Category Deleted Successfully.');
-//    }
-
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-job-circular-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.circular-management.circular-category.index', [
             'categories'      => CircularCategory::where('parent_id', 0)->orderBy('order', 'ASC')->get()
         ]);
@@ -90,6 +28,7 @@ class JobCircularCategoryController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-job-circular-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -183,6 +122,7 @@ class JobCircularCategoryController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-job-circular-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         CircularCategory::saveOrUpdateCircularCategory($request);
         if ($request->ajax())
         {
@@ -198,6 +138,7 @@ class JobCircularCategoryController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-job-circular-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -206,6 +147,7 @@ class JobCircularCategoryController extends Controller
      */
     public function edit(string $id, Request $request)
     {
+        abort_if(Gate::denies('edit-job-circular-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->circularCategory = CircularCategory::find($id);
         if ($request->ajax())
         {
@@ -219,6 +161,7 @@ class JobCircularCategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-job-circular-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         CircularCategory::saveOrUpdateCircularCategory($request, $id);
         if ($request->ajax())
         {
@@ -229,6 +172,7 @@ class JobCircularCategoryController extends Controller
     }
     public function test (Request $request)
     {
+//        abort_if(Gate::denies('manage-job-circular-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return response()->json($request->all());
     }
 
@@ -237,6 +181,7 @@ class JobCircularCategoryController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-job-circular-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->deleteNestedCategory(CircularCategory::find($id));
         return back()->with('success', 'Circular Category deleted successfully');
     }

@@ -8,7 +8,9 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Course Category</h4>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#courseCategoryModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 open-modal"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-course-category')
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#courseCategoryModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 open-modal"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
 
@@ -20,13 +22,19 @@
                                         <div class="dd-handle" >{{ $category['name'] }}</div>
                                         <div class="dd-option-handle">
                                             <a href="{{ route('courses.index', ['category_id' => $category['id']]) }}" class="btn btn-sm  btn-secondary" title="View Course"><i class="fa-solid fa-book"></i></a>
-                                            <a href="" data-category-id="{{ $category['id'] }}" class="btn btn-primary btn-sm category-add-btn" ><i class="fa-solid fa-plus"></i></a>
-                                            <a href="{{ route('course-categories.edit', $category['id']) }}" data-category-id="{{ $category['id'] }}" class="btn btn-success btn-sm category-edit-btn" ><i class="fa-solid fa-edit"></i></a>
-                                            <form action="{{ route('course-categories.destroy', $category['id']) }}" method="post" class="d-inline" onsubmit="return confirm('Are you sure to delete this?')">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" data-category-id="{{ $category['id'] }}" class="btn btn-danger btn-sm" ><i class="fa-solid fa-trash"></i></button>
-                                            </form>
+                                            @can('create-course-category')
+                                                <a href="" data-category-id="{{ $category['id'] }}" class="btn btn-primary btn-sm category-add-btn" ><i class="fa-solid fa-plus"></i></a>
+                                            @endcan
+                                            @can('edit-course-category')
+                                                <a href="{{ route('course-categories.edit', $category['id']) }}" data-category-id="{{ $category['id'] }}" class="btn btn-success btn-sm category-edit-btn" ><i class="fa-solid fa-edit"></i></a>
+                                            @endcan
+                                            @can('delete-course-category')
+                                                <form action="{{ route('course-categories.destroy', $category['id']) }}" method="post" class="d-inline" onsubmit="return confirm('Are you sure to delete this?')">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" data-category-id="{{ $category['id'] }}" class="btn btn-danger btn-sm" ><i class="fa-solid fa-trash"></i></button>
+                                                </form>
+                                            @endcan
 {{--                                            <a href="{{ route('course-categories.edit', ['id' => $category['id'] ]) }}" class="btn btn-success btn-sm" >Edit</a>--}}
 {{--                                            <a href="{{ route('course-categories.destroy', ['category_id' => $category['category_id'] ]) }}" class="btn btn-danger btn-sm" >Delete</a>--}}
                                         </div>

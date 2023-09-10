@@ -7,6 +7,8 @@ use App\Models\Backend\ProductManagement\Product;
 use App\Models\Backend\ProductManagement\ProductAuthor;
 use App\Models\Backend\ProductManagement\ProductCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
 {
@@ -16,6 +18,7 @@ class ProductController extends Controller
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-product'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.product-management.product.index', [
             'products'    => Product::all(),
             'productCategories'  => ProductCategory::whereStatus(1)->get(),
@@ -28,6 +31,7 @@ class ProductController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-product'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -36,6 +40,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-product'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate([
             'product_category_id' => 'required',
             'product_author_id' => 'required',
@@ -62,6 +67,7 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-product'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -70,6 +76,7 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
+        abort_if(Gate::denies('edit-product'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return response()->json(Product::whereId($id)->with('productCategories:id,name,status')->first());
     }
 
@@ -78,6 +85,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-product'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate([
             'product_category_id' => 'required',
             'product_author_id' => 'required',
@@ -102,6 +110,7 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-product'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->product = Product::find($id);
         if (file_exists($this->product->image))
         {

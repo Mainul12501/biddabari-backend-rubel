@@ -8,7 +8,9 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Batch Exams</h4>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 open-modal"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-batch-exam')
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 open-modal"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <form action="" method="get">
@@ -63,10 +65,18 @@
                                             </div>
                                         </td>
                                         <td class="nav flex-column course-links">
+                                            @can('assign-batch-exam-teacher-page')
                                             <a href="{{ route('assign-teacher-to-batch-exam', ['batch_exam_id' => $batchExam->id]) }}" class="nav-link fw-bold" title="Batch Exam Assigned Teachers">Teachers</a>
+                                            @endcan
+                                            @can('assign-batch-exam-student-page')
                                             <a href="{{ route('assign-student-to-batch-exam', ['batch_exam_id' => $batchExam->id]) }}" class="nav-link fw-bold" title="Batch Exam Assigned Students">Students</a>
+                                                @endcan
+                                            @can('manage-batch-exam-routine')
                                             <a href="{{ route('batch-exam-routines.index', ['batch_exam_id' => $batchExam->id]) }}" class="nav-link fw-bold" title="Batch Exam Routines">Routines</a>
+                                                @endcan
+                                            @can('manage-batch-exam-section')
                                             <a href="{{ route('batch-exam-sections.index', ['batch_exam_id' => $batchExam->id]) }}" class="nav-link fw-bold" title="Batch Exam Content">Content</a>
+                                                @endcan
                                         </td>
 {{--                                        <td>--}}
 {{--                                            @foreach($batchExam->batchExamSubscriptions as $xmPackage)--}}
@@ -87,19 +97,25 @@
                                             <a href="javascript:void(0)" class="nav-link">{{ $batchExam->is_paid == 1 ? 'Paid' : 'Free' }}</a>
                                         </td>
                                         <td>
-                                            <a href="" data-course-id="{{ $batchExam->id }}" class="btn btn-sm btn-primary show-btn" title="View Batch Exam">
-                                                <i class="fa-solid fa-eye"></i>
-                                            </a>
-                                            <a href="" data-course-id="{{ $batchExam->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Batch Exam">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </a>
-                                            <form class="d-inline" action="{{ route('batch-exams.destroy', $batchExam->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Batch Exam">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
+                                            @can('show-batch-exam')
+                                                <a href="" data-course-id="{{ $batchExam->id }}" class="btn btn-sm btn-primary show-btn" title="View Batch Exam">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </a>
+                                            @endcan
+                                            @can('edit-batch-exam')
+                                                <a href="" data-course-id="{{ $batchExam->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Batch Exam">
+                                                    <i class="fa-solid fa-edit"></i>
+                                                </a>
+                                                @endcan
+                                            @can('delete-batch-exam')
+                                                <form class="d-inline" action="{{ route('batch-exams.destroy', $batchExam->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete Batch Exam">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                                @endcan
                                         </td>
                                     </tr>
                                 @endforeach
@@ -155,6 +171,7 @@
             //     format: 'YYYY-MM-DD HH:mm',
             //     minDate : new Date(),
             // });
+            $('input[data-dtp="dtp_Nufud"]').val(currentDateTime);
             $("#dateTime").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $("#dateTime1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $("#dateTime2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
@@ -535,6 +552,7 @@
                 '                </div>\n' +
                 '            </div>';
             $('#appendPackage').append(div);
+            $("#dateTime"+x).val(currentDateTime);
             $("#dateTime"+x).datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $("#dateTimex"+x).datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             n++;

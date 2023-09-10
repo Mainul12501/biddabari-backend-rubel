@@ -8,7 +8,9 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Manage {{ $_GET['q-type'] == 'mcq' ? 'MCQ' : 'WRITTEN' }} Store</h4>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#questionTopicsModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-question-topic')
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#questionTopicsModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
 
@@ -29,23 +31,32 @@
                                     <td>
                                         {{ $questionTopic->name }}
                                     </td>
-                                    <td><a href="{{ route('question-stores.index', ['topic_id' => $questionTopic->id, 'q-type' => $_GET['q-type']]) }}">{{ $_GET['q-type'] == 'mcq' ? 'MCQ' : 'WRITTEN' }} STORE</a></td>
                                     <td>
+                                        @can('manage-question-store')
+                                            <a href="{{ route('question-stores.index', ['topic_id' => $questionTopic->id, 'q-type' => $_GET['q-type']]) }}">{{ $_GET['q-type'] == 'mcq' ? 'MCQ' : 'WRITTEN' }} STORE</a>
+                                        @endcan
+                                    </td>
+                                    <td>
+                                        @can('manage-question-topic')
                                             <a href="{{ route('question-topics.index', ['topic_id' => $questionTopic->id, 'q-type' => $_GET['q-type']]) }}">SUB CATEGORY</a>
+                                        @endcan
                                     </td>
                                     <td class="">
 {{--                                        <a href="" class="btn btn-sm btn-primary nested-add" data-topic-id="{{ $questionTopic->id }}"><i class="fa-solid fa-circle-plus"></i></a>--}}
-                                        <a href="{{ route('question-topics.edit', $questionTopic->id) }}" data-topic-id="{{ $questionTopic->id }}" class="btn btn-sm btn-warning topic-edit-btn">
-                                            <i class="fa-solid fa-edit"></i>
-                                        </a>
-
-                                        <form class="d-inline" action="{{ route('question-topics.destroy', $questionTopic->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                            @csrf
-                                            @method('delete')
-                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </form>
+                                        @can('create-question-topic')
+                                            <a href="{{ route('question-topics.edit', $questionTopic->id) }}" data-topic-id="{{ $questionTopic->id }}" class="btn btn-sm btn-warning topic-edit-btn">
+                                                <i class="fa-solid fa-edit"></i>
+                                            </a>
+                                        @endcan
+                                        @can('create-question-topic')
+                                            <form class="d-inline" action="{{ route('question-topics.destroy', $questionTopic->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        @endcan
                                     </td>
                                 </tr>
                                 @empty

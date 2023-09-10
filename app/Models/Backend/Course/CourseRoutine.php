@@ -20,6 +20,7 @@ class CourseRoutine extends Model
         'note',
         'status',
         'is_fack',
+        'content_name',
     ];
 
     protected $searchableFields = ['*'];
@@ -37,13 +38,14 @@ class CourseRoutine extends Model
     {
         CourseRoutine::updateOrCreate(['id' => $id], [
             'course_id'             => $request->course_id,
+            'content_name'          => $request->content_name,
             'day'                   => $request->day,
             'date_time'             => $request->date_time,
             'date_time_timestamp'   => strtotime($request->date_time),
             'room'                  => $request->room,
             'note'                  => $request->note,
             'status'                => $request->status == 'on' ? 1 : 0,
-            'is_fack'                => $request->is_fack == 'on' ? 1 : 0,
+            'is_fack'               => $request->is_fack == 'on' ? 1 : 0,
         ]);
     }
 

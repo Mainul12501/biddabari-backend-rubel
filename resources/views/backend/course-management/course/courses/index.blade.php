@@ -8,7 +8,9 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Courses</h4>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 open-modal"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-course')
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 open-modal"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <form action="" method="get">
@@ -63,11 +65,21 @@
                                             </div>
                                         </td>
                                         <td class="nav flex-column course-links">
-                                            <a href="{{ route('assign-teacher-to-course', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Assigned Teachers">Teachers</a>
-                                            <a href="{{ route('assign-student-to-course', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Assigned Students">Students</a>
-                                            <a href="{{ route('course-routines.index', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Routines">Routines</a>
-                                            <a href="{{ route('course-coupons.index', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Coupons">Coupons</a>
-                                            <a href="{{ route('course-sections.index', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Content">Content</a>
+                                            @can('assign-course-teacher-page')
+                                                <a href="{{ route('assign-teacher-to-course', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Assigned Teachers">Teachers</a>
+                                            @endcan
+                                            @can('assign-course-student-page')
+                                                <a href="{{ route('assign-student-to-course', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Assigned Students">Students</a>
+                                            @endcan
+                                            @can('manage-course-routine')
+                                                <a href="{{ route('course-routines.index', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Routines">Routines</a>
+                                            @endcan
+                                            @can('manage-course-coupon')
+                                                <a href="{{ route('course-coupons.index', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Coupons">Coupons</a>
+                                            @endcan
+                                            @can('manage-course-section')
+                                                <a href="{{ route('course-sections.index', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Content">Content</a>
+                                            @endcan
                                         </td>
                                         <td> ৳ {{ $course->price }}</td>
                                         <td>{{ $course->duration_in_month }} Months</td>
@@ -79,21 +91,27 @@
                                             <a href="javascript:void(0)" class="nav-link">{{ $course->status == 1 ? 'Published' : 'Unpublished' }}</a>
                                         </td>
                                         <td class="">
-                                            <a href="" data-course-id="{{ $course->id }}" class="btn btn-sm mt-1 btn-primary show-btn" title="View Course">
-                                                <i class="fa-solid fa-eye"></i>
-                                            </a>
+                                            @can('show-course')
+                                                <a href="" data-course-id="{{ $course->id }}" class="btn btn-sm mt-1 btn-primary show-btn" title="View Course">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </a>
+                                            @endcan
                                             <br>
-                                            <a href="" data-course-id="{{ $course->id }}" class="btn btn-sm mt-1 btn-warning edit-btn" title="Edit Course">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </a>
+                                            @can('edit-course')
+                                                <a href="" data-course-id="{{ $course->id }}" class="btn btn-sm mt-1 btn-warning edit-btn" title="Edit Course">
+                                                    <i class="fa-solid fa-edit"></i>
+                                                </a>
+                                            @endcan
                                             <br>
-                                            <form class="d-inline" action="{{ route('courses.destroy', $course->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-sm mt-1 btn-danger" title="Delete Course">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
+                                            @can('delete-course')
+                                                <form class="d-inline" action="{{ route('courses.destroy', $course->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" class="btn btn-sm mt-1 btn-danger" title="Delete Course">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach
@@ -141,8 +159,9 @@
             const date = new Date();
             var currentDateTime = date.getFullYear()+'-'+date.getMonth()+1+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes();
 
-            $('input[name="starting_date_time"]').val(currentDateTime);
-            $('input[name="discount_start_date"]').val(currentDateTime);
+            $('input[data-dtp="dtp_Nufud"]').val(currentDateTime);
+            // $('input[name="starting_date_time"]').val(currentDateTime);
+            // $('input[name="discount_start_date"]').val(currentDateTime);
             // $('#dateTime1').bootstrapMaterialDatePicker({
             //     format: 'YYYY-MM-DD HH:mm',
             //     minDate : new Date(),
@@ -155,9 +174,9 @@
             //     format: 'YYYY-MM-DD HH:mm',
             //     minDate : new Date(),
             // });
-            $("#dateTime").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
-            $("#dateTime1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
-            $("#dateTime2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+            // $("#dateTime").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+            // $("#dateTime1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+            // $("#dateTime2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $("#dateTime3").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $('.select2').select2();
 

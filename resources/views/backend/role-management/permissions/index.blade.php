@@ -8,9 +8,11 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Permissions</h4>
-                    <a href="{{ route('permissions.create') }}" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4">
-                        <i class="fa-solid fa-circle-plus"></i>
-                    </a>
+                    @can('create-permission')
+                        <a href="{{ route('permissions.create') }}" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4">
+                            <i class="fa-solid fa-circle-plus"></i>
+                        </a>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <table class="table" id="file-datatable">
@@ -28,21 +30,25 @@
                         @foreach($permissions as $permission)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{!! $permission->permissionCategory->name !!}</td>
+                                <td>{!!  $permission->permissionCategory->name !!}</td>
                                 <td>{{ $permission->title }}</td>
                                 <td>{{ $permission->slug }}</td>
                                 <td>{{ $permission->status == 1 ? 'Published' : 'Unpublished' }}</td>
                                 <td class="">
-                                    <a href="{{ route('permissions.edit', $permission->id) }}" class="btn btn-sm btn-warning">
-                                        <i class="fa-solid fa-edit"></i>
-                                    </a>
-                                    <form class="d-inline" action="{{ route('permissions.destroy', $permission->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                        @csrf
-                                        @method('delete')
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </form>
+                                    @can('edit-permission')
+                                        <a href="{{ route('permissions.edit', $permission->id) }}" class="btn btn-sm btn-warning">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </a>
+                                    @endcan
+                                    @can('delete-permission')
+                                        <form class="d-inline" action="{{ route('permissions.destroy', $permission->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                            @csrf
+                                            @method('delete')
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach

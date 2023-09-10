@@ -11,17 +11,21 @@ use App\Models\Backend\QuestionManagement\QuestionStore;
 use App\Models\Backend\QuestionManagement\QuestionTopic;
 use Illuminate\Http\Request;
 use DB;
+use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\Response;
 use function Nette\Utils\getTypes;
 
 class QuestionStoreController extends Controller
 {
+    //    permission seed done
     protected $questionStore, $questionStores = [], $questionTopic, $questions = [];
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-question-store'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (isset($_GET['topic_id']) && isset($_GET['q-type']))
         {
             $this->questionTopic = QuestionTopic::whereId($_GET['topic_id'])->select('id', 'name', 'type', 'status')->with(['questionStores' => function($questionStores){
@@ -40,6 +44,7 @@ class QuestionStoreController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-question-store'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
     /**
@@ -47,6 +52,7 @@ class QuestionStoreController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-question-store'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         try {
             foreach ($request->question as $key => $singleQuestion)
             {
@@ -76,6 +82,7 @@ class QuestionStoreController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-question-store'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -84,6 +91,7 @@ class QuestionStoreController extends Controller
      */
     public function edit(string $id)
     {
+        abort_if(Gate::denies('edit-question-store'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.question-management.question-stores.edit', [
             'questionStore'  => QuestionStore::find($id),
 //            'questionTopics' => QuestionTopic::whereStatus(1)->get()
@@ -95,6 +103,7 @@ class QuestionStoreController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-question-store'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         try {
 
             foreach ($request->question as $key => $singleQuestion)
@@ -123,6 +132,7 @@ class QuestionStoreController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-question-store'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         QuestionStore::find($id)->delete();
         return back()->with('success', 'Question deleted Successfully.');
     }

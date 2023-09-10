@@ -8,7 +8,9 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Blogs</h4>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle open-modal text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-blog')
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle open-modal text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <table class="table" id="file-datatable">
@@ -46,23 +48,29 @@
 {{--                                        <td>{!! $blog->body !!}</td>--}}
                                         <td>{{ $blog->user->name }}</td>
                                         <td>
-                                            <a href="" class="badge badge-sm bg-primary">{{ $blog->is_featured == 1 ? 'Featured' : 'Not Featured' }}</a>
-                                            <a href="" class="badge badge-sm bg-primary">{{ $blog->status == 1 ? 'Published' : 'Unpublished' }}</a>
+                                            <span href="" class="badge badge-sm bg-primary">{{ $blog->is_featured == 1 ? 'Featured' : 'Not Featured' }}</span>
+                                            <span href="" class="badge badge-sm bg-primary">{{ $blog->status == 1 ? 'Published' : 'Unpublished' }}</span>
                                         </td>
                                         <td>
-                                            <a href="" data-blog-id="{{ $blog->id }}" class="btn btn-sm btn-success show-btn" title="Edit Blog">
-                                                <i class="fa-solid fa-eye"></i>
-                                            </a>
-                                            <a href="" data-blog-id="{{ $blog->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Blog">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </a>
-                                            <form class="d-inline" action="{{ route('blogs.destroy', $blog->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Blog">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
+                                            @can('show-blog')
+                                                <a href="" data-blog-id="{{ $blog->id }}" class="btn btn-sm btn-success show-btn" title="Edit Blog">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </a>
+                                            @endcan
+                                            @can('edit-blog')
+                                                <a href="" data-blog-id="{{ $blog->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Blog">
+                                                    <i class="fa-solid fa-edit"></i>
+                                                </a>
+                                                @endcan
+                                            @can('delete-blog')
+                                                <form class="d-inline" action="{{ route('blogs.destroy', $blog->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete Blog">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                                @endcan
                                         </td>
                                     </tr>
                                 @endforeach

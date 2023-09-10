@@ -61,8 +61,13 @@
     });
 </script>
 <script>
+    const date = new Date();
+    let currentDateTime = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes();
+</script>
+<script>
+
     function resetFromInputAndSelect(formAction = null, formId) {
-        $("input:not(#formMethod,#formToken,[name='status'],[name='is_paid'],[name='is_featured'],[name='is_approved'],.check)").each(function () {
+        $("input:not(#formMethod,#formToken,[name='status'],[name='is_paid'],[name='is_featured'],[name='is_approved'],.check,[data-dtp='dtp_Nufud'])").each(function () {
             $(this).val('');
         })
         $('select option').each(function () {

@@ -10,6 +10,11 @@
     <div class="modal-body">
         <div class="card card-body">
             <div class="row mt-2">
+                <div class="col-md-6 mt-2">
+                    <label for="">Content Name</label>
+                    <input type="text" class="form-control" name="content_name" placeholder="Content Name" />
+                    <span class="text-danger" id="content_name">{{ $errors->has('content_name') ? $errors->first('content_name') : '' }}</span>
+                </div>
                 <div class="col-md-6 mt-2 select2-div">
                     <label for="">Working Day</label>
                     <select name="day" class="form-control select2" data-placeholder="Select a day">
@@ -28,14 +33,14 @@
                     <input type="text" class="form-control" id="dateTime" name="date_time" data-dtp="dtp_Nufud" value="" placeholder="Date and Time" />
                     <span class="text-danger" id="date_time">{{ $errors->has('date_time') ? $errors->first('date_time') : '' }}</span>
                 </div>
-                <div class="col-md-4 mt-3">
+                <div class="col-md-3 mt-3">
                     <label for="">Status</label>
                     <div class="material-switch">
                         <input id="someSwitchOptionInfo" name="status" type="checkbox" checked />
                         <label for="someSwitchOptionInfo" class="label-info"></label>
                     </div>
                 </div>
-                <div class="col-md-4 mt-3">
+                <div class="col-md-3 mt-3">
                     <label for="">Is Fack</label>
                     <div class="material-switch">
                         <input id="someSwitchOptionInfox" name="is_fack" type="checkbox" />

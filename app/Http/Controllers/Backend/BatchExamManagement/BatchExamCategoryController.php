@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\BatchExam\BatchExamCategoryFormRequest;
 use App\Models\Backend\BatchExamManagement\BatchExamCategory;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Gate;
 
 class BatchExamCategoryController extends Controller
 {
@@ -16,6 +18,7 @@ class BatchExamCategoryController extends Controller
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-batch-exam-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.batch-exam-management.batch-exam-category.index', [
             'categories'      => BatchExamCategory::where('parent_id', 0)->orderBy('order', 'ASC')->get()
         ]);
@@ -26,6 +29,7 @@ class BatchExamCategoryController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-batch-exam-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -119,6 +123,7 @@ class BatchExamCategoryController extends Controller
      */
     public function store(BatchExamCategoryFormRequest $request)
     {
+        abort_if(Gate::denies('store-batch-exam-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         BatchExamCategory::createOrUpdateCourseCategory($request);
         if ($request->ajax())
         {
@@ -134,6 +139,7 @@ class BatchExamCategoryController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-batch-exam-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -142,6 +148,7 @@ class BatchExamCategoryController extends Controller
      */
     public function edit(string $id, Request $request)
     {
+        abort_if(Gate::denies('edit-batch-exam-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->batchExamCategory = BatchExamCategory::find($id);
         if ($request->ajax())
         {
@@ -155,6 +162,7 @@ class BatchExamCategoryController extends Controller
      */
     public function update(BatchExamCategoryFormRequest $request, string $id)
     {
+        abort_if(Gate::denies('update-batch-exam-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         BatchExamCategory::createOrUpdateCourseCategory($request, $id);
         if ($request->ajax())
@@ -174,6 +182,7 @@ class BatchExamCategoryController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-batch-exam-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->deleteNestedCategory(BatchExamCategory::find($id));
         return back()->with('success', 'Batch Exam Category deleted successfully');
     }

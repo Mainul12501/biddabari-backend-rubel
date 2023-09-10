@@ -9,8 +9,10 @@ use App\Models\Backend\Course\CourseCategory;
 use App\Models\Backend\UserManagement\Student;
 use App\Models\Backend\UserManagement\Teacher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
+use Symfony\Component\HttpFoundation\Response;
 use function PHPUnit\Runner\validate;
 
 class CourseController extends Controller
@@ -22,6 +24,7 @@ class CourseController extends Controller
      */
     public function index(Request $request)
     {
+        abort_if(Gate::denies('manage-course'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (!empty($request->category_id))
         {
             $this->courses = CourseCategory::find($request->category_id)->courses;
@@ -40,6 +43,7 @@ class CourseController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-course'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -48,6 +52,7 @@ class CourseController extends Controller
      */
     public function store(CourseCreateFormRequest $request)
     {
+        abort_if(Gate::denies('store-course'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->course = Course::createOrUpdateCourse($request);
         $this->course->courseCategories()->sync(explode(',', $request->course_categories[0]));
 //        $this->course->teachers()->sync($request->teachers_id);
@@ -64,6 +69,7 @@ class CourseController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-course'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.course-management.course.courses.show', [
             'course'    => Course::where('id',$id)->with('courseCategories')->first(),
             'courseCategories'  => CourseCategory::whereStatus(1)->get(),
@@ -76,6 +82,7 @@ class CourseController extends Controller
      */
     public function edit(string $id, Request $request)
     {
+        abort_if(Gate::denies('edit-course'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.course-management.course.courses.edit', [
             'course'    => Course::where('id',$id)->with('courseCategories')->first(),
             'courseCategories'  => CourseCategory::whereStatus(1)->where('parent_id', 0)->get(),
@@ -88,6 +95,7 @@ class CourseController extends Controller
      */
     public function update(CourseCreateFormRequest $request, string $id)
     {
+        abort_if(Gate::denies('update-course'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         try {
             $this->course = Course::createOrUpdateCourse($request, $id);
             $this->course->courseCategories()->sync(explode(',', $request->course_categories[0]));
@@ -109,6 +117,7 @@ class CourseController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-course'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return back()->with('error', 'Feature temporary disabled. Please contact your admin to enable it.');
         $this->course = Course::find($id);
         if (file_exists($this->course->image))
@@ -122,6 +131,7 @@ class CourseController extends Controller
 
     public function assignTeacherToCourse ($courseId)
     {
+        abort_if(Gate::denies('assign-course-teacher-page'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.course-management.course.courses.assign-teacher', [
             'course'   => Course::find($courseId),
             'teachers'  => Teacher::whereStatus(1)->get()
@@ -130,6 +140,7 @@ class CourseController extends Controller
 
     public function assignTeacher (Request $request, $id)
     {
+        abort_if(Gate::denies('assign-course-teacher'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate(['teachers' => 'required']);
         $this->course = Course::find($id);
         $this->course->teachers()->sync($request->teachers);
@@ -137,6 +148,7 @@ class CourseController extends Controller
     }
     public function detachTeacher (Request $request, $id)
     {
+        abort_if(Gate::denies('detach-course-teacher'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->course = Course::find($id);
         if (count($this->course->teachers) > 1)
         {
@@ -148,6 +160,7 @@ class CourseController extends Controller
 
     public function assignStudentToCourse ($courseId)
     {
+        abort_if(Gate::denies('assign-course-student-page'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.course-management.course.courses.assign-student', [
             'course'   => Course::find($courseId),
             'students'  => Student::whereStatus(1)->get()
@@ -156,6 +169,7 @@ class CourseController extends Controller
 
     public function assignStudent (Request $request, $id)
     {
+        abort_if(Gate::denies('assign-course-student'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $validator = $request->validate(['students' => 'required']);
         $this->course = Course::find($id);
         foreach ($this->course->students as $student)
@@ -173,6 +187,7 @@ class CourseController extends Controller
     }
     public function detachStudent (Request $request, $id)
     {
+        abort_if(Gate::denies('detach-course-student'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->course = Course::find($id);
         $this->course->students()->detach($request->student_id);
         return back()->with('success', 'Student assigned to course Successfully.');

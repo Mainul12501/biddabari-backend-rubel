@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('parent_model_id');
             $table->unsignedBigInteger('checked_by')->nullable();
             $table->unsignedBigInteger('batch_exam_subscription_id')->nullable();
+            $table->unsignedBigInteger('referrer_id')->nullable();
             $table
                 ->enum('ordered_for', [
                     'course',

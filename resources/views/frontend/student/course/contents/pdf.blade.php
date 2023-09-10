@@ -1,8 +1,9 @@
-@extends('frontend.student-master')
+{{--@extends('frontend.student-master')--}}
+@extends('frontend.master')
 
 {{--@section('title', 'Exam Sheets')--}}
 
-@section('student-body')
+@section('body')
     <div class="row">
         <div class="col-md-12">
             <div class="my-box px-3 mx-auto mt-5" style="position: relative!important; height: auto;">
@@ -18,7 +19,7 @@
     <link rel="stylesheet" href="{{ asset('/') }}backend/assets/plugins/pdf-draw/pdfannotate.css">
     <link rel="stylesheet" href="{{ asset('/') }}backend/assets/plugins/pdf-draw/styles.css">
     <style>
-        .canvas-container, canvas { width: 100%!important; margin-top: 10px!important;}
+        /*.canvas-container, canvas { width: 100%!important; margin-top: 10px!important;}*/
     </style>
 @endpush
 
@@ -31,7 +32,8 @@
     <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
     <script src="{{ asset('/') }}backend/assets/plugins/pdf-draw/pdfannotate.js"></script>
     <script>
-        var pdf = new PDFAnnotate("pdf-container", "{{ !empty($sectionContent->pdf_link) ? $sectionContent->pdf_link : asset($sectionContent->pdf_file) }}", {
+{{--        var pdf = new PDFAnnotate("pdf-container", "{{ !empty($sectionContent->pdf_link) ? $sectionContent->pdf_link : asset($sectionContent->pdf_file) }}", {--}}
+        var pdf = new PDFAnnotate("pdf-container", "{{ !empty($product->featured_pdf) ? asset($product->featured_pdf) : '' }}", {
             onPageUpdated(page, oldData, newData) {
                 console.log(page, oldData, newData);
             },

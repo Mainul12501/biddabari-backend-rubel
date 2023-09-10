@@ -12,6 +12,11 @@
     <div class="modal-body">
         <div class="card card-body">
             <div class="row mt-2">
+                <div class="col-md-6 mt-2">
+                    <label for="">Content Name</label>
+                    <input type="text" class="form-control" name="content_name" value="{{ isset($courseRoutine) ? $courseRoutine->content_name : '' }}" placeholder="Content Name" />
+                    <span class="text-danger" id="content_name">{{ $errors->has('content_name') ? $errors->first('content_name') : '' }}</span>
+                </div>
                 <div class="col-md-6 mt-2 select2-div">
                     <label for="">Working Day</label>
                     <select name="day" class="form-control select2" data-placeholder="Select a day">

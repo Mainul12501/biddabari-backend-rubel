@@ -57,6 +57,7 @@
                                         <span class="dis-course-amount">{!! $notices[0]->body !!}</span>
                                     </div>
                                 </div>
+                                @break
                             @endif
                         @empty
                         <div class="courses-item notice-content">
@@ -92,7 +93,7 @@
                         </div>
                         @forelse($notices as $notice)
                             <div class="card-body py-3">
-                                <a href="{{ route('front.notices', ['notice-id' => $notice->id]) }}">
+                                <a href="{{ route('front.notices', ['notice-id' => $notice->id]) }}" class="w-100">
                                     <div class="row">
                                         <div class="col-md-4 px-0">
                                             <img src="{{ !empty($notice->image) ? asset($notice->image) : asset('/frontend/logo/biddabari-card-logo.jpg') }}" alt="" class="img-fluid">

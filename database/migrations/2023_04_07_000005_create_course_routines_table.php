@@ -15,6 +15,7 @@ return new class extends Migration {
         Schema::create('course_routines', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('course_id');
+            $table->string('content_name')->nullable();
             $table->string('day')->nullable();
             $table->string('date_time')->nullable();
             $table->string('date_time_timestamp')->nullable();

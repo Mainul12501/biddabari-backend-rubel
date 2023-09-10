@@ -8,7 +8,9 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Gallery</h4>
-                    <button type="button" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 blog-category-modal-btn"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-gallery')
+                        <button type="button" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 blog-category-modal-btn"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -23,22 +25,30 @@
                             </div>
                             <div class="shadow-over-div" style="display: none">
                                 <div class="text-center">
-                                    <a href="" data-blog-category-id="{{ $gallery->id }}" class="btn btn-sm btn-success blog-category-add-btn" title="Add Gallery Images">
-                                        <i class="fa-solid fa-plus"></i>
-                                    </a>
-                                    <a href="" data-blog-category-id="{{ $gallery->id }}" class="btn btn-sm btn-secondary blog-category-show-btn" title="Show Gallery">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </a>
-                                    <a href="" data-blog-category-id="{{ $gallery->id }}" class="btn btn-sm btn-warning blog-category-edit-btn" title="Edit Gallery">
-                                        <i class="fa-solid fa-edit"></i>
-                                    </a>
-                                    <form class="d-inline" action="{{ route('galleries.destroy', $gallery->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                        @csrf
-                                        @method('delete')
-                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete Gallery">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </form>
+                                    @can('add-gallery-images')
+                                        <a href="" data-blog-category-id="{{ $gallery->id }}" class="btn btn-sm btn-success blog-category-add-btn" title="Add Gallery Images">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </a>
+                                    @endcan
+                                    @can('get-gallery-images')
+                                        <a href="" data-blog-category-id="{{ $gallery->id }}" class="btn btn-sm btn-secondary blog-category-show-btn" title="Show Gallery">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                        @endcan
+                                    @can('edit-gallery')
+                                        <a href="" data-blog-category-id="{{ $gallery->id }}" class="btn btn-sm btn-warning blog-category-edit-btn" title="Edit Gallery">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </a>
+                                        @endcan
+                                    @can('delete-gallery')
+                                        <form class="d-inline" action="{{ route('galleries.destroy', $gallery->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                            @csrf
+                                            @method('delete')
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete Gallery">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                        @endcan
                                 </div>
                             </div>
                         </div>
@@ -57,7 +67,29 @@
         </div>
     </div>
 
-    <div class="modal fade modal-div" id="galleryImage" data-modal-parent="blogCategoryModal" data-bs-backdrop="static" >
+    <div class="modal fade modal-div" id="showGalleryImages" data-modal-parent="" data-bs-backdrop="static" >
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content" id="">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">Show Gallery Images</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="card card-body">
+                        <div class="append-image">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+{{--                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>--}}
+{{--                    <button type="submit" class="btn btn-primary " value="save">Save</button>--}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-div" id="galleryImage" data-modal-parent="" data-bs-backdrop="static" >
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content" id="">
                 <form id="courseSectionForm" action="{{ route('galleries.add-images') }}" method="post" enctype="multipart/form-data">
@@ -278,31 +310,32 @@
             event.preventDefault();
             var courseId = $(this).attr('data-blog-category-id'); //change value
             $.ajax({
-                url: base_url+"galleries/"+courseId,
+                url: base_url+"galleries/get-images/"+courseId,
                 method: "GET",
-                dataType: "JSON",
+                // dataType: "JSON",
                 success: function (data) {
                     // console.log(data.note);
-                    $('input[name="title"]').val(data.title).attr('readonly', true);
-                    $('input[name="sub_title"]').val(data.sub_title).attr('readonly', true);
-                    // $('input[name="active_btn_link"]').val(data.active_btn_link);
-                    $('#summernote').summernote('destroy');
-                    $('textarea[name="description"]').html(data.description).addClass('w-100').attr('readonly', true);
-                    $("#summernote").summernote({height:70,inheritPlaceholder: true})
-                    $('#imagePreview').attr('src', data.banner).css({height: '150px'});
-                    if (data.status == 1)
-                    {
-                        $('input[name="status"]').attr({
-                            'checked': true,
-                            'readonly': true
-                        });
-                    } else {
-                        $('input[name="status"]').attr({
-                            'checked': false,
-                            'readonly': true
-                        });
-                    }
-                    $('#blogCategoryModal').modal('show');
+                    // $('input[name="title"]').val(data.title).attr('readonly', true);
+                    // $('input[name="sub_title"]').val(data.sub_title).attr('readonly', true);
+                    // // $('input[name="active_btn_link"]').val(data.active_btn_link);
+                    // $('#summernote').summernote('destroy');
+                    // $('textarea[name="description"]').html(data.description).addClass('w-100').attr('readonly', true);
+                    // $("#summernote").summernote({height:70,inheritPlaceholder: true})
+                    // $('#imagePreview').attr('src', data.banner).css({height: '150px'});
+                    // if (data.status == 1)
+                    // {
+                    //     $('input[name="status"]').attr({
+                    //         'checked': true,
+                    //         'readonly': true
+                    //     });
+                    // } else {
+                    //     $('input[name="status"]').attr({
+                    //         'checked': false,
+                    //         'readonly': true
+                    //     });
+                    // }
+                    $('.append-image').empty().html(data);
+                    $('#showGalleryImages').modal('show');
                 }
             })
         })

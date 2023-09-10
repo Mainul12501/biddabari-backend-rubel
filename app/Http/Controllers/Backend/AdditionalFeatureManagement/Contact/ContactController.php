@@ -5,15 +5,19 @@ namespace App\Http\Controllers\Backend\AdditionalFeatureManagement\Contact;
 use App\Http\Controllers\Controller;
 use App\Models\Frontend\AdditionalFeature\ContactMessage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class ContactController extends Controller
 {
+    //    permission seed done
     public $contactMessage;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-contact'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.additional-features-management.contact.index', ['contacts' => ContactMessage::latest()->orderBy('is_seen', 'ASC')->get()]);
     }
 
@@ -22,6 +26,7 @@ class ContactController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-contact'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -30,6 +35,7 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-contact'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -38,6 +44,7 @@ class ContactController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-contact'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->contactMessage = ContactMessage::find($id);
         if ($this->contactMessage->is_seen == 0)
         {
@@ -54,6 +61,7 @@ class ContactController extends Controller
      */
     public function edit(string $id)
     {
+        abort_if(Gate::denies('edit-contact'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -62,6 +70,7 @@ class ContactController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-contact'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -70,6 +79,7 @@ class ContactController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-contact'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         ContactMessage::find($id)->delete();
         return back()->with('success', 'Contact Info Deleted successfully.');
     }

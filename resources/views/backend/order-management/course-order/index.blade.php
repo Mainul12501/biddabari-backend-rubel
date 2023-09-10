@@ -10,28 +10,30 @@
 {{--                    @csrf--}}
                     <div class="row" >
                         <div class="col select2-div">
-                            <label for="">Course Category </label>
-                            <select name="category_id" class="form-control select2" id="categoryId" data-placeholder="Select Course Category">
+                            <label for="">Available Courses</label>
+{{--                            <input type="text" class="form-control" id="questionTopicInputField">--}}
+{{--                            <input type="hidden" class="form-control" name="category_id" id="questionTopic">--}}
+                            <select name="course_id" class="form-control select2" id="categoryId" data-placeholder="Select Course Category">
                                 <option value=""></option>
-                                @foreach($courseCategories as $courseCategory)
-                                    <option value="{{ $courseCategory->id }}">{{ $courseCategory->name }}</option>
-                                    @if(!empty($courseCategory))
-                                        @if(count($courseCategory->courseCategories) > 0)
-                                            @include('backend.course-management.course.courses.course-category-loop', ['courseCategory' => $courseCategory, 'child' => 1])
-                                        @endif
-                                    @endif
+                                @foreach($courses as $course)
+                                    <option value="{{ $course->id }}">{{ $course->title }}</option>
+{{--                                    @if(!empty($courseCategory))--}}
+{{--                                        @if(count($courseCategory->courseCategories) > 0)--}}
+{{--                                            @include('backend.course-management.course.courses.course-category-loop', ['courseCategory' => $courseCategory, 'child' => 1])--}}
+{{--                                        @endif--}}
+{{--                                    @endif--}}
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col select2-div show-hide-exam-div d-none">
-                            <label for="">Course Name</label>
-                            <select name="course_id" class="form-control select2" id="courseId" data-placeholder="Select a Course">
-                                <option value=""></option>
+{{--                        <div class="col select2-div show-hide-exam-div d-none">--}}
+{{--                            <label for="">Course Name</label>--}}
+{{--                            <select name="course_id" class="form-control select2" id="courseId" data-placeholder="Select a Course">--}}
+{{--                                <option value=""></option>--}}
 {{--                                @foreach($courses as $course)--}}
 {{--                                    <option value="{{ $course->id }}">{{ $course->title }}</option>--}}
 {{--                                @endforeach--}}
-                            </select>
-                        </div>
+{{--                            </select>--}}
+{{--                        </div>--}}
                         <div class="col-auto">
                             <input type="submit" class="btn btn-success ms-4 " style="margin-top: 18px" value="Search" />
                         </div>
@@ -87,7 +89,7 @@
 {{--                                        <td>{{ $courseOrder->course->price }}</td>--}}
 {{--                                        <td>{{ $totalDiscount = $courseOrder->course->discount_type == 1 ? $courseOrder->course->discount_amount : ($courseOrder->course->discount_amount * $courseOrder->course->price)/100 }}</td>--}}
 {{--                                        @php($totalDiscount = $courseOrder->course->discount_type == 1 ? $courseOrder->course->discount_amount : ($courseOrder->course->discount_amount * $courseOrder->course->price)/100)--}}
-                                        <td>{{ $courseOrder->user->name }}</td>
+                                        <td>{{ $courseOrder->user->name }} <br> {{ $courseOrder->user->mobile }}</td>
                                         <td>
                                             Total: {{ $courseOrder->total_amount }} <br>
                                             Paid: {{ $courseOrder->paid_amount ?? 0 }} <br>
@@ -114,21 +116,27 @@
 {{--                                        </td>--}}
 {{--                                        <td>{{ $courseOrder->chckedBy->name ?? '' }}</td>--}}
                                         <td>
-                                            <a href="" data-blog-category-id="{{ $courseOrder->id }}" class="btn btn-sm btn-warning blog-category-edit-btn mt-1" title="Change Order Status">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </a>
+                                            @can('update-course-order')
+                                                <a href="" data-blog-category-id="{{ $courseOrder->id }}" class="btn btn-sm btn-warning blog-category-edit-btn mt-1" title="Change Order Status">
+                                                    <i class="fa-solid fa-edit"></i>
+                                                </a>
+                                            @endcan
                                             <br>
-                                            <a href="" data-blog-category-id="{{ $courseOrder->id }}" class="btn btn-sm btn-primary blog-category-edit-btnx mt-1" title="Change Order Status">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </a>
-                                            <br>
-                                            <form class="d-inline" action="{{ route('course-orders.destroy', $courseOrder->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-sm btn-danger mt-1" title="Delete Blog Category">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
+{{--                                            @can('change-course-order-contact-status')--}}
+{{--                                                <a href="" data-blog-category-id="{{ $courseOrder->id }}" class="btn btn-sm btn-primary blog-category-edit-btnx mt-1" title="Change Order Status">--}}
+{{--                                                    <i class="fa-solid fa-edit"></i>--}}
+{{--                                                </a>--}}
+{{--                                                @endcan--}}
+{{--                                            <br>--}}
+                                            @can('delete-course-order')
+                                                <form class="d-inline" action="{{ route('course-orders.destroy', $courseOrder->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" class="btn btn-sm btn-danger mt-1" title="Delete Blog Category">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                                @endcan
                                         </td>
                                     </tr>
                                 @endforeach
@@ -246,6 +254,45 @@
 
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="questionTopicModal" data-bs-backdrop="static" >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Select Course Categories</h1>
+                    <button type="button" class="btn-close close-topic-modal" aria-label="Close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="" id="">
+                        @if(isset($courseCategories))
+                            @foreach($courseCategories as $key => $courseCategory)
+                                <div class="parent-div ">
+                                    <div class="card card-body bg-transparent shadow-0 mb-2 p-1">
+                                        <ul class="nav mb-0">
+                                            @if(count($courseCategory->courseCategories) > 0)
+                                                <li class="drop-icon f-s-15" style="cursor: pointer" data-id="{{ $courseCategory->id }}"><i class="fa-solid fa-circle-arrow-down"></i></li>
+                                            @else
+                                                <li class="ms-3"></li>
+                                            @endif
+                                            <li><label class="mb-0 f-s-15 ms-2"><input type="checkbox" class="check" value="{{ $courseCategory->id }}">{{ $courseCategory->name }}</label></li>
+                                        </ul>
+                                    </div>
+                                    @if(!empty($courseCategory))
+                                        @if(count($courseCategory->courseCategories) > 0)
+                                            @include('backend.course-management.course.courses.course-category-loop', ['courseCategory' => $courseCategory, 'child' => 15])
+                                        @endif
+                                    @endif
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+{{--                <div class="modal-footer">--}}
+{{--                    <button type="button" class="btn btn-secondary close-topic-modal" >Close</button>--}}
+{{--                    <button type="button" class="btn btn-primary" id="okDone">Save</button>--}}
+{{--                </div>--}}
             </div>
         </div>
     </div>
@@ -382,4 +429,70 @@
             })
         })
     </script>
+
+    {{--    set value to input fields from modal start--}}
+    <script>
+        var ids = [];
+        var topicNames = '';
+        $(document).on('click', '#questionTopicInputField', function () {
+            $('#questionTopicModal').modal('show');
+            // $('#questionTopicModal').css('display', 'block');
+        })
+        $(document).on('click', '.check', function () {
+            var existVal = $(this).val();
+            var topicName = $(this).parent().text();
+            // console.log(existVal);
+            // console.log(topicName);
+            if ($(this).is(':checked'))
+            {
+                // if (!ids.includes(existVal))
+                // {
+                //     ids.push(existVal);
+                //     topicNames += topicName+',';
+                //
+                // }
+                $('#questionTopic').val(existVal);
+                $('#questionTopicInputField').val(topicName);
+                $('#questionTopicModal').modal('hide');
+                alert($('#questionTopic').val())
+            } else {
+                // if (ids.includes(existVal))
+                // {
+                //     ids.splice(ids.indexOf(existVal), 1);
+                //     topicNames = topicNames.replace(topicName+',','');
+                //     // topicNames = topicNames.split(topicName).join('');
+                // }
+                $('#questionTopic').val('');
+            }
+        })
+        $(document).on('click', '#okDone', function () {
+            $('#questionTopicInputField').val(topicNames.slice(0, -1));
+            $('#questionTopic').val(ids);
+            $('#questionTopicModal').modal('hide');
+        })
+    </script>
+    {{--    set value to input fields from modal ends--}}
+    <!--show hide test start-->
+    <script>
+        $(document).on('click', '.drop-icon', function () {
+            var dataId = $(this).attr('data-id');
+            if ($(this).find('fa-circle-arrow-down'))
+            {
+                $(this).html('<i class="fa-solid fa-circle-arrow-up"></i>');
+            }
+            if($(this).find('fa-circle-arrow-up')) {
+                $(this).html('<i class="fa-solid fa-circle-arrow-down"></i>');
+            }
+            if($('.childDiv'+dataId).hasClass('d-none'))
+            {
+                $('.childDiv'+dataId).removeClass('d-none');
+            } else {
+                $('.childDiv'+dataId).addClass('d-none');
+            }
+        })
+        $(document).on('click', '.close-topic-modal', function () {
+            $('#questionTopicModal').modal('hide');
+        })
+    </script>
+    <!--show hide test end-->
 @endpush

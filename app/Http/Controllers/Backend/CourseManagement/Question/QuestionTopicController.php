@@ -5,16 +5,20 @@ namespace App\Http\Controllers\Backend\CourseManagement\Question;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\QuestionManagement\QuestionTopic;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 use function Symfony\Component\HttpFoundation\Session\Storage\save;
 
 class QuestionTopicController extends Controller
 {
+    //    permission seed done
     protected $questionTopic, $questionTopics = [];
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-question-topic'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (isset($_GET['topic_id']))
         {
             $this->questionTopics = QuestionTopic::where('question_topic_id', $_GET['topic_id'])->whereType($_GET['q-type'])->get();
@@ -31,6 +35,7 @@ class QuestionTopicController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-question-topic'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -39,6 +44,7 @@ class QuestionTopicController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-question-topic'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate(['name' => 'required']);
         QuestionTopic::createOrUpdateQuestionTopic($request);
         return back()->with('success', 'Question Topic Created Successfully.');
@@ -49,6 +55,7 @@ class QuestionTopicController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-question-topic'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -57,6 +64,7 @@ class QuestionTopicController extends Controller
      */
     public function edit(string $id)
     {
+        abort_if(Gate::denies('edit-question-topic'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return response()->json(QuestionTopic::find($id));
     }
 
@@ -65,6 +73,7 @@ class QuestionTopicController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-question-topic'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         QuestionTopic::createOrUpdateQuestionTopic($request, $id);
         if ($request->ajax())
         {
@@ -78,6 +87,7 @@ class QuestionTopicController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-question-topic'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->deleteNestedQuestionTopic(QuestionTopic::find($id));
         return back()->with('success', 'Question Topic deleted Successfully.');
     }

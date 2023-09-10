@@ -9,7 +9,9 @@
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Batch Exam Contents</h4>
                     <div class="position-absolute end-0">
+                        @can('create-batch-exam-section-content')
                         <button type="button" data-bs-toggle="modal" data-bs-target="#courseContentModal" class="rounded-circle text-white border-5 text-light f-s-22 btn float-end me-4 course-section-modal-btn"><i class="fa-solid fa-circle-plus"></i></button>
+                        @endcan
                         <a href="{{ route('batch-exam-sections.index', ['batch_exam_id' => $_GET['batch_exam_id']]) }}" class="rounded-circle text-white border-5 text-light f-s-22 btn float-end "><i class="fa-solid fa-arrow-left"></i></a>
                     </div>
                 </div>
@@ -63,17 +65,24 @@
                                             <a href="javascript:void(0)" class="badge badge-sm bg-primary">{{ $sectionContent->status == 1 ? 'Published' : 'Unpublished' }}</a>
                                         </td>
                                         <td class="float-end">
-                                            @if($sectionContent->content_type == 'exam' || $sectionContent->content_type == 'written_exam')
-                                                <a href="" data-section-content-id="{{ $sectionContent->id }}" data-xm-type="{{ $sectionContent->content_type }}" class="btn btn-sm btn-primary add-question-modal-btn" title="Add Questions">
-                                                    <i class="fa-solid fa-plus"></i>
+                                            @can('add-question-to-batch-exam-section-content')
+                                                @if($sectionContent->content_type == 'exam' || $sectionContent->content_type == 'written_exam')
+                                                    <a href="" data-section-content-id="{{ $sectionContent->id }}" data-xm-type="{{ $sectionContent->content_type }}" class="btn btn-sm btn-primary add-question-modal-btn" title="Add Questions">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </a>
+                                                @endif
+                                            @endcan
+                                            @can('show-batch-exam-section-content')
+                                                <a href="" data-section-content-id="{{ $sectionContent->id }}" class="btn btn-sm btn-success show-btn" title="Show Batch Exam Content">
+                                                    <i class="fa-solid fa-eye"></i>
                                                 </a>
-                                            @endif
-                                            <a href="" data-section-content-id="{{ $sectionContent->id }}" class="btn btn-sm btn-success show-btn" title="Show Batch Exam Content">
-                                                <i class="fa-solid fa-eye"></i>
-                                            </a>
+                                                @endcan
+                                                @can('edit-batch-exam-section-content')
                                             <a href="" data-section-content-id="{{ $sectionContent->id }}" class="btn btn-sm btn-warning section-content-edit-btn" title="Edit Batch Exam Content">
                                                 <i class="fa-solid fa-edit"></i>
                                             </a>
+                                                @endcan
+                                                @can('delete-batch-exam-section-content')
                                             <form class="d-inline" action="{{ route('batch-exam-section-contents.destroy', $sectionContent->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
                                                 @csrf
                                                 @method('delete')
@@ -81,6 +90,7 @@
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
+                                                @endcan
                                         </td>
                                     </tr>
                                 @endforeach
@@ -144,6 +154,7 @@
             $('#summernote2').summernote({height:70,inheritPlaceholder: true});
             $('#summernote3').summernote({height:70,inheritPlaceholder: true});
             $('#summernote4').summernote({height:50,inheritPlaceholder: true});
+            $('input[data-dtp="dtp_Nufud"]').val(currentDateTime);
             // $('#dateTime1').bootstrapMaterialDatePicker({format: 'YYYY-MM-DD HH:mm:ss'});
             // $('#dateTime2').bootstrapMaterialDatePicker({format: 'YYYY-MM-DD HH:mm:ss'});
             // $('#dateTime3').bootstrapMaterialDatePicker({format: 'YYYY-MM-DD HH:mm:ss'});
@@ -183,7 +194,7 @@
                 method: "GET",
                 // dataType: "JSON",
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
                     $('#courseSectionContentForm').empty().append(data);
                     var summernote = $('#summernote');
                     var summernote1 = $('#summernote1');
@@ -353,7 +364,7 @@
                 method: "GET",
                 // dataType: "JSON",
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
                     var option = '';
                     $.each(data, function (key, val) {
                         option += '<option value="'+val.file_url+'">'+val.title+'</option>';
@@ -376,7 +387,7 @@
                 // dataType: "JSON",
                 data: {section_content_id:sectionContentId,exam_type:examType},
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
                     $('#addQueModalBody').empty().append(data);
                     $('.select2').select2();
                     $('#setQuestionOnSectionContentModal').modal('show');
@@ -393,7 +404,7 @@
                 // dataType: "JSON",
                 data: {question_topic_ids:questionTopicId,exam_type:xmType},
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
 
                     // var div = '';
                     // $.each(data, function (key, topic) {
@@ -461,7 +472,7 @@
                 // dataType: "JSON",
                 data: {question_id:questionId,content_id:contentId},
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
                     if (data.status == 'success')
                     {
                         $('#question'+questionId).remove();
@@ -479,4 +490,63 @@
             })
         });
     </script>
+
+    {{--    set value to input fields from modal start--}}
+    <script>
+        var ids = [];
+        var topicNames = '';
+        $(document).on('click', '#questionTopicInputField', function () {
+            $('#questionTopicModal').modal('show');
+            // $('#questionTopicModal').css('display', 'block');
+        })
+        $(document).on('click', '.check', function () {
+            var existVal = $(this).val();
+            var topicName = $(this).parent().text();
+            if ($(this).is(':checked'))
+            {
+                if (!ids.includes(existVal))
+                {
+                    ids.push(existVal);
+                    topicNames += topicName+',';
+                }
+            } else {
+                if (ids.includes(existVal))
+                {
+                    ids.splice(ids.indexOf(existVal), 1);
+                    topicNames = topicNames.replace(topicName+',','');
+                    // topicNames = topicNames.split(topicName).join('');
+                }
+            }
+        })
+        $(document).on('click', '#okDone', function () {
+            $('#questionTopicInputField').val(topicNames.slice(0, -1));
+            $('#questionTopic').val(ids);
+            $('#questionTopicModal').modal('hide');
+        })
+    </script>
+    {{--    set value to input fields from modal ends--}}
+    <!--show hide test start-->
+    <script>
+        $(document).on('click', '.drop-icon', function () {
+            var dataId = $(this).attr('data-id');
+            if ($(this).find('fa-circle-arrow-down'))
+            {
+                $(this).html('<i class="fa-solid fa-circle-arrow-up"></i>');
+            }
+            if($(this).find('fa-circle-arrow-up')) {
+                $(this).html('<i class="fa-solid fa-circle-arrow-down"></i>');
+            }
+            if($('.childDiv'+dataId).hasClass('d-none'))
+            {
+                $('.childDiv'+dataId).removeClass('d-none');
+            } else {
+                $('.childDiv'+dataId).addClass('d-none');
+            }
+        })
+        $(document).on('click', '.close-topic-modal', function () {
+            // $('#questionTopicModal').css('display', 'none');
+            $('#questionTopicModal').modal('hide');
+        })
+    </script>
+    <!--show hide test end-->
 @endpush

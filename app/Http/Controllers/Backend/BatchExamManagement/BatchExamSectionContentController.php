@@ -8,9 +8,12 @@ use App\Models\Backend\BatchExamManagement\BatchExamSectionContent;
 use App\Models\Backend\PdfManagement\PdfStoreCategory;
 use App\Models\Backend\QuestionManagement\QuestionTopic;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class BatchExamSectionContentController extends Controller
 {
+    //    permission seed done
     protected $sectionContent,$sectionContents;
     protected $questionTopics = [], $questionTopic, $questions;
     /**
@@ -18,6 +21,7 @@ class BatchExamSectionContentController extends Controller
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-batch-exam-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (!empty(\request()->input('section_id')))
         {
             return view('backend.batch-exam-management.section-contents.index', [
@@ -34,6 +38,7 @@ class BatchExamSectionContentController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-batch-exam-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -42,6 +47,7 @@ class BatchExamSectionContentController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-batch-exam-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate([
             'content_type' => 'required',
             'title' => 'required',
@@ -61,6 +67,7 @@ class BatchExamSectionContentController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-batch-exam-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.batch-exam-management.section-contents.show', [
             'sectionContent'    => BatchExamSectionContent::find($id),
             'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->select('id', 'title')->get(),
@@ -72,6 +79,7 @@ class BatchExamSectionContentController extends Controller
      */
     public function edit(string $id)
     {
+        abort_if(Gate::denies('edit-batch-exam-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.batch-exam-management.section-contents.edit', [
             'sectionContent'    => BatchExamSectionContent::find($id),
             'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->select('id', 'title')->get(),
@@ -83,6 +91,7 @@ class BatchExamSectionContentController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-batch-exam-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         BatchExamSectionContent::saveOrUpdateCourseSectionContent($request, $id);
         if ($request->ajax())
         {
@@ -97,12 +106,14 @@ class BatchExamSectionContentController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-batch-exam-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         BatchExamSectionContent::find($id)->delete();
         return  back()->with('success', 'Batch Exam Content deleted successfully.');
     }
 
     public function getContentForAddQuestion (Request $request)
     {
+        abort_if(Gate::denies('add-question-to-batch-exam-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         try {
             return view('backend.batch-exam-management.section-contents.include-add-que-to-contents', [
                 'content'   => BatchExamSectionContent::find($request->section_content_id),
@@ -118,6 +129,7 @@ class BatchExamSectionContentController extends Controller
 
     public function detachQuestionFromContent(Request $request)
     {
+        abort_if(Gate::denies('detach-question-to-batch-exam-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         try {
             BatchExamSectionContent::find($request->content_id)->questionStores()->detach($request->question_id);
             return response()->json(['status' => 'success']);
@@ -129,6 +141,7 @@ class BatchExamSectionContentController extends Controller
 
     public function getQuesByTopic (Request $request)
     {
+//        abort_if(Gate::denies('manage-batch-exam-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         foreach ($request->question_topic_ids as $question_topic_id)
         {
             $this->questionTopic = QuestionTopic::whereId($question_topic_id)->select('id', 'question_topic_id', 'name')->with(['questionStores' => function($questions) use($request){
@@ -144,6 +157,7 @@ class BatchExamSectionContentController extends Controller
 
     public function assignQuestionToContent (Request $request)
     {
+        abort_if(Gate::denies('assign-question-to-batch-exam-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->sectionContent = BatchExamSectionContent::find($request->section_content_id);
         $this->sectionContent->questionStores()->attach($request->question_ids);
         return back()->with('success', 'Questions Added to this exam successfully.');

@@ -235,6 +235,14 @@ class PermissionCategorySeeder extends Seeder
                 'status'    => 1,
                 'is_default'    => 1,
             ],
+            [
+                'id' => 28,
+                'name'  => 'Module Access Management',
+                'slug'  => 'module-access-management',
+                'note'  => '',
+                'status'    => 1,
+                'is_default'    => 1,
+            ],
         ]);
     }
 }

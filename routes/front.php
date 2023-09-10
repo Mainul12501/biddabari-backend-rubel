@@ -1,8 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\Pages\BasicViewController;
 use App\Http\Controllers\Frontend\Pages\FrontendViewController;
+use App\Http\Controllers\Frontend\Pages\FrontViewTwoController;
 
 use App\Http\Controllers\Frontend\Checkout\CheckoutController;
 use App\Http\Controllers\Frontend\Student\StudentController;
@@ -15,13 +17,19 @@ Route::get('/te', function (){
 //    return explode('https://www.youtube.com/watch?v=', 'https://www.youtube.com/watch?v=i0QcjNi2c8E')[1];
 //    return \Illuminate\Support\Facades\Hash::make('superadmin');
 //    shell_exec('composer require "darryldecode/cart"');
-    phpinfo();
+//    phpinfo();
+//    $user = auth()->user();
+//    return \App\Models\User::whereId(auth()->id())->with(['roles' => function($roles){
+//        $roles->with('permissions')->get();
+//    }])->first();
+    if (!File::isDirectory(public_path('backend/assets/uploaded-files/course-written-xm-ans-files')))
+    {
+        File::makeDirectory(public_path('backend/assets/uploaded-files/course-written-xm-ans-files'));
+    }
 });
 Route::get('/exam-test', [FrontExamController::class, 'xmTestForDev'])->name('exm-test-for-dev');
 Route::get('/pdf-view-test', [FrontExamController::class, 'pdfViewTest'])->name('pdf-view-test');
-Route::get('/dt', function (){
-    return view('frontend.student-master');
-})->name('dt');
+
 
 
 Route::as('front.')->group(function (){
@@ -52,17 +60,20 @@ Route::as('front.')->group(function (){
     Route::get('/all-job-circulars', [FrontendViewController::class, 'allJobCirculars'])->name('all-job-circulars');
     Route::get('/job-circular-details/{id}/{slug?}', [FrontendViewController::class, 'jobCircularDetail'])->name('job-circular-details');
     Route::get('/all-instructors', [FrontendViewController::class, 'instructors'])->name('instructors');
-    Route::get('/instructor-details/{slug}', [FrontendViewController::class, 'instructorDetails'])->name('instructor-details');
+    Route::get('/instructor-details/{id}/{slug?}', [FrontendViewController::class, 'instructorDetails'])->name('instructor-details');
 
 //    basic page routes
     Route::get('/about-us', [BasicViewController::class, 'aboutUs'])->name('about-us');
     Route::get('/terms-conditions', [BasicViewController::class, 'termsConditions'])->name('terms-conditions');
     Route::get('/privacy-policy', [BasicViewController::class, 'privacy'])->name('privacy-policy');
     Route::get('/contact-us', [BasicViewController::class, 'contact'])->name('contact-us');
+    Route::get('/guideline', [FrontViewTwoController::class, 'guideline'])->name('guideline');
+    Route::get('/all-gallery-images', [FrontViewTwoController::class, 'GalleryImageView'])->name('all-gallery-images');
+    Route::get('/gallery-images/{id}/{title?}', [FrontViewTwoController::class, 'GalleryImages'])->name('show-gallery-images');
 
     Route::post('/new-comment', [FrontendViewController::class, 'newComment'])->name('new-comment');
 
-
+    Route::get('show-product-pdf/{content_id}', [StudentController::class, 'showProductPdf'])->name('show-product-pdf');
 
     Route::middleware([
         'auth:sanctum',
@@ -79,6 +90,7 @@ Route::as('front.')->group(function (){
             Route::get('view-profile', [StudentController::class, 'viewProfile'])->name('view-profile');
             Route::get('change-password', [StudentController::class, 'studentChangePassword'])->name('change-password');
             Route::get('show-pdf/{content_id}', [StudentController::class, 'showPdf'])->name('show-pdf');
+            Route::get('batch-exam-show-pdf/{content_id}', [StudentController::class, 'batchExamShowPdf'])->name('batch-exam-show-pdf');
             Route::get('show-batch-exam-pdf/{content_id}', [StudentController::class, 'showBatchExamPdf'])->name('show-batch-exam-pdf');
             Route::get('course-contents/{course_id}/{slug?}', [StudentController::class, 'showCourseContents'])->name('course-contents');
             Route::get('batch-exam-contents/{xm_id}/{master?}/{slug?}', [StudentController::class, 'showBatchExamContents'])->name('batch-exam-contents');
@@ -107,6 +119,9 @@ Route::as('front.')->group(function (){
             Route::get('show-batch-exam-answers/{content_id}/{slug?}', [FrontExamController::class, 'showBatchExamAnswers'])->name('show-batch-exam-answers');
             Route::get('show-course-exam-ranking/{content_id}/{slug?}', [FrontExamController::class, 'showCourseExamRanking'])->name('show-course-exam-ranking');
             Route::get('show-batch-exam-ranking/{content_id}/{slug?}', [FrontExamController::class, 'showBatchExamRanking'])->name('show-batch-exam-ranking');
+
+            Route::get('today-classes', [FrontViewTwoController::class, 'todayClasses'])->name('today-classes');
+            Route::get('today-exams', [FrontViewTwoController::class, 'todayExams'])->name('today-exams');
         });
     });
 });

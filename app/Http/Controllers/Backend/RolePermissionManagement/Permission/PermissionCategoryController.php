@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Backend\RolePermissionManagement\Permission;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\RoleManagement\PermissionCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class PermissionCategoryController extends Controller
 {
@@ -15,6 +17,7 @@ class PermissionCategoryController extends Controller
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-permission-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.role-management.permission-category.index', ['permissionCategories' => PermissionCategory::all()]);
     }
 
@@ -23,6 +26,7 @@ class PermissionCategoryController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-permission-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.role-management.permission-category.create');
     }
 
@@ -31,6 +35,7 @@ class PermissionCategoryController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-permission-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         PermissionCategory::createOrUpdatePermissionCategory($request);
         return back()->with('success', 'Permission Category created successfully.');
     }
@@ -40,6 +45,7 @@ class PermissionCategoryController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-permission-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -48,6 +54,7 @@ class PermissionCategoryController extends Controller
      */
     public function edit(string $id)
     {
+        abort_if(Gate::denies('edit-permission-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.role-management.permission-category.create', [
             'permissionCategory'    => PermissionCategory::find($id)
         ]);
@@ -58,6 +65,7 @@ class PermissionCategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-permission-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         PermissionCategory::createOrUpdatePermissionCategory($request, $id);
         return redirect()->route('permission-categories.index')->with('success', 'Permission Category created successfully.');
     }
@@ -67,6 +75,7 @@ class PermissionCategoryController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-permission-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->permissionCategory = PermissionCategory::find($id);
         if ($this->permissionCategory->is_default == 0)
         {

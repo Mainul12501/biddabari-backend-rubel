@@ -14,6 +14,7 @@ use App\Models\Backend\ExamManagement\Exam;
 use App\Models\Backend\ExamManagement\ExamCategory;
 use App\Models\Backend\ExamManagement\ExamOrder;
 use App\Models\Backend\OrderManagement\ParentOrder;
+use App\Models\Backend\ProductManagement\Product;
 use App\Models\Backend\UserManagement\Student;
 use App\Models\Frontend\CourseOrder\CourseOrder;
 use App\Models\User;
@@ -253,6 +254,32 @@ class StudentController extends Controller
             return response()->json($this->data);
         }
         return ViewHelper::checkViewForApi($this->data, 'frontend.student.course.contents.pdf');
+    }
+    public function showProductPdf($contentId)
+    {
+//        $this->data = [
+//            'sectionContent'  => CourseSectionContent::whereId($contentId)->select('id', 'course_section_id', 'content_type', 'title', 'pdf_link', 'pdf_file', 'status')->first(),
+//        ];
+         $this->data = [
+            'product'  => Product::whereId($contentId)->select('id', 'featured_pdf', 'status')->first(),
+        ];
+        if (\request()->ajax())
+        {
+            return response()->json($this->data);
+        }
+        return ViewHelper::checkViewForApi($this->data, 'frontend.student.course.contents.pdf');
+    }
+
+    public function batchExamShowPdf($contentId)
+    {
+        $this->data = [
+            'sectionContent'  => BatchExamSectionContent::whereId($contentId)->select('id', 'batch_exam_section_id', 'content_type', 'title', 'pdf_link', 'pdf_file', 'status')->first(),
+        ];
+        if (\request()->ajax())
+        {
+            return response()->json($this->data);
+        }
+        return ViewHelper::checkViewForApi($this->data, 'frontend.student.batch-exam.contents.pdf');
     }
 
     public function showBatchExamPdf($contentId)

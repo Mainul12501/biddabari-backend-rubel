@@ -38,7 +38,7 @@
                         </div>
                         <ul class="tag-list">
                             <li><i class="ri-calendar-todo-fill"></i> {{ $blog->created_at->format('M d, Y') }}</li>
-{{--                            <li><i class="ri-price-tag-3-fill"></i> <a href="tags.html">Education</a></li>--}}
+                            <li><i class="ri-price-tag-3-fill"></i> {{ $blog->blogCategory->name }}</li>
                         </ul>
                         <p>{!! $blog->body !!}</p>
 {{--                        <div class="article-share">--}}
@@ -134,16 +134,16 @@
                             <p class="text-center text-white f-s-38 mb-0">Latest Blogs</p>
                         </div>
                         @forelse($recentBlogs as $recentBlog)
-                            <div class="card-body py-3">
+                            <div class="card-body py-1">
                                 <a href="{{ route('front.blog-details', ['id' => $recentBlog->id, 'slug' => $recentBlog->slug]) }}">
                                     <div class="row">
                                         <div class="col-md-4 px-0">
-                                            <img src="{{ !empty($recentBlog->image) ? asset($recentBlog->image) : asset('/frontend/logo/biddabari-card-logo.jpg') }}" alt="" class="img-fluid"/>
+                                            <img src="{{ !empty($recentBlog->image) ? asset($recentBlog->image) : asset('/frontend/logo/biddabari-card-logo.jpg') }}" alt="" class="img-fluid" style="height: 100px"/>
                                         </div>
                                         <div class="col-md-8">
                                             <div>
                                                 <span class="text-muted">{{ showDateFormatTwo($recentBlog->created_at) }}</span>
-                                                <p class="f-s-20 p-0">{{ $recentBlog->title }}</p>
+                                                <p class="f-s-20 p-0">{{ \Illuminate\Support\Str::words($recentBlog->title, 8,'...') }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -218,4 +218,17 @@
 @endpush
 @push('script')
     <script src="{{ asset('/') }}frontend/assets/js/page-js/product-comments.js"></script>
+    <script>
+        function equalheight() {
+            var maxHeight = 0;
+            $('.card-body').each(function (index) {
+                if ($(this).height() > maxHeight)
+                    maxHeight = $(this).height();
+            });
+            $('.card-body').height(maxHeight);
+        }
+        $(document).ready(function () {
+            equalheight();
+        });
+    </script>
 @endpush

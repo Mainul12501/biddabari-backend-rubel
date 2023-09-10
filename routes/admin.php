@@ -46,6 +46,7 @@ use App\Http\Controllers\Backend\OrderManagement\ExamOrderController;
 use App\Http\Controllers\Backend\OrderManagement\ExamSubscriptionPackageOrderController;
 use App\Http\Controllers\Backend\OrderManagement\ProductOrderController;
 use App\Http\Controllers\Backend\ExamManagement\ExamSubscriptionPackageController;
+use App\Http\Controllers\Backend\OrderManagement\DeliveryOptionController;
 
 
 Route::get('/test', function (){
@@ -145,6 +146,7 @@ Route::middleware([
         'product-orders' => ProductOrderController::class,
         'subscription-orders' => ExamSubscriptionPackageOrderController::class,
         'payments' => PaymentController::class,
+        'delivery-options' => DeliveryOptionController::class,
     ]);
     Route::post('/get-course-orders', [CourseOrderController::class, 'getCourseOrders'])->name('get-course-orders');
     Route::get('/get-course-order-details/{id}', [CourseOrderController::class, 'getCourseOrderDetails'])->name('get-course-order-details');

@@ -8,7 +8,9 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Advertisements</h4>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#advertisementModal" class="rounded-circle open-modal text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-advertisement')
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#advertisementModal" class="rounded-circle open-modal text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <table class="table" id="file-datatable">
@@ -39,9 +41,12 @@
                                         <a href="" class="badge badge-sm bg-primary">{{ $advertisement->status == 1 ? 'Published' : 'Unpublished' }}</a>
                                     </td>
                                     <td>
+                                        @can('edit-advertisement')
                                         <a data-advertisement-id="{{ $advertisement->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Advertisement">
                                             <i class="fa-solid fa-edit"></i>
                                         </a>
+                                        @endcan
+                                        @can('delete-advertisement')
                                         <form class="d-inline" action="{{ route('advertisements.destroy', $advertisement->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
                                             @csrf
                                             @method('delete')
@@ -49,6 +54,7 @@
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </form>
+                                            @endcan
                                     </td>
                                 </tr>
                             @endforeach

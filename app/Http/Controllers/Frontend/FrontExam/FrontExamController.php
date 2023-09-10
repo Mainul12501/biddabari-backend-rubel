@@ -21,8 +21,10 @@ use App\Models\Backend\QuestionManagement\QuestionOption;
 use App\Models\Backend\QuestionManagement\QuestionStore;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Response;
+use function PHPUnit\Framework\directoryExists;
 
 class FrontExamController extends Controller
 {
@@ -258,6 +260,10 @@ class FrontExamController extends Controller
                             $this->filePathString .= public_path($imageUrl).' ';
                         }
                         $this->pdfFilePath = 'backend/assets/uploaded-files/course-written-xm-ans-files/'.rand(10000,99999).time().'.pdf';
+                        if (!File::isDirectory(public_path('backend/assets/uploaded-files/course-written-xm-ans-files')))
+                        {
+                            File::makeDirectory(public_path('backend/assets/uploaded-files/course-written-xm-ans-files'), 0777, true, true);
+                        }
                         shell_exec('magick convert '. $this->filePathString.public_path($this->pdfFilePath));
                         foreach ($this->fileSessionPaths as $fileSessionPath)
                         {
@@ -540,7 +546,7 @@ class FrontExamController extends Controller
             }
         }
         $this->data = [
-            'exams'     => $this->exams,
+//            'exams'     => $this->exams,
             'examCategories'     => $this->examCategories,
             'masterExam'    => $masterExam
         ];
@@ -569,7 +575,7 @@ class FrontExamController extends Controller
         $this->exam = Exam::find($id);
         $this->data = [
             'exam'  => $this->exam,
-            'enrollStatus'  => ViewHelper::checkIfExamIsEnrolled($this->exam)
+            'enrollStatus'  => ViewHelper::checkUserBatchExamIsEnrollment(auth()->user(),$this->exam)
         ];
         return ViewHelper::checkViewForApi($this->data, 'frontend.exams.xm.details');
     }
@@ -587,10 +593,12 @@ class FrontExamController extends Controller
             ]);
             if ($validator->fails())
             {
-                return back()->withErrors($validator);
+                return ViewHelper::returEexceptionError($validator->errors());
+//                return back()->withErrors($validator);
             }
             ParentOrder::storeXmOrderInfo($request, $id);
-            return back()->with('success', 'You successfully purchased this exam');
+            return ViewHelper::returnSuccessMessage('You successfully purchased this exam');
+//            return back()->with('success', 'You successfully purchased this exam');
         } else {
             return back()->with('error','Please Login First.');
         }

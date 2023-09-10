@@ -6,6 +6,7 @@ use App\helper\ViewHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\AdditionalFeatureManagement\Advertisement;
 use App\Models\Backend\AdditionalFeatureManagement\PopupNotification;
+use App\Models\Backend\BatchExamManagement\BatchExam;
 use App\Models\Backend\BlogManagement\Blog;
 use App\Models\Backend\BlogManagement\BlogCategory;
 use App\Models\Backend\CircularManagement\Circular;
@@ -14,6 +15,8 @@ use App\Models\Backend\Course\CourseCategory;
 use App\Models\Backend\Course\CourseCoupon;
 use App\Models\Backend\ExamManagement\Exam;
 use App\Models\Backend\ExamManagement\ExamCategory;
+use App\Models\Backend\Gallery\Gallery;
+use App\Models\Backend\Gallery\GalleryImage;
 use App\Models\Backend\NoticeManagement\Notice;
 use App\Models\Backend\OrderManagement\ParentOrder;
 use App\Models\Backend\ProductManagement\Product;
@@ -27,7 +30,7 @@ class BasicViewController extends Controller
 {
     protected $courseCategories, $courseCategory, $courses, $course, $courseCoupon, $courseCoupons = [], $teachers = [], $blogs = [], $blogCategories = [], $blog, $blogCategory;
     protected $message, $status, $notices = [], $notice, $products = [], $product, $data, $exams = [], $examCategories = [], $homeSliderCourses = [];
-    protected $comments = [];
+    protected $comments = [], $galleries = [], $galleryImage, $batchExams = [];
     public function home ()
     {
         $this->courseCategories = CourseCategory::whereStatus(1)->where('parent_id', 0)->latest()->orderBy('order', 'ASC')->select('id', 'name', 'image', 'slug', 'icon')->get();
@@ -166,7 +169,10 @@ class BasicViewController extends Controller
                     $courseRoutines->whereStatus(1)->get();
                 }
             ])->first();
-            $this->comments = ContactMessage::where(['status' => 1, 'type' => 'course', 'parent_model_id' => $this->course->id])->get();
+            if (isset($this->course))
+            {
+                $this->comments = ContactMessage::where(['status' => 1, 'type' => 'course', 'parent_model_id' => $this->course->id, 'is_seen' => 1])->get();
+            }
             $this->data = [
                 'course' => $this->course,
                 'courseEnrollStatus' => $courseEnrollStatus,
@@ -219,6 +225,10 @@ class BasicViewController extends Controller
     {
 //        $this->notices = Notice::whereStatus(1)->whereType('normal')->latest()->paginate(9);
         $this->notices = Notice::whereStatus(1)->whereType('normal')->latest()->take(6)->get();
+        foreach ($this->notices as $notice)
+        {
+            $notice->image = asset($notice->image);
+        }
         $this->data = [
             'notices'    => $this->notices,
 //            'singleNotice'  => isset($_GET['notice-id']) ? Notice::find($_GET['notice-id']) : ''
@@ -226,15 +236,34 @@ class BasicViewController extends Controller
         return ViewHelper::checkViewForApi($this->data, 'frontend.notice.notice');
     }
 
+    public function noticeDetails($id, $slug = null)
+    {
+        $this->notice = Notice::find($id);
+        if (str()->contains(url()->current(), '/api/'))
+        {
+            $this->notice->image = asset($this->notice->image);
+        }
+        return response()->json($this->notice);
+    }
+
     public function freeCourses ()
     {
-        $this->courses = Course::where('is_paid', 0)->whereStatus(1)->latest()->select('id','title','sub_title','price','banner','total_video','total_audio','total_pdf','total_exam','total_note','total_zip','total_live','total_link','total_file','total_written_exam','slug','discount_type','discount_amount','starting_date_time')->get();
-        $this->examCategories = ExamCategory::where('status', 1)->where('has_free_xm', 1)->select('id', 'exam_category_id', 'name')->with(['exams' => function($exams){
-            $exams->where('is_paid', 0)->whereStatus(1)->select('id', 'exam_category_id', 'title', 'total_mark', 'image', 'xm_duration', 'xm_date', 'xm_start_time', 'xm_end_time', 'status')->get();
-        }])->get();
+        $this->courses = Course::where('is_paid', 0)->whereStatus(1)->latest()->select('id','title','banner','slug')->get();
+        $this->batchExams = BatchExam::where(['is_paid' => 0, 'status' => 1])->select('id', 'title', 'slug', 'banner')->get();
+        if (str()->contains(url()->current(), '/api/'))
+        {
+            foreach ($this->courses as $course)
+            {
+                $course->banner = asset($course->banner);
+            }
+            foreach ($this->batchExams as $batchExam)
+            {
+                $batchExam->banner = asset($batchExam->banner);
+            }
+        }
         $this->data = [
             'courses'   => $this->courses,
-            'examCategories'     => $this->examCategories,
+            'batchExams'     => $this->batchExams,
         ];
         return ViewHelper::checkViewForApi($this->data, 'frontend.free-service.free-service');
     }
@@ -318,6 +347,4 @@ class BasicViewController extends Controller
     {
         return view('frontend.basic-pages.privacy');
     }
-
-
 }

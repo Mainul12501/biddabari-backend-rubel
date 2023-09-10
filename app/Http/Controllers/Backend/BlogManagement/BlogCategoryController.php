@@ -6,15 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Backend\BlogManagement\BlogCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class BlogCategoryController extends Controller
 {
+    //    permission seed done
     protected $blogCategory;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-blog-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.blog-management.blog-category.index', [
             'categories'      => BlogCategory::where('parent_id', 0)->orderBy('order', 'ASC')->get()
         ]);
@@ -25,6 +29,7 @@ class BlogCategoryController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-blog-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -118,6 +123,7 @@ class BlogCategoryController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-blog-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate([
             'name'  => 'required',
             'image' => 'image'
@@ -137,6 +143,7 @@ class BlogCategoryController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-blog-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -145,6 +152,7 @@ class BlogCategoryController extends Controller
      */
     public function edit(string $id, Request $request)
     {
+        abort_if(Gate::denies('edit-blog-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->blogCategory = BlogCategory::find($id);
         if ($request->ajax())
         {
@@ -158,6 +166,7 @@ class BlogCategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-blog-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate([
             'name'  => 'required',
             'image' => 'image'
@@ -180,6 +189,7 @@ class BlogCategoryController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-blog-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->deleteNestedCategory(BlogCategory::find($id));
         return back()->with('success', 'Blog Category deleted successfully');
     }

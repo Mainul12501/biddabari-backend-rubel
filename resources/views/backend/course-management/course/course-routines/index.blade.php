@@ -9,13 +9,16 @@
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Course Routines</h4>
                     <a href="{{ route('courses.index') }}" title="Back to Courses" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 m-r-50"><i class="fa-solid fa-arrow-left"></i></a>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-course-routine')
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <table class="table" id="file-datatable">
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Content Name</th>
                                 <th>Date</th>
                                 <th>Day</th>
                                 <th>Time</th>
@@ -29,6 +32,7 @@
                                 @foreach($courseRoutines as $courseRoutine)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $courseRoutine->content_name }}</td>
                                         <td>{{ showDate($courseRoutine->date_time) }}</td>
                                         <td>{{ $courseRoutine->day }}</td>
                                         <td>{{ showTime($courseRoutine->date_time) }}</td>
@@ -39,16 +43,20 @@
                                             <a href="javascript:void(0)" class="nav-link">{{ $courseRoutine->status == 1 ? 'Published' : 'Unpublished' }}</a>
                                         </td>
                                         <td>
+                                            @can('edit-course-routine')
                                             <a href="" data-course-routine-id="{{ $courseRoutine->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Course Routine">
                                                 <i class="fa-solid fa-edit"></i>
                                             </a>
-                                            <form class="d-inline" action="{{ route('course-routines.destroy', $courseRoutine->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Course Routine">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
+                                            @endcan
+                                            @can('delete-course-routine')
+                                                <form class="d-inline" action="{{ route('course-routines.destroy', $courseRoutine->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete Course Routine">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach
@@ -104,6 +112,7 @@
             // $('#dateTime').bootstrapMaterialDatePicker({
             //     format: 'YYYY-MM-DD HH:mm'
             // });
+            $('input[data-dtp="dtp_Nufud"]').val(currentDateTime);
             $("#dateTime").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0})
         });
     </script>

@@ -8,7 +8,9 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Product</h4>
-                    <button type="button" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 product-category-modal-btn"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-product')
+                        <button type="button" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 product-category-modal-btn"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
 
@@ -22,6 +24,7 @@
                             <th>Discount</th>
                             <th>Discounted Price</th>
                             <th>Discount Till</th>
+                            <th>Stock</th>
                             <th>Image</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -37,6 +40,7 @@
                                     <td>{{ $product->discount_amount }}</td>
                                     <td>{{ $product->price - $product->discount_amount }}</td>
                                     <td>{{ $product->discount_end_date }}</td>
+                                    <td>{{ $product->stock_amount }}</td>
                                     <td>
                                         <img src="{{ asset($product->image) }}" alt="" style="height: 70px" />
                                     </td>
@@ -45,16 +49,20 @@
                                         <a href="javascript:void(0)" class="badge bg-primary">{{ $product->is_featured == 1 ? 'Featured' : 'Not Featured' }}</a>
                                     </td>
                                     <td>
-                                        <a href="" data-product-category-id="{{ $product->id }}" class="btn btn-sm btn-warning product-category-edit-btn" title="Edit Blog Category">
-                                            <i class="fa-solid fa-edit"></i>
-                                        </a>
-                                        <form class="d-inline" action="{{ route('products.destroy', $product->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                            @csrf
-                                            @method('delete')
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete Category">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </form>
+                                        @can('edit-product')
+                                            <a href="" data-product-category-id="{{ $product->id }}" class="btn btn-sm btn-warning product-category-edit-btn" title="Edit Blog Category">
+                                                <i class="fa-solid fa-edit"></i>
+                                            </a>
+                                        @endcan
+                                        @can('delete-product')
+                                            <form class="d-inline" action="{{ route('products.destroy', $product->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Category">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+                                            @endcan
                                     </td>
                                 </tr>
                             @endforeach
@@ -103,17 +111,23 @@
                                     <input type="text" required name="title" class="form-control" placeholder="title" />
                                     <span class="text-danger">{{ $errors->has('title') ? $errors->first('title') : '' }}</span>
                                 </div>
-                                <div class="col-md-6 mt-2">
+                                <div class="col-md-4 mt-2">
                                     <label for="">Banner</label>
                                     <input type="file"  name="image" class="form-control" placeholder="Banner" accept="images/*" />
                                     <span class="text-danger">{{ $errors->has('image') ? $errors->first('image') : '' }}</span>
                                     <img src="" id="imagePreview" alt="">
                                 </div>
-                                <div class="col-md-6 mt-2">
+                                <div class="col-md-4 mt-2">
                                     <label for="">Featured PDF</label>
                                     <input type="file"  name="featured_pdf" class="form-control" placeholder="Featured PDF" accept="application/pdf" />
                                     <span class="text-danger">{{ $errors->has('featured_pdf') ? $errors->first('featured_pdf') : '' }}</span>
                                     <a href="" id="pdfPreview" >download</a>
+                                </div>
+                                <div class="col-md-4 mt-2">
+                                    <label for="">Book PDF</label>
+                                    <input type="file"  name="pdf" class="form-control" placeholder="Featured PDF" accept="application/pdf" />
+                                    <span class="text-danger">{{ $errors->has('pdf') ? $errors->first('pdf') : '' }}</span>
+                                    <a href="" id="bookPdfPreview" >download</a>
                                 </div>
                                 <div class="col-md-6 mt-2">
                                     <label for="">Price</label>
@@ -295,6 +309,7 @@
                     $('input[name="title"]').val(data.title);
                     $('#imagePreview').attr('src', base_url+data.image).css({height: '150px'});
                     $('#pdfPreview').attr('href', base_url+data.featured_pdf);
+                    $('#bookPdfPreview').attr('href', base_url+data.pdf);
                     $('input[name="price"]').val(data.price);
                     $('input[name="stock_amount"]').val(data.stock_amount);
                     $('input[name="discount_amount"]').val(data.discount_amount);

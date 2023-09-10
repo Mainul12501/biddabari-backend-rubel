@@ -77,34 +77,34 @@
                                         </div>
                                     </div>
                                 </div >
-                                <div class="row mb-20">
-                                    <div class="col-6 mt-2">
-                                        <div class="form-group">
-                                            <label for="">School Name</label>
-                                            <input class="form-control" type="text" value="{{ isset($student) ? $student->school : '' }}" name="school" placeholder="School Name">
-                                        </div>
-                                    </div>
-                                    <div class="col-6 mt-2">
-                                        <div class="form-group">
-                                            <label for="">Collage Name</label>
-                                            <input class="form-control" type="text" value="{{ isset($student) ? $student->college : '' }}" name="college" placeholder="Collage Name">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-20">
-                                    <div class="col-6 mt-2">
-                                        <div class="form-group">
-                                            <label for="">University Name</label>
-                                            <input class="form-control" type="text" value="{{ isset($student) ? $student->university : '' }}" name="university" placeholder="University Name">
-                                        </div>
-                                    </div>
-                                    <div class="col-6 mt-2">
-                                        <div class="form-group">
-                                            <label for="">Current Institution Name</label>
-                                            <input class="form-control" type="text" value="{{ isset($student) ? $student->institute_name : '' }}" name="institute_name" placeholder="Current Institution">
-                                        </div>
-                                    </div>
-                                </div>
+{{--                                <div class="row mb-20">--}}
+{{--                                    <div class="col-6 mt-2">--}}
+{{--                                        <div class="form-group">--}}
+{{--                                            <label for="">School Name</label>--}}
+{{--                                            <input class="form-control" type="text" value="{{ isset($student) ? $student->school : '' }}" name="school" placeholder="School Name">--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="col-6 mt-2">--}}
+{{--                                        <div class="form-group">--}}
+{{--                                            <label for="">Collage Name</label>--}}
+{{--                                            <input class="form-control" type="text" value="{{ isset($student) ? $student->college : '' }}" name="college" placeholder="Collage Name">--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                                <div class="row mb-20">--}}
+{{--                                    <div class="col-6 mt-2">--}}
+{{--                                        <div class="form-group">--}}
+{{--                                            <label for="">University Name</label>--}}
+{{--                                            <input class="form-control" type="text" value="{{ isset($student) ? $student->university : '' }}" name="university" placeholder="University Name">--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="col-6 mt-2">--}}
+{{--                                        <div class="form-group">--}}
+{{--                                            <label for="">Current Institution Name</label>--}}
+{{--                                            <input class="form-control" type="text" value="{{ isset($student) ? $student->institute_name : '' }}" name="institute_name" placeholder="Current Institution">--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
                                 <div class="row mb-20">
                                     <div class="col-3 mt-2">
                                         <div class="form-group">

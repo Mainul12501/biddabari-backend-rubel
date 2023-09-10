@@ -116,7 +116,7 @@
 
                             @else
 {{--                                <a href="{{ route('register') }}" class="default-btn two border-radius-50">Sign Up</a>--}}
-                                <a href="{{ route('login') }}" data-bs-toggle="modal" data-bs-target="#authModal" class="default-btn two border-radius-50">Sign In</a>
+                                <a href="{{ route('login') }}" {{--data-bs-toggle="modal" data-bs-target="#authModal"--}} class="default-btn two border-radius-50">Sign In</a>
                             @endif
                         </div>
                     </div>

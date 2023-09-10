@@ -8,7 +8,9 @@ use App\Http\Requests\Backend\CourseManagement\CourseCreateFormRequest;
 use App\Models\Backend\Course\CourseCategory;
 use Illuminate\Http\Request;
 use DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class CourseCategoryController extends Controller
 {
@@ -19,6 +21,7 @@ class CourseCategoryController extends Controller
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-course-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.course-management.course.course-category.index', [
             'categories'      => CourseCategory::where('parent_id', 0)->orderBy('order', 'ASC')->get()
         ]);
@@ -29,6 +32,7 @@ class CourseCategoryController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-course-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -122,6 +126,7 @@ class CourseCategoryController extends Controller
      */
     public function store(CourseCategoryFormRequest $request)
     {
+        abort_if(Gate::denies('store-course-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         CourseCategory::createOrUpdateCourseCategory($request);
         if ($request->ajax())
         {
@@ -137,6 +142,7 @@ class CourseCategoryController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-course-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -145,6 +151,7 @@ class CourseCategoryController extends Controller
      */
     public function edit(string $id, Request $request)
     {
+        abort_if(Gate::denies('edit-course-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->courseCategory = CourseCategory::find($id);
         if ($request->ajax())
         {
@@ -158,6 +165,7 @@ class CourseCategoryController extends Controller
      */
     public function update(CourseCategoryFormRequest $request, string $id)
     {
+        abort_if(Gate::denies('update-course-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         CourseCategory::createOrUpdateCourseCategory($request, $id);
         if ($request->ajax())
         {
@@ -176,6 +184,7 @@ class CourseCategoryController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-course-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->deleteNestedCategory(CourseCategory::find($id));
         return back()->with('success', 'Course Category deleted successfully');
     }

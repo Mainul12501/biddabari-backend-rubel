@@ -8,7 +8,9 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Notice Categories</h4>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#noticeCategoryModal" class="rounded-circle open-modal text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-notice-category')
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#noticeCategoryModal" class="rounded-circle open-modal text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <div class="py-5">
@@ -26,19 +28,25 @@
                                                 </h3>
                                                 <div class="col-sm-3">
                                                     <div class="float-end">
-                                                        <button type="button" data-notice-category-id="{{ $noticeCategory->id }}" class="btn btn-sm btn-info add-sub-category-btn" title="Add Sub Category">
-                                                            <i class="fa-solid fa-plus"></i>
-                                                        </button>
-                                                        <button type="button" data-notice-category-id="{{ $noticeCategory->id }}" class="btn btn-sm btn-warning edit-notice-category-btn" title="Edit Notice Category">
-                                                            <i class="fa-solid fa-edit"></i>
-                                                        </button>
-                                                        <form class="d-inline" action="{{ route('notice-categories.destroy', $noticeCategory->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                                            @csrf
-                                                            @method('delete')
-                                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete Notice Category">
-                                                                <i class="fa-solid fa-trash"></i>
+                                                        @can('add-sub-cat-to-notice-category')
+                                                            <button type="button" data-notice-category-id="{{ $noticeCategory->id }}" class="btn btn-sm btn-info add-sub-category-btn" title="Add Sub Category">
+                                                                <i class="fa-solid fa-plus"></i>
                                                             </button>
-                                                        </form>
+                                                        @endcan
+                                                        @can('edit-notice-category')
+                                                            <button type="button" data-notice-category-id="{{ $noticeCategory->id }}" class="btn btn-sm btn-warning edit-notice-category-btn" title="Edit Notice Category">
+                                                                <i class="fa-solid fa-edit"></i>
+                                                            </button>
+                                                            @endcan
+                                                        @can('delete-notice-category')
+                                                            <form class="d-inline" action="{{ route('notice-categories.destroy', $noticeCategory->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                                @csrf
+                                                                @method('delete')
+                                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Notice Category">
+                                                                    <i class="fa-solid fa-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                            @endcan
                                                     </div>
                                                 </div>
                                             </div>

@@ -33,7 +33,7 @@
                     </div>
                     <div class="col-md-6 mt-2">
                         <label for="">Video Url</label>
-                        <input type="text" class="form-control" name="video_url" value="{{ $blog->video_url }}" placeholder="Video Url" />
+                        <input type="text" class="form-control" name="video_url" value="{{ isset($blog->video_url) ? 'https://youtu.be/'.$blog->video_url : '' }}" placeholder="Video Url" />
                         <span class="text-danger" id="">{{ $errors->has('video_url') ? $errors->first('video_url') : '' }}</span>
                     </div>
                 </div>

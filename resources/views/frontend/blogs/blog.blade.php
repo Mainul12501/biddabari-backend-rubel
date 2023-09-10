@@ -139,7 +139,7 @@
                     <div class="row justify-content-center">
                         @forelse($blogs as $blog)
                             <div class="col-lg-4 col-md-4 mt-3">
-                                <a href="{{ route('front.blog-details', ['id' => $blog->id,'slug' => $blog->slug]) }}">
+                                <a href="{{ route('front.blog-details', ['id' => $blog->id,'slug' => $blog->slug]) }}" class="w-100">
                                     <div class="blog-card">
                                             <img src="{{ asset($blog->image) }}" alt="Blog" class="w-100 img-fluid" style="height: 280px" />
                                         <div class="content">
@@ -268,3 +268,19 @@
 
 
 @endsection
+
+@push('script')
+    <script>
+        function equalheight() {
+            var maxHeight = 0;
+            $('.blog-card').each(function (index) {
+                if ($(this).height() > maxHeight)
+                    maxHeight = $(this).height();
+            });
+            $('.blog-card').height(maxHeight);
+        }
+        $(document).ready(function () {
+            equalheight();
+        });
+    </script>
+@endpush

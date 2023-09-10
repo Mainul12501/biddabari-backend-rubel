@@ -96,6 +96,11 @@
                             <option disabled selected>Select a Pdf Category</option>
                             @foreach($pdfStoreCategories as $pdfStoreCategory)
                                 <option value="{{ $pdfStoreCategory->id }}">{{ $pdfStoreCategory->title }}</option>
+                                @if(!empty($pdfStoreCategory->pdfStoreCategories))
+                                    @if(count($pdfStoreCategory->pdfStoreCategories) > 0)
+                                        @include('backend.course-management.course.section-contents.pdf-category-loop', ['courseCategory' => $pdfStoreCategory, 'child' => 1])
+                                    @endif
+                                @endif
                             @endforeach
                         </select>
                     </div>
@@ -251,7 +256,7 @@
                     </div>
                     <div class="col-sm-7 select2-div {{ $sectionContent->has_class_xm == 0 ? 'd-none' : '' }} mt-2" id="classContentOf">
                         <label for="">Class Xm of?</label>
-                        <select name="course_section_content_id" required id="classXmOf" class="form-control select2" data-placeholder="Select a class">
+                        <select name="course_section_content_id"  id="classXmOf" class="form-control select2" data-placeholder="Select a class">
                             <option value=""></option>
                             @foreach($sectionContents as $sectionContentSelect)
                                 <option value="{{ $sectionContentSelect->id }}" {{ $sectionContent->course_section_content_id == $sectionContentSelect->id ? 'selected' : '' }}>{{ $sectionContentSelect->title }}</option>

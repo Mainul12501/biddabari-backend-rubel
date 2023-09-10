@@ -6,17 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Models\Backend\Course\Course;
 use App\Models\Backend\Course\CourseCategory;
 use App\Models\Backend\OrderManagement\ParentOrder;
+use App\Models\Backend\UserManagement\Student;
 use App\Models\Frontend\CourseOrder\CourseOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class CourseOrderController extends Controller
 {
+    //    permission seed done
     protected $courseOrders;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        abort_if(Gate::denies('manage-course-order'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (!empty($request->course_id))
         {
 //            $this->courseOrders = CourseOrder::whereCourseId($request->course_id)->get();
@@ -27,8 +32,9 @@ class CourseOrderController extends Controller
         }
         return view('backend.order-management.course-order.index', [
 //            'courses'   => Course::whereStatus(1)->get(),
-            'courseCategories'   => CourseCategory::whereStatus(1)->whereParentId(0)->get(),
+//            'courseCategories'   => CourseCategory::whereStatus(1)->whereParentId(0)->get(),
             'courseOrders'  => !empty($this->courseOrders) ? $this->courseOrders : '',
+            'courses'       => Course::where(['status' => 1])->latest()->get()
         ]);
     }
 
@@ -69,9 +75,20 @@ class CourseOrderController extends Controller
      */
     public function update(Request $request, string $id)
     {
-//        CourseOrder::updateCourseOrderStatus($request, $id);
-        ParentOrder::updateExamOrderStatus($request, $id);
-        return back()->with('success', 'Order Status Updated Successfully');
+        abort_if(Gate::denies('update-course-order'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        try {
+            $parentOrder = ParentOrder::updateExamOrderStatus($request, $id);
+            if ($request->status == 'approved')
+            {
+                $student = Student::whereUserId($parentOrder->user_id)->first();
+                $parentOrder->course->students()->attach($student->id);
+            }
+            return back()->with('success', 'Order Status Updated Successfully');
+        } catch (\Exception $exception)
+        {
+            return back()->with('error', $exception->getMessage());
+        }
+
     }
 
     /**
@@ -79,6 +96,7 @@ class CourseOrderController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-course-order'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 //        CourseOrder::find($id)->delete();
         ParentOrder::find($id)->delete();
         return back()->with('success', 'Order Deleted Successfully');
@@ -86,6 +104,7 @@ class CourseOrderController extends Controller
 
     public function changeContactStatus(Request $request, string $id)
     {
+        abort_if(Gate::denies('change-course-order-contact-status'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 //        $courseOrder =CourseOrder::find($id)->update(['contact_status' => $request->contact_status, 'checked_by' => auth()->id()]);
         $courseOrder = ParentOrder::find($id)->update(['contact_status' => $request->contact_status, 'checked_by' => auth()->id()]);
         return back()->with('success', 'Order Contact Status Updated Successfully');
@@ -93,6 +112,7 @@ class CourseOrderController extends Controller
 
     public function getCourseOrderDetails($id)
     {
+        abort_if(Gate::denies('course-order-details'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.order-management.course-order.course-order-details', [
 //            'courseOrder'   => CourseOrder::find($id),
             'courseOrder'   => ParentOrder::find($id),

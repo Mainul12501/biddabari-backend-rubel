@@ -11,6 +11,8 @@ use App\Models\Backend\UserManagement\Student;
 use App\Models\Backend\UserManagement\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class BatchExamController extends Controller
 {
@@ -21,6 +23,7 @@ class BatchExamController extends Controller
      */
     public function index(Request $request)
     {
+        abort_if(Gate::denies('manage-batch-exam'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (!empty($request->category_id))
         {
             $this->batchExams = BatchExamCategory::find($request->category_id)->batchExams;
@@ -39,6 +42,7 @@ class BatchExamController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-batch-exam'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -47,6 +51,7 @@ class BatchExamController extends Controller
      */
     public function store(BatchExamFormRequest $request)
     {
+        abort_if(Gate::denies('store-batch-exam'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         try {
             DB::transaction(function () use ($request) {
                 $this->batchExam = BatchExam::createOrUpdateCourse($request);
@@ -70,6 +75,7 @@ class BatchExamController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-batch-exam'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 //        if (isset($_GET['req_from']))
 //        {
 //            return response()->json(BatchExam::find($id));
@@ -86,6 +92,7 @@ class BatchExamController extends Controller
      */
     public function edit(string $id, Request $request)
     {
+        abort_if(Gate::denies('edit-batch-exam'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.batch-exam-management.batch-exams.edit', [
             'batchExam'    => BatchExam::where('id',$id)->with('batchExamCategories')->first(),
             'batchExamCategories'  => BatchExamCategory::whereStatus(1)->where('parent_id', 0)->get(),
@@ -98,6 +105,7 @@ class BatchExamController extends Controller
      */
     public function update(BatchExamFormRequest $request, string $id)
     {
+        abort_if(Gate::denies('update-batch-exam'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         try {
             DB::transaction(function () use ($request, $id) {
                 $this->batchExam = BatchExam::createOrUpdateCourse($request, $id);
@@ -125,6 +133,7 @@ class BatchExamController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-batch-exam'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->batchExam = BatchExam::find($id);
 //        if ($this->batchExam->id == 1)
 //        {
@@ -136,6 +145,7 @@ class BatchExamController extends Controller
 
     public function assignTeacherToBatchExam ($batchExamId)
     {
+        abort_if(Gate::denies('assign-batch-exam-teacher-page'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.batch-exam-management.batch-exams.assign-teacher', [
             'batchExam'   => BatchExam::find($batchExamId),
             'teachers'  => Teacher::whereStatus(1)->get()
@@ -144,6 +154,7 @@ class BatchExamController extends Controller
 
     public function assignTeacher (Request $request, $id)
     {
+        abort_if(Gate::denies('assign-batch-exam-teacher'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate(['teachers' => 'required']);
         $this->batchExam = BatchExam::find($id);
         $this->batchExam->teachers()->sync($request->teachers);
@@ -151,6 +162,7 @@ class BatchExamController extends Controller
     }
     public function detachTeacher (Request $request, $id)
     {
+        abort_if(Gate::denies('detach-batch-exam-teacher'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->batchExam = BatchExam::find($id);
         if (count($this->batchExam->teachers) > 1)
         {
@@ -162,6 +174,7 @@ class BatchExamController extends Controller
 
     public function assignStudentToBatchExam ($batchExamId)
     {
+        abort_if(Gate::denies('assign-batch-exam-student-page'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.batch-exam-management.batch-exams.assign-student', [
             'batchExam'   => BatchExam::find($batchExamId),
             'students'  => Student::whereStatus(1)->get()
@@ -170,6 +183,7 @@ class BatchExamController extends Controller
 
     public function assignStudent (Request $request, $id)
     {
+        abort_if(Gate::denies('assign-batch-exam-student'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $validator = $request->validate(['students' => 'required']);
         $this->batchExam = BatchExam::find($id);
         foreach ($this->batchExam->students as $student)
@@ -187,6 +201,7 @@ class BatchExamController extends Controller
     }
     public function detachStudent (Request $request, $id)
     {
+        abort_if(Gate::denies('detach-batch-exam-student'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->batchExam = BatchExam::find($id);
         $this->batchExam->students()->detach($request->student_id);
         return back()->with('success', 'Student assigned to Batch Exam Successfully.');
@@ -194,11 +209,13 @@ class BatchExamController extends Controller
 
     public function getBatchExamsByCategory($id)
     {
+//        abort_if(Gate::denies('manage-batch-exam'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return response()->json(BatchExamCategory::find($id)->batchExams);
     }
 
     public function showMasterExam ()
     {
+        abort_if(Gate::denies('show-batch-master-exam'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.batch-exam-management.batch-exams.master-exam', [
             'masterExam'    => BatchExam::where('is_master_exam', 1)->first()
         ]);

@@ -104,9 +104,11 @@
 {{--                                        </td>--}}
 {{--                                        <td>{{ $allOrder->chckedBy->name ?? '' }}</td>--}}
                                         <td>
+                                            @can('get-order-details')
                                             <a href="" data-order-id="{{ $allOrder->id }}" class="btn btn-sm show-order-details btn-warning mt-1" title="Change Order Status">
                                                 <i class="fa-solid fa-print"></i>
                                             </a>
+                                            @endcan
 {{--                                            <a href="" data-blog-category-id="{{ $allOrder->id }}" class="btn btn-sm btn-warning blog-category-edit-btn mt-1" title="Change Order Status">--}}
 {{--                                                <i class="fa-solid fa-edit"></i>--}}
 {{--                                            </a>--}}
@@ -115,13 +117,15 @@
 {{--                                                <i class="fa-solid fa-edit"></i>--}}
 {{--                                            </a>--}}
                                             <br>
-                                            <form class="d-inline" action="{{ route('course-orders.destroy', $allOrder->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-sm btn-danger mt-1" title="Delete Blog Category">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
+                                                @can('delete-course-order')
+                                                <form class="d-inline" action="{{ route('course-orders.destroy', $allOrder->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" class="btn btn-sm btn-danger mt-1" title="Delete Blog Category">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                                @endcan
                                         </td>
                                     </tr>
                                 @endforeach

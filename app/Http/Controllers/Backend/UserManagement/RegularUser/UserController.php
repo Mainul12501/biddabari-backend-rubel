@@ -8,7 +8,9 @@ use App\Models\Backend\UserManagement\Student;
 use App\Models\Backend\UserManagement\Teacher;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
@@ -18,6 +20,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        abort_if(Gate::denies('manage-user'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (isset($request->user_type))
         {
             $this->users    = User::all();
@@ -34,6 +37,7 @@ class UserController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-user'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.role-management.user.create',[
             'roles'   => Role::whereStatus(1)->get(),
         ]);
@@ -44,6 +48,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-user'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->user = User::createOrUpdateUser($request);
         foreach ($request->roles as $role)
         {
@@ -65,6 +70,7 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-user'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -73,6 +79,7 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
+        abort_if(Gate::denies('edit-user'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.role-management.user.create',[
             'roles'   => Role::whereStatus(1)->get(),
             'user'      => User::find($id)
@@ -84,6 +91,7 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-user'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->user = User::createOrUpdateUser($request, $id);
 
         foreach ($this->user->roles as $role)
@@ -111,6 +119,7 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-user'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if ($id != 1)
         {
             User::find($id)->delete();
@@ -122,6 +131,7 @@ class UserController extends Controller
 
     public function viewProfile()
     {
+        abort_if(Gate::denies('view-user-profile'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $user = User::find(auth()->id());
         $userDetails = '';
         $userType = '';
@@ -148,6 +158,7 @@ class UserController extends Controller
 
     public function studentChangePassword(Request $request, $id)
     {
+        abort_if(Gate::denies('admin-form-user-change-password'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->user = User::find($id);
         if (password_verify($request->old_password, $this->user->password))
         {
@@ -165,6 +176,7 @@ class UserController extends Controller
 
     public function allUsersPage(Request $request)
     {
+        abort_if(Gate::denies('all-users-page'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (isset($request->user_type) && $request->user_type == 'student')
         {
             $this->users    = Student::latest()->get();

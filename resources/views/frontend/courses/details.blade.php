@@ -221,19 +221,63 @@
                                                         <div class="courses-details-into ms-2">
                                                             <h3>Course Routine</h3>
                                                             <div class="card">
-                                                                @foreach($course->courseRoutines as $courseRoutine)
-                                                                    @if($courseEnrollStatus == 'true')
-                                                                        @if($courseRoutine->is_fack == 0)
-                                                                            <div class="card-header">
-                                                                                <span class="f-s-22"><span class="me-4">{{ showDate($courseRoutine->date_time) }} </span><span class="me-4">{{ $courseRoutine->day }} </span><span>{{ showTime($courseRoutine->date_time) }}</span></span>
-                                                                            </div>
-                                                                        @endif
-                                                                    @else
-                                                                        <div class="card-header">
-                                                                            <span class="f-s-22"><span class="me-4">{{ showDate($courseRoutine->date_time) }} </span><span class="me-4">{{ $courseRoutine->day }} </span><span>{{ showTime($courseRoutine->date_time) }}</span></span>
-                                                                        </div>
-                                                                    @endif
-                                                                @endforeach
+{{--                                                                @foreach($course->courseRoutines as $courseRoutine)--}}
+{{--                                                                    @if($courseEnrollStatus == 'true')--}}
+{{--                                                                        @if($courseRoutine->is_fack == 0)--}}
+{{--                                                                            <div class="card-header">--}}
+{{--                                                                                <span class="f-s-22"><span class="me-4">{{ showDate($courseRoutine->date_time) }} {{ showDate($courseRoutine->date_time) }} </span><span class="me-4">{{ $courseRoutine->day }} </span><span>{{ showTime($courseRoutine->date_time) }}</span></span>--}}
+{{--                                                                            </div>--}}
+{{--                                                                        @endif--}}
+{{--                                                                    @else--}}
+{{--                                                                        <div class="card-header">--}}
+{{--                                                                            <span class="f-s-22"><span class="me-4">{{ showDate($courseRoutine->date_time) }} {{ showDate($courseRoutine->date_time) }} </span><span class="me-4">{{ $courseRoutine->day }} </span><span>{{ showTime($courseRoutine->date_time) }}</span></span>--}}
+{{--                                                                        </div>--}}
+{{--                                                                    @endif--}}
+{{--                                                                @endforeach--}}
+
+                                                                    <div class="card-body">
+                                                                        <table class="table table-striped" id="file-datatable">
+                                                                            <thead>
+                                                                            <tr>
+                                                                                <th>#</th>
+                                                                                <th>Topic</th>
+                                                                                <th>Date</th>
+                                                                                <th>Day</th>
+                                                                                <th>Time</th>
+                                                                            </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                            @if(isset($course->courseRoutines))
+                                                                                @php($i = 0)
+                                                                                @foreach($course->courseRoutines as $courseRoutine)
+                                                                                    @if($courseEnrollStatus == 'true')
+                                                                                        @if($courseRoutine->is_fack == 0)
+                                                                                            <tr>
+                                                                                                <td>{{ ++$i }}</td>
+                                                                                                <td>{{ $courseRoutine->content_name }}</td>
+                                                                                                <td>{{ showDate($courseRoutine->date_time) }}</td>
+                                                                                                <td>{{ $courseRoutine->day }}</td>
+                                                                                                <td>{{ showTime($courseRoutine->date_time) }}</td>
+                                                                                            </tr>
+                                                                                        @endif
+                                                                                    @else
+                                                                                        @if($courseRoutine->is_fack == 1)
+                                                                                            <tr>
+                                                                                                <td>{{ ++$i }}</td>
+                                                                                                <td>{{ $courseRoutine->content_name }}</td>
+                                                                                                <td>{{ showDate($courseRoutine->date_time) }}</td>
+                                                                                                <td>{{ $courseRoutine->day }}</td>
+                                                                                                <td>{{ showTime($courseRoutine->date_time) }}</td>
+                                                                                            </tr>
+                                                                                        @endif
+                                                                                    @endif
+                                                                                @endforeach
+                                                                            @endif
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+
+
                                                             </div>
                                                         </div>
                                                     </div>

@@ -42,19 +42,25 @@
         </h3>
         <div class="col-sm-3">
             <div class="float-end">
-                <button type="button" data-notice-category-id="{{ $subCategory->id }}" class="btn btn-sm btn-info add-sub-category-btn" title="Add Sub Category">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-                <button type="button" data-notice-category-id="{{ $subCategory->id }}" class="btn btn-sm btn-warning edit-notice-category-btn" title="Edit Notice Category">
-                    <i class="fa-solid fa-edit"></i>
-                </button>
-                <form class="d-inline" action="{{ route('notice-categories.destroy', $subCategory->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                    @csrf
-                    @method('delete')
-                    <button type="submit" class="btn btn-sm btn-danger" title="Delete Notice Category">
-                        <i class="fa-solid fa-trash"></i>
+                @can('add-sub-cat-to-notice-category')
+                    <button type="button" data-notice-category-id="{{ $subCategory->id }}" class="btn btn-sm btn-info add-sub-category-btn" title="Add Sub Category">
+                        <i class="fa-solid fa-plus"></i>
                     </button>
-                </form>
+                @endcan
+                @can('edit-notice-category')
+                    <button type="button" data-notice-category-id="{{ $subCategory->id }}" class="btn btn-sm btn-warning edit-notice-category-btn" title="Edit Notice Category">
+                        <i class="fa-solid fa-edit"></i>
+                    </button>
+                    @endcan
+                @can('delete-notice-category')
+                    <form class="d-inline" action="{{ route('notice-categories.destroy', $subCategory->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                        @csrf
+                        @method('delete')
+                        <button type="submit" class="btn btn-sm btn-danger" title="Delete Notice Category">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </form>
+                    @endcan
             </div>
         </div>
     </div>

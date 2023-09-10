@@ -8,11 +8,11 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Product Authors</h4>
-                    <button type="button" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 product-category-modal-btn"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-product-authors')
+                        <button type="button" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 product-category-modal-btn"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
-
-
                     <table class="table" id="file-datatable">
                         <thead>
                         <tr>
@@ -38,16 +38,20 @@
                                         <a href="javascript:void(0)" class="badge bg-primary">{{ $productAuthor->status == 1 ? 'Published' : 'Unpublished' }}</a>
                                     </td>
                                     <td>
-                                        <a href="" data-product-category-id="{{ $productAuthor->id }}" class="btn btn-sm btn-warning product-category-edit-btn" title="Edit Authors">
-                                            <i class="fa-solid fa-edit"></i>
-                                        </a>
-                                        <form class="d-inline" action="{{ route('product-authors.destroy', $productAuthor->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                            @csrf
-                                            @method('delete')
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete Category">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </form>
+                                        @can('edit-product-authors')
+                                            <a href="" data-product-category-id="{{ $productAuthor->id }}" class="btn btn-sm btn-warning product-category-edit-btn" title="Edit Authors">
+                                                <i class="fa-solid fa-edit"></i>
+                                            </a>
+                                        @endcan
+                                        @can('delete-product-authors')
+                                            <form class="d-inline" action="{{ route('product-authors.destroy', $productAuthor->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Category">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+                                            @endcan
                                     </td>
                                 </tr>
                             @endforeach

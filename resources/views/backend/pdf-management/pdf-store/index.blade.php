@@ -8,7 +8,9 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">PDF Store</h4>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle open-modal text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-pdf')
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle open-modal text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <table class="table" id="file-datatable">
@@ -37,16 +39,20 @@
                                         </td>
                                         <td>{{ $pdfStore->slug }}</td>
                                         <td>
-                                            <a href="" data-blog-id="{{ $pdfStore->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Blog">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </a>
-                                            <form class="d-inline" action="{{ route('pdf-stores.destroy', $pdfStore->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Blog">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
+                                            @can('edit-pdf')
+                                                <a href="" data-blog-id="{{ $pdfStore->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Blog">
+                                                    <i class="fa-solid fa-edit"></i>
+                                                </a>
+                                            @endcan
+                                            @can('delete-pdf')
+                                                <form class="d-inline" action="{{ route('pdf-stores.destroy', $pdfStore->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete Blog">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                                @endcan
                                         </td>
                                     </tr>
                                 @endforeach
@@ -225,6 +231,7 @@
                 {
                     pdflink = base_url+data.file_url;
                 }
+                $('#pdf-container').empty();
                 var pdf = new PDFAnnotate("pdf-container", pdflink, {
                     onPageUpdated(page, oldData, newData) {
                         console.log(page, oldData, newData);

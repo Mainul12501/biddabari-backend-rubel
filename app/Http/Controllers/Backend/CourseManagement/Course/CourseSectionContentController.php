@@ -9,6 +9,8 @@ use App\Models\Backend\PdfManagement\PdfStoreCategory;
 use App\Models\Backend\QuestionManagement\QuestionStore;
 use App\Models\Backend\QuestionManagement\QuestionTopic;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class CourseSectionContentController extends Controller
 {
@@ -20,12 +22,13 @@ class CourseSectionContentController extends Controller
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-course-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (!empty(\request()->input('section_id')))
         {
             return view('backend.course-management.course.section-contents.index', [
                 'sectionContents'   => CourseSectionContent::whereCourseSectionId(\request()->input('section_id'))->latest()->get(),
                 'courseSections'   => CourseSection::whereCourseId(\request()->input('course_id'))->get(),
-                'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->select('id', 'title')->get(),
+                'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->where('parent_id', 0)->select('id', 'title')->get(),
             ]);
         }
         return back()->with('error', 'Please Select a Course Section to get it\'s contents.');
@@ -34,9 +37,15 @@ class CourseSectionContentController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        abort_if(Gate::denies('create-course-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $this->sectionContents = CourseSectionContent::where(['course_section_id' => $request->section_id, 'status' => 1])->select('id', 'title', 'course_section_id')->get();
+        if ($request->ajax())
+        {
+            return \response()->json($this->sectionContents);
+        }
+        return back();
     }
 
     /**
@@ -44,6 +53,7 @@ class CourseSectionContentController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-course-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate([
             'content_type' => 'required',
             'title' => 'required',
@@ -63,6 +73,7 @@ class CourseSectionContentController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-course-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         try {
             $this->sectionContent = CourseSectionContent::find($id);
             return view('backend.course-management.course.section-contents.show', [
@@ -81,6 +92,7 @@ class CourseSectionContentController extends Controller
      */
     public function edit(string $id)
     {
+        abort_if(Gate::denies('edit-course-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         try {
             $this->sectionContent = CourseSectionContent::find($id);
             return view('backend.course-management.course.section-contents.edit', [
@@ -99,6 +111,7 @@ class CourseSectionContentController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-course-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         CourseSectionContent::saveOrUpdateCourseSectionContent($request, $id);
         if ($request->ajax())
         {
@@ -113,12 +126,14 @@ class CourseSectionContentController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-course-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         CourseSectionContent::find($id)->delete();
         return  back()->with('success', 'Course Content deleted successfully.');
     }
 
     public function getContentForAddQuestion (Request $request)
     {
+        abort_if(Gate::denies('add-question-to-course-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.course-management.course.section-contents.include-add-que-to-contents', [
             'content'   => CourseSectionContent::find($request->section_content_id),
             'examType'  => $request->exam_type,
@@ -128,6 +143,7 @@ class CourseSectionContentController extends Controller
 
     public function getContentForAddClassQuestion (Request $request)
     {
+        abort_if(Gate::denies('add-question-to-course-section-content-class'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.course-management.course.section-contents.include-add-que-to-class-contents', [
             'content'   => CourseSectionContent::find($request->section_content_id),
             'examOf'  => $request->exam_of,
@@ -137,6 +153,7 @@ class CourseSectionContentController extends Controller
 
     public function getQuesByTopic (Request $request)
     {
+//        abort_if(Gate::denies('manage-course-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $question_topic_ids = explode(',', $request->question_topic_ids);
         foreach ($question_topic_ids as $question_topic_id)
         {
@@ -153,12 +170,14 @@ class CourseSectionContentController extends Controller
 
     public function assignQuestionToContent (Request $request)
     {
+        abort_if(Gate::denies('assign-question-to-course-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->sectionContent = CourseSectionContent::find($request->section_content_id);
         $this->sectionContent->questionStores()->attach($request->question_ids);
         return back()->with('success', 'Questions Added to this exam successfully.');
     }
     public function assignQuestionToClassContent (Request $request)
     {
+        abort_if(Gate::denies('assign-question-to-course-section-content-class'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->sectionContent = CourseSectionContent::find($request->section_content_id);
         $this->sectionContent->questionStoresForClassXm()->attach($request->question_ids);
         return back()->with('success', 'Questions Added to this exam successfully.');
@@ -166,6 +185,7 @@ class CourseSectionContentController extends Controller
 
     public function detachQuestionFromCourseContent(Request $request)
     {
+        abort_if(Gate::denies('detach-question-to-course-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         try {
             CourseSectionContent::find($request->content_id)->questionStores()->detach($request->question_id);
             return response()->json(['status' => 'success']);
@@ -177,6 +197,7 @@ class CourseSectionContentController extends Controller
 
     public function detachQuestionFromCourseClassContent(Request $request)
     {
+        abort_if(Gate::denies('detach-question-to-course-section-content-class'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         try {
             CourseSectionContent::find($request->content_id)->questionStoresForClassXm()->detach($request->question_id);
             return response()->json(['status' => 'success']);

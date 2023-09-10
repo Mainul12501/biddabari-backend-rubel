@@ -32,8 +32,8 @@
                                     <h5 class="ms-3 mt-2"><input type="checkbox" class="permission-category" data-permission-category-id="{{ $permissionCategory->id }}"> <span class="f-s-14">{{ $permissionCategory->name }}</span></h5>
                                     <div class="ms-5 permission-div" id="permissionCategory{{ $permissionCategory->id }}">
                                         @if(!empty($permissionCategory->permissions))
-                                            @foreach($permissionCategory->permissions as $permission)
-                                                <label for="" class="me-2"><input type="checkbox" @if(isset($role)) @if(!empty($role->permissions)) @foreach($role->permissions as $permissionDb) @if($permissionDb->id == $permission->id) checked @endif @endforeach @endif @endif class="permission-of-{{ $permissionCategory->id }} permission" name="permissions[]" value="{{ $permission->id }}"> <span>{{ $permission->title }}</span></label>
+                                            @foreach($permissionCategory->permissions as $permissionKey => $permission)
+                                                <label for="permission-{{ $key.$permissionKey }}" class="me-2 py-1"><input type="checkbox" @if(isset($role)) @if(!empty($role->permissions)) @foreach($role->permissions as $permissionDb) @if($permissionDb->id == $permission->id) checked @endif @endforeach @endif @endif class="permission-of-{{ $permissionCategory->id }} permission" name="permissions[]" value="{{ $permission->id }}" id="permission-{{ $key.$permissionKey }}"> <span >{{ $permission->title }}</span></label>
                                             @endforeach
                                         @endif
                                     </div>

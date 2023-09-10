@@ -9,7 +9,9 @@
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">{{ $course->title }} Trainers</h4>
                     <a href="{{ route('courses.index') }}" title="Back to Courses" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 m-r-50"><i class="fa-solid fa-arrow-left"></i></a>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('assign-course-teacher')
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <table class="table" id="file-datatable">
@@ -37,13 +39,15 @@
 {{--                                        <a href="" data-course-id="{{ $course->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Course">--}}
 {{--                                            <i class="mdi mdi-circle-edit-outline"></i>--}}
 {{--                                        </a>--}}
-                                        <form class="d-inline" action="{{ route('detach-teacher', $course->id) }}" method="post" onsubmit="return confirm('Are you sure to Detach this trainer from this course?')">
-                                            @csrf
-                                            <input type="hidden" name="teacher_id" value="{{ $teacher->id }}">
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Detach Student from this Course?">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </form>
+                                        @can('detach-course-teacher')
+                                            <form class="d-inline" action="{{ route('detach-teacher', $course->id) }}" method="post" onsubmit="return confirm('Are you sure to Detach this trainer from this course?')">
+                                                @csrf
+                                                <input type="hidden" name="teacher_id" value="{{ $teacher->id }}">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Detach Student from this Course?">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach

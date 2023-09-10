@@ -42,10 +42,30 @@ class ParentOrder extends Model
 
     protected static $xmOrder;
 
-    public static function storeXmOrderInfo($request, $id)
+    public static function storeXmOrderInfo($request, $id = null)
     {
         ParentOrder::updateOrCreate(['id' => $id], [
             'parent_model_id'           => $id,
+            'user_id'                   => auth()->id(),
+            'order_invoice_number'      => self::generateOrderNumber(),
+            'ordered_for'               => $request->ordered_for,
+            'payment_method'            => $request->payment_method,
+            'vendor'                    => $request->vendor,
+            'paid_to'                   => $request->paid_to,
+            'paid_from'                 => $request->paid_from,
+            'txt_id'                    => $request->txt_id,
+//            'paid_amount'   => $request->paid_amount,
+            'total_amount'              => $request->total_amount,
+            'coupon_code'               => $request->coupon_code,
+            'coupon_amount'             => $request->coupon_amount,
+            'batch_exam_subscription_id' => isset($request->batch_exam_subscription_id) ?? null,
+        ]);
+    }
+
+    public static function orderProduct($request, $id = null)
+    {
+        ParentOrder::updateOrCreate(['id' => $id], [
+            'parent_model_id'           => $request->parent_model_id,
             'user_id'                   => auth()->id(),
             'order_invoice_number'      => self::generateOrderNumber(),
             'ordered_for'               => $request->ordered_for,
@@ -90,6 +110,7 @@ class ParentOrder extends Model
 //        self::$xmOrder->contact_status  = $request->contact_status;
         self::$xmOrder->status  = $request->status;
         self::$xmOrder->save();
+        return self::$xmOrder;
     }
 
     public function user()

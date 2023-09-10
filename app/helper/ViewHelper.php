@@ -42,6 +42,15 @@ class ViewHelper
             return back()->with('error', $message);
         }
     }
+    public static function returnSuccessMessage ($message = null)
+    {
+        if (str()->contains(url()->current(), '/api/'))
+        {
+            return response()->json(['success' => $message], 200);
+        } else {
+            return back()->with('success', $message);
+        }
+    }
 
     public static function checkIfCourseIsEnrolled($course)
     {

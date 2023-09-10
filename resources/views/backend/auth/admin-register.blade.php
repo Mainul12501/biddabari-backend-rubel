@@ -99,14 +99,14 @@
 										</span>
                             @error('mobile')<span class="text-danger">{{ $errors->first('mobile') }}</span>@enderror
                         </div>
-                        <div class="wrap-input100 validate-input" data-bs-validate="">
-                            <input class="input100" type="text" name="institute_name" id="institute" placeholder="Institute Name">
-                            <span class="focus-input100"></span>
-                            <span class="symbol-input100">
-											<i class="fa-solid fa-mobile" aria-hidden="true"></i>
-										</span>
-                            @error('mobile')<span class="text-danger">{{ $errors->first('institute') }}</span>@enderror
-                        </div>
+{{--                        <div class="wrap-input100 validate-input" data-bs-validate="">--}}
+{{--                            <input class="input100" type="text" name="institute_name" id="institute" placeholder="Institute Name">--}}
+{{--                            <span class="focus-input100"></span>--}}
+{{--                            <span class="symbol-input100">--}}
+{{--											<i class="fa-solid fa-mobile" aria-hidden="true"></i>--}}
+{{--										</span>--}}
+{{--                            @error('mobile')<span class="text-danger">{{ $errors->first('institute') }}</span>@enderror--}}
+{{--                        </div>--}}
                         <div class="wrap-input100 validate-input" data-bs-validate = "Password is required">
                             <input class="input100" type="password" name="password" placeholder="Password">
                             <span class="focus-input100"></span>

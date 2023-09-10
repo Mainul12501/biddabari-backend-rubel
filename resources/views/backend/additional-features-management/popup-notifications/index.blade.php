@@ -8,7 +8,9 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Popup Notifications</h4>
-                    <button type="button" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 blog-category-modal-btn"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-notification')
+                        <button type="button" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 blog-category-modal-btn"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
 
@@ -44,9 +46,12 @@
                                             <a href="javascript:void(0)" class="badge bg-primary">{{ $popupNotification->status == 1 ? 'Published' : 'Unpublished' }}</a>
                                         </td>
                                         <td>
+                                            @can('edit-notification')
                                             <a href="" data-blog-category-id="{{ $popupNotification->id }}" class="btn btn-sm btn-warning blog-category-edit-btn" title="Edit Blog Category">
                                                 <i class="fa-solid fa-edit"></i>
                                             </a>
+                                            @endcan
+                                            @can('delete-notification')
                                             <form class="d-inline" action="{{ route('popup-notifications.destroy', $popupNotification->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
                                                 @csrf
                                                 @method('delete')
@@ -54,6 +59,7 @@
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
+                                                @endcan
                                         </td>
                                     </tr>
                                 @endforeach

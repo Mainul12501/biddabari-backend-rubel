@@ -43,10 +43,13 @@
                                         </td>
                                         <td>
                                             @if($contact->is_seen == 0)
+                                                @can('show-contact')
                                                 <a data-contact-id="{{ $contact->id }}" class="btn btn-sm btn-warning change-seen-btn change-seen-btn-{{ $contact->id }}" title="Edit Advertisement">
                                                     <i class="fa-solid fa-eye"></i>
                                                 </a>
+                                                @endcan
                                             @endif
+                                            @can('delete-contact')
                                             <form class="d-inline" action="{{ route('contacts.destroy', $contact->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
                                                 @csrf
                                                 @method('delete')
@@ -54,6 +57,7 @@
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
+                                                @endcan
                                         </td>
                                     </tr>
                                 @endforeach

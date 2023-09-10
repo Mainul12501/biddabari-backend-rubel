@@ -5,15 +5,19 @@ namespace App\Http\Controllers\Backend\OrderManagement;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\OrderManagement\ParentOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductOrderController extends Controller
 {
+    //    permission seed done
     protected $productOrders;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        abort_if(Gate::denies('manage-product-order'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 //        if (!empty($request->category_id))
 //        {
 //            $this->examOrders = ExamOrder::whereExamCategoryId($request->category_id)->get();
@@ -65,6 +69,7 @@ class ProductOrderController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-product-order'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         ParentOrder::updateExamOrderStatus($request, $id);
         return back()->with('success', 'Order Status Updated Successfully');
     }
@@ -74,12 +79,14 @@ class ProductOrderController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-product-order'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         ParentOrder::find($id)->delete();
         return back()->with('success', 'Order Deleted Successfully');
     }
 
     public function changeContactStatus(Request $request, string $id)
     {
+        abort_if(Gate::denies('change-product-order-contact-status'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $courseOrder = ParentOrder:: find($id)->update(['contact_status' => $request->contact_status, 'checked_by' => auth()->id()]);
         return back()->with('success', 'Order Contact Status Updated Successfully');
     }

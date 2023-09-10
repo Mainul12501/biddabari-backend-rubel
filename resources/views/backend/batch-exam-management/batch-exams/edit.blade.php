@@ -54,7 +54,7 @@
 
                 <div class="col-md-6 mt-2">
                     <label for="">Featured Video</label>
-                    <input type="text" value="{{ isset($batchExam->featured_video_url) ? 'https://www.youtube.com/watch?v='.$batchExam->featured_video_url : '' }}" name="featured_video_url" class="form-control" placeholder="Featured Video" />
+                    <input type="text" value="{{ isset($batchExam->featured_video_url) ? 'https://youtu.be/'.$batchExam->featured_video_url : '' }}" name="featured_video_url" class="form-control" placeholder="Featured Video" />
                     <span class="text-danger" id="featured_video_url"></span>
                 </div>
                 <div class="col-md-6 mt-2">
@@ -63,6 +63,7 @@
                     <span class="text-danger" id="banner"></span>
 
                 </div>
+
                 <div class="col-md-6 mt-2">
                     @if(isset($batchExam))
                         <div>
@@ -157,6 +158,7 @@
                         <label for="someSwitchOptionSuccess" class="label-info"></label>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Backend\BatchExamManagement;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\BatchExamManagement\BatchExamSection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class BatchExamSectionController extends Controller
 {
@@ -14,6 +16,7 @@ class BatchExamSectionController extends Controller
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-batch-exam-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.batch-exam-management.batch-exam-sections.index', [
             'batchExamSections'   => BatchExamSection::whereBatchExamId(\request()->input('batch_exam_id'))->get(),
         ]);
@@ -24,6 +27,7 @@ class BatchExamSectionController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-batch-exam-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -32,6 +36,7 @@ class BatchExamSectionController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-batch-exam-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate(['title' => 'required', 'available_at' => 'required',]);
         BatchExamSection::createOrUpdateCourseSection($request);
         return back()->with('success', 'Batch Exam Section Created Successfully.');
@@ -42,6 +47,7 @@ class BatchExamSectionController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-batch-exam-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -50,6 +56,7 @@ class BatchExamSectionController extends Controller
      */
     public function edit(string $id)
     {
+        abort_if(Gate::denies('edit-batch-exam-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return response()->json(BatchExamSection::find($id));
     }
 
@@ -58,6 +65,7 @@ class BatchExamSectionController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-batch-exam-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate(['title' => 'required', 'available_at' => 'required',]);
         BatchExamSection::createOrUpdateCourseSection($request, $id);
         return back()->with('success', 'Batch Exam Section Updated Successfully.');
@@ -68,6 +76,7 @@ class BatchExamSectionController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-batch-exam-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         BatchExamSection::find($id)->delete();
         return back()->with('success', 'Batch Exam Section deleted Successfully.');
     }

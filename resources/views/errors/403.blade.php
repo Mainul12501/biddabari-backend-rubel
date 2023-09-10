@@ -1,4 +1,4 @@
-@extends('frontend.master')
+@extends('backend.master')
 
 @section('body')
 
@@ -12,7 +12,7 @@
                     <a href="{{ url()->previous() }}" class="default-btn">
                         Return To Previous Page
                     </a>
-                    <a href="{{ url('/') }}" class="default-btn">
+                    <a href="{{ url('/dashboard') }}" class="default-btn">
                         Return To Home Page
                     </a>
                 </div>

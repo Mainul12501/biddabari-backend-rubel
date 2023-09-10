@@ -8,10 +8,11 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Manage Users</h4>
-                    <a href="{{ route('users.create') }}" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4">
-{{--                        <i class="bx bx-plus-circle"></i>--}}
-                        <i class="fa-solid fa-circle-plus"></i>
-                    </a>
+                    @can('create-user')
+                        <a href="{{ route('users.create') }}" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4">
+                            <i class="fa-solid fa-circle-plus"></i>
+                        </a>
+                    @endcan
                 </div>
                 <div class="card-body">
 {{--                    <div class="row py-5">--}}
@@ -59,16 +60,20 @@
                                 </td>
                                 <td>{{ $user->status == 1 ? 'Published' : 'Unpublished' }}</td>
                                 <td class="">
-                                    <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">
-                                        <i class="fa-solid fa-edit"></i>
-                                    </a>
-                                    <form class="d-inline" action="{{ route('users.destroy', $user->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                        @csrf
-                                        @method('delete')
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </form>
+                                    @can('edit-user')
+                                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </a>
+                                    @endcan
+                                    @can('delete-user')
+                                        <form class="d-inline" action="{{ route('users.destroy', $user->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                            @csrf
+                                            @method('delete')
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach

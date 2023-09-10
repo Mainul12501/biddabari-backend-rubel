@@ -5,15 +5,19 @@ namespace App\Http\Controllers\Backend\OrderManagement;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\OrderManagement\ParentOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class AllOrdersController extends Controller
 {
+    //    permission seed done
     protected $allOrders;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        abort_if(Gate::denies('manage-all-order'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (!empty($request->order_type) && $request->order_type != 'all')
         {
             $this->allOrders = ParentOrder::where('ordered_for', $request->order_type)->latest()->get();

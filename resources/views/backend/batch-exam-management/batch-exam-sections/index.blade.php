@@ -9,7 +9,9 @@
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Batch Exam Sections</h4>
                     <a href="{{ route('batch-exams.index') }}" title="Back to Batch Exams" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 m-r-50"><i class="fa-solid fa-arrow-left"></i></a>
-                    <button type="button" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 course-section-modal-btn"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-batch-exam-section')
+                        <button type="button" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 course-section-modal-btn"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
 
@@ -38,12 +40,17 @@
                                             <a href="javascript:void(0)" class="badge bg-primary change-status" style="background-color: #8fbd56" data-section-id="{{ $batchExamSection->id }}">{{ $batchExamSection->status == 1 ? 'Published' : 'Unpublished' }}</a>
                                         </td>
                                         <td>
+                                            @can('manage-batch-exam-section-content')
                                             <a href="{{ route('batch-exam-section-contents.index', ['section_id' => $batchExamSection->id,'batch_exam_id' => $_GET['batch_exam_id']]) }}" data-course-section-id="{{ $batchExamSection->id }}" class="btn btn-sm btn-success content-add-btn" title="Add Batch Exam Section Content">
                                                 <i class="fa-solid fa-circle-plus"></i>
                                             </a>
+                                            @endcan
+                                            @can('edit-batch-exam-section')
                                             <a href="" data-course-section-id="{{ $batchExamSection->id }}" class="btn btn-sm btn-warning course-section-edit-btn" title="Edit Batch Exam Section">
                                                 <i class="fa-solid fa-edit"></i>
                                             </a>
+                                                @endcan
+                                            @can('delete-batch-exam-section')
                                             <form class="d-inline" action="{{ route('batch-exam-sections.destroy', $batchExamSection->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
                                                 @csrf
                                                 @method('delete')
@@ -51,6 +58,7 @@
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
+                                                @endcan
                                         </td>
                                     </tr>
                                 @endforeach
@@ -140,6 +148,7 @@
     @if($errors->any())
         <script>
             $(function () {
+                $('input[data-dtp="dtp_Nufud"]').val(currentDateTime);
                 $('#courseSectionModal').modal('show');
             })
         </script>

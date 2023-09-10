@@ -39,7 +39,7 @@
                         @if(count($products) > 0)
                             <div class="col-md-12 mt-5">
                                 <div class="text-center">
-                                    {{ $products->links() }}
+{{--                                    {{ $products->links() }}--}}
                                 </div>
                             </div>
                          @endif

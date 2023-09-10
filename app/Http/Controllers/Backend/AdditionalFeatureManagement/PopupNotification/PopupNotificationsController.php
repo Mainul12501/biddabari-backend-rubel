@@ -5,15 +5,19 @@ namespace App\Http\Controllers\Backend\AdditionalFeatureManagement\PopupNotifica
 use App\Http\Controllers\Controller;
 use App\Models\Backend\AdditionalFeatureManagement\PopupNotification;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Gate;
 
 class PopupNotificationsController extends Controller
 {
+    //    permission seed done
     protected $popupNotification;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-notification'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.additional-features-management.popup-notifications.index', [
             'popupNotifications'    => PopupNotification::all(),
         ]);
@@ -24,6 +28,7 @@ class PopupNotificationsController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-notification'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -32,6 +37,7 @@ class PopupNotificationsController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-notification'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         PopupNotification::saveOrUpdatePopupNotification($request);
         return back()->with('success', 'Popup Notification Created Successfully.');
     }
@@ -41,6 +47,7 @@ class PopupNotificationsController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-notification'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -49,6 +56,7 @@ class PopupNotificationsController extends Controller
      */
     public function edit(string $id)
     {
+        abort_if(Gate::denies('edit-notification'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return response()->json(PopupNotification::find($id));
     }
 
@@ -57,6 +65,7 @@ class PopupNotificationsController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-notification'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         PopupNotification::saveOrUpdatePopupNotification($request, $id);
         return back()->with('success', 'Popup Notification Updated Successfully.');
     }
@@ -66,6 +75,7 @@ class PopupNotificationsController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-notification'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->popupNotification = PopupNotification::find($id);
         if (file_exists($this->popupNotification->image))
         {

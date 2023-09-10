@@ -6,15 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Backend\PdfManagement\PdfStore;
 use App\Models\Backend\PdfManagement\PdfStoreCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class PdfStoreCategoryController extends Controller
 {
+    //    permission seed done
     protected $pdfCategory;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-pdf-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.pdf-management.pdf-store-category.index', [
             'categories'      => PdfStoreCategory::where('parent_id', 0)->orderBy('order', 'ASC')->get()
         ]);
@@ -25,6 +29,7 @@ class PdfStoreCategoryController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-pdf-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -118,6 +123,7 @@ class PdfStoreCategoryController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-pdf-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate([
             'title' => 'required',
             'image' => 'image'
@@ -137,6 +143,7 @@ class PdfStoreCategoryController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-pdf-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -145,6 +152,7 @@ class PdfStoreCategoryController extends Controller
      */
     public function edit(string $id, Request $request)
     {
+        abort_if(Gate::denies('edit-pdf-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->pdfCategory = PdfStoreCategory::find($id);
         if ($request->ajax())
         {
@@ -158,6 +166,7 @@ class PdfStoreCategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-pdf-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate([
             'title' => 'required',
             'image' => 'image'
@@ -180,6 +189,7 @@ class PdfStoreCategoryController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-pdf-category'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->deleteNestedCategory(PdfStoreCategory::find($id));
         return back()->with('success', 'PDF Store Category deleted successfully');
     }

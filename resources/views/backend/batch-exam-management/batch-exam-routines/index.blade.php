@@ -9,7 +9,9 @@
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Batch Exam Routines</h4>
                     <a href="{{ route('batch-exams.index') }}" title="Back to Batch Exams" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 m-r-50"><i class="fa-solid fa-arrow-left"></i></a>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-batch-exam-routine')
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <table class="table" id="file-datatable">
@@ -39,9 +41,12 @@
                                             <a href="javascript:void(0)" class="nav-link">{{ $batchExamRoutine->status == 1 ? 'Published' : 'Unpublished' }}</a>
                                         </td>
                                         <td>
+                                            @can('edit-batch-exam-routine')
                                             <a href="" data-course-routine-id="{{ $batchExamRoutine->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Batch Exam Routine">
                                                 <i class="fa-solid fa-edit"></i>
                                             </a>
+                                            @endcan
+                                            @can('delete-batch-exam-routine')
                                             <form class="d-inline" action="{{ route('batch-exam-routines.destroy', $batchExamRoutine->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
                                                 @csrf
                                                 @method('delete')
@@ -49,6 +54,7 @@
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
+                                                @endcan
                                         </td>
                                     </tr>
                                 @endforeach
@@ -103,6 +109,7 @@
             //     format: 'YYYY-MM-DD HH:mm',
             //     minDate : new Date(),
             // });
+            $("#dateTime").val(currentDateTime);
             $("#dateTime").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0})
         });
     </script>

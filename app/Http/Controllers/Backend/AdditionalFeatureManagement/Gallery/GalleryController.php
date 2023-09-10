@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Backend\Gallery\Gallery;
 use App\Models\Backend\Gallery\GalleryImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class GalleryController extends Controller
 {
+    //    permission seed done
     protected $gallery;
 
     /**
@@ -16,6 +19,7 @@ class GalleryController extends Controller
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-gallery'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.additional-features-management.gallery.index', ['galleries' => Gallery::latest()->get()]);
     }
 
@@ -24,6 +28,7 @@ class GalleryController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-gallery'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -32,6 +37,7 @@ class GalleryController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-gallery'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate(['title' => 'required']);
         Gallery::createOrUpdateGallery($request);
         if ($request->ajax())
@@ -47,6 +53,7 @@ class GalleryController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-gallery'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return response()->json(Gallery::find($id));
     }
 
@@ -55,6 +62,7 @@ class GalleryController extends Controller
      */
     public function edit(string $id)
     {
+        abort_if(Gate::denies('edit-gallery'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return response()->json(Gallery::find($id));
 //        return view('backend.additional-features-management.advertisement.edit', ['advertisement' => Advertisement::find($id)]);
     }
@@ -64,6 +72,7 @@ class GalleryController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-gallery'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate(['title' => 'required']);
         Gallery::createOrUpdateGallery($request, $id);
         return back()->with('success', 'Gallery Updated Successfully.');
@@ -74,6 +83,7 @@ class GalleryController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-gallery'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->gallery = Gallery::find($id);
         if (file_exists($this->gallery->banner))
         {
@@ -85,6 +95,7 @@ class GalleryController extends Controller
 
     public function addImages (Request $request)
     {
+        abort_if(Gate::denies('add-gallery-images'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate(['images' => 'required']);
         try {
             GalleryImage::addGalleryImages($request);
@@ -97,11 +108,13 @@ class GalleryController extends Controller
 
     public function getImages ($galleryId)
     {
-        return view('backend.additional-features-management.gallery.get-images', ['galleryImages' => Gallery::find($galleryId)->galleryImages]);
+        abort_if(Gate::denies('get-gallery-images'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        return view('backend.additional-features-management.gallery.get-images', ['galleryImages' => Gallery::find($galleryId)->galleryImages, 'requestFor' => 'show']);
     }
 
     public function deleteImage ($galleryImageId)
     {
+        abort_if(Gate::denies('delete-gallery-images'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $galleryImage = GalleryImage::find($galleryImageId);
         $galleryId = $galleryImage->gallery->id;
         if (file_exists($galleryImage->banner))

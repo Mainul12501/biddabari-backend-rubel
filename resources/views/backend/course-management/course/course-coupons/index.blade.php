@@ -9,7 +9,9 @@
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Course Coupons</h4>
                     <a href="{{ route('courses.index') }}" title="Back to Courses" class="rounded-circle text-white border-5 f-s-22 btn position-absolute end-0 m-r-50"><i class="fa-solid fa-arrow-left"></i></a>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-course-coupon')
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <table class="table" id="file-datatable">
@@ -37,16 +39,20 @@
                                         <td>{{ $courseCoupon->available_from }}</td>
                                         <td>{{ $courseCoupon->avaliable_to }}</td>
                                         <td>
-                                            <a href="" data-course-coupon-id="{{ $courseCoupon->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Course Coupon">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </a>
-                                            <form class="d-inline" action="{{ route('course-coupons.destroy', $courseCoupon->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Course Coupon">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
+                                            @can('edit-course-coupon')
+                                                <a href="" data-course-coupon-id="{{ $courseCoupon->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Course Coupon">
+                                                    <i class="fa-solid fa-edit"></i>
+                                                </a>
+                                            @endcan
+                                            @can('delete-course-coupon')
+                                                <form class="d-inline" action="{{ route('course-coupons.destroy', $courseCoupon->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete Course Coupon">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach
@@ -95,6 +101,7 @@
         // $('#dateTime2').bootstrapMaterialDatePicker({
         //     format: 'YYYY-MM-DD HH:mm'
         // });
+        $('input[data-dtp="dtp_Nufud"]').val(currentDateTime);
         $("#dateTime").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
         $("#dateTime1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
         $("#dateTime2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});

@@ -34,7 +34,7 @@ class Blog extends Model
             'blog_category_id'          => $request->blog_category_id,
             'title'                     => $request->title,
             'sub_title'                 => $request->sub_title,
-            'video_url'                 => $request->video_url,
+            'video_url'                 => isset($request->video_url) ? explode('https://youtu.be/', $request->video_url)[1] : '',
             'image'                     => imageUpload($request->file('image'), 'blog-management/blogs/', 'blog-', '', '800', (isset($id) ? Blog::find($id)->image : null) ),
             'body'                      => $request->body,
             'slug'                      => str_replace(' ', '-', $request->title),

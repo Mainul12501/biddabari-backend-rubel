@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Backend\Course\Course;
 use App\Models\Backend\Course\CourseRoutine;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class CourseRoutineController extends Controller
 {
@@ -15,6 +17,7 @@ class CourseRoutineController extends Controller
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-course-routine'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (!empty(request()->input('course_id')))
         {
             return view('backend.course-management.course.course-routines.index', [
@@ -29,6 +32,7 @@ class CourseRoutineController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-course-routine'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -37,6 +41,7 @@ class CourseRoutineController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-course-routine'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate(['date_time' => 'required','day' => 'required']);
         CourseRoutine::createOrUpdateCourseRoutines($request);
         return back()->with('success', 'Course Routine Created Successfully');
@@ -47,6 +52,7 @@ class CourseRoutineController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-course-routine'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -55,6 +61,7 @@ class CourseRoutineController extends Controller
      */
     public function edit(string $id)
     {
+        abort_if(Gate::denies('edit-course-routine'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.course-management.course.course-routines.edit', [
             'courseRoutine'   => CourseRoutine::find($id),
         ]);
@@ -65,6 +72,7 @@ class CourseRoutineController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-course-routine'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         CourseRoutine::createOrUpdateCourseRoutines($request, $id);
         return back()->with('success', 'Course Routine Updated Successfully');
     }
@@ -74,6 +82,7 @@ class CourseRoutineController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-course-routine'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         CourseRoutine::find($id)->delete();
         return back()->with('success', 'Course Routine deleted Successfully');
     }

@@ -49,7 +49,7 @@
                                                         <div class="accordion-content">
                                                             @foreach($batchExamSection->batchExamSectionContents as $batchExamSectionContent)
                                                                 @if($batchExamSectionContent->content_type == 'pdf')
-                                                                    <a href="{{ route('front.student.show-batch-exam-pdf', ['content_id' => $batchExamSectionContent->id]) }}" target="_blank" class="w-100">
+                                                                    <a href="{{ route('front.student.show-batch-exam-pdf', ['content_id' => $batchExamSectionContent->id]) }}" target="_blank" class="w-100 show-pdf">
                                                                         <div class="accordion-content-list pt-2 pb-0">
                                                                             <div class="accordion-content-left">
 
@@ -165,6 +165,38 @@
                 $('#printHere').html(data);
             }
         })
+    })
+</script>
+<script>
+    $(document).on('click', '.show-pdf', function () {
+        event.preventDefault();
+        var sectionContentId = $(this).attr('data-content-id');
+        $.ajax({
+            url: base_url+"student/batch-exam-show-pdf/"+sectionContentId,
+            method: "GET",
+            success: function (data) {
+                var pdflink = '';
+                if(data.sectionContent.pdf_link != null )
+                {
+                    pdflink = data.sectionContent.pdf_link;
+                } else {
+                    pdflink = base_url+data.sectionContent.pdf_file;
+                }
+                var pdf = new PDFAnnotate("pdf-container", pdflink, {
+                    onPageUpdated(page, oldData, newData) {
+                        console.log(page, oldData, newData);
+                    },
+                    ready() {
+                        console.log("Plugin initialized successfully");
+                    },
+                    scale: 1.5,
+                    pageImageCompression: "MEDIUM", // FAST, MEDIUM, SLOW(Helps to control the new PDF file size)
+                });
+                // $('#pdfContentPrintDiv').html(data);
+                $('.show-pdf-modal').modal('show');
+            }
+        })
+
     })
 </script>
 {{--    video --}}

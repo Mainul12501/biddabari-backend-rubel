@@ -49,21 +49,20 @@
                                     <th>#</th>
                                     <th>Order No.</th>
                                     <th>Exam Title</th>
-{{--                                    <th>C.Image</th>--}}
-{{--                                    <th>Price</th>--}}
-{{--                                    <th>Discount</th>--}}
-                                    <th>Total</th>
-                                    <th>Paid</th>
-                                    <th>Due</th>
-                                    <th>Vendor</th>
-                                    <th>Paid Form</th>
-                                    <th>Paid to</th>
+                                    <th>S. Name</th>
+                                    <th>Payment</th>
+                                    <th>Payment Info</th>
+{{--                                    <th>Vendor</th>--}}
+{{--                                    <th>Paid Form</th>--}}
+{{--                                    <th>Paid to</th>--}}
                                     <th>Txt Id</th>
                                     <th>Enroll Date</th>
 {{--                                    <th>Payment Status</th>--}}
-                                    <th>Contact Status</th>
-                                    <th>Order Status</th>
-                                    <th>Contacted By</th>
+{{--                                    <th>Contact Status</th>--}}
+                                    <th>Status</th>
+                                    @can('change-batch-exam-contact-status')
+                                        <th>Contacted By</th>
+                                    @endcan
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -74,34 +73,42 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>#{{ $examOrder->order_invoice_number }}</td>
                                         <td>{{ $examOrder->batchExam->title }}</td>
-{{--                                        <td>--}}
-{{--                                            <img src="{{ asset($examOrder->course->banner) }}" alt="" style="height: 70px" />--}}
-{{--                                        </td>--}}
-{{--                                        <td>{{ $examOrder->course->price }}</td>--}}
-{{--                                        <td>{{ $totalDiscount = $examOrder->course->discount_type == 1 ? $examOrder->course->discount_amount : ($examOrder->course->discount_amount * $examOrder->course->price)/100 }}</td>--}}
-                                        <td>{{ $examOrder->total_amount }}</td>
-                                        <td>{{ $examOrder->paid_amount ?? 0 }}</td>
-                                        <td>{{ $examOrder->total_amount - $examOrder->paid_amount  }}</td>
-                                        <td>{{ $examOrder->vendor ?? '' }}</td>
-                                        <td>{{ $examOrder->paid_from }}</td>
-                                        <td>{{ $examOrder->paid_to }}</td>
+                                        <td>{{ $examOrder->user->name }} <br> {{ $examOrder->user->mobile }}</td>
+                                        <td>
+                                            Total: {{ $examOrder->total_amount }} <br>
+                                            Paid: {{ $examOrder->paid_amount ?? 0 }} <br>
+                                            Due: {{ $examOrder->total_amount - $examOrder->paid_amount }}
+                                        </td>
+                                        <td>From- {{ $examOrder->paid_from }} <br> To- {{ $examOrder->paid_to }} <br> Vendor- {{ $examOrder->vendor }}  </td>
+{{--                                        <td>{{ $examOrder->vendor ?? '' }}</td>--}}
+{{--                                        <td>{{ $examOrder->paid_from }}</td>--}}
+{{--                                        <td>{{ $examOrder->paid_to }}</td>--}}
                                         <td>{{ $examOrder->txt_id }}</td>
                                         <td>{{ $examOrder->created_at->format('d M, Y') }}</td>
 {{--                                        <td>{{ $examOrder->payment_status }}</td>--}}
                                         <td>
-                                            <a href="javascript:void(0)" class="badge bg-primary m-1"> {{ $examOrder->contact_status }}</a>
+                                            <span href="javascript:void(0)" class="badge bg-primary m-1">Contact - {{ $examOrder->contact_status }}</span>
+                                            <br>
+                                            <span href="javascript:void(0)" class="badge bg-primary m-1">Order - {{ $examOrder->status }}</span>
                                         </td>
+{{--                                        <td>--}}
+{{--                                            <a href="javascript:void(0)" class="badge bg-primary">{{ $examOrder->status }}</a>--}}
+{{--                                        </td>--}}
+                                        @can('change-batch-exam-contact-status')
+                                            <td>{{ $examOrder->chckedBy->name ?? '' }}</td>
+                                        @endcan
                                         <td>
-                                            <a href="javascript:void(0)" class="badge bg-primary">{{ $examOrder->status }}</a>
-                                        </td>
-                                        <td>{{ $examOrder->chckedBy->name ?? '' }}</td>
-                                        <td>
+                                            @can('update-batch-exam-order')
                                             <a href="" data-blog-category-id="{{ $examOrder->id }}" class="btn btn-sm btn-warning blog-category-edit-btn" title="Change Order Status">
                                                 <i class="fa-solid fa-edit"></i>
                                             </a>
-                                            <a href="" data-blog-category-id="{{ $examOrder->id }}" class="btn btn-sm btn-primary blog-category-edit-btnx" title="Change Order Status">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </a>
+                                            @endcan
+{{--                                            @can('change-batch-exam-contact-status')--}}
+{{--                                            <a href="" data-blog-category-id="{{ $examOrder->id }}" class="btn btn-sm btn-primary blog-category-edit-btnx" title="Change Order Status">--}}
+{{--                                                <i class="fa-solid fa-edit"></i>--}}
+{{--                                            </a>--}}
+{{--                                                @endcan--}}
+                                            @can('delete-batch-exam-order')
                                             <form class="d-inline" action="{{ route('exam-orders.destroy', $examOrder->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
                                                 @csrf
                                                 @method('delete')
@@ -109,6 +116,7 @@
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
+                                                @endcan
                                         </td>
                                     </tr>
                                 @endforeach

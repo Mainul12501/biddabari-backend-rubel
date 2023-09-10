@@ -8,7 +8,9 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Circulars</h4>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle open-modal text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-job-circular')
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle open-modal text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <table class="table" id="file-datatable">
@@ -47,23 +49,29 @@
                                             <img src="{{ asset($circular->image) }}" alt="" style="height: 70px" />
                                         </td>
                                         <td>
-                                            <a href="" class="badge badge-sm bg-primary">{{ $circular->is_featured == 1 ? 'Featured' : 'Not Featured' }}</a>
-                                            <a href="" class="badge badge-sm bg-primary">{{ $circular->status == 1 ? 'Published' : 'Unpublished' }}</a>
+                                            <span href="" class="badge badge-sm bg-primary">{{ $circular->is_featured == 1 ? 'Featured' : 'Not Featured' }}</span>
+                                            <span href="" class="badge badge-sm bg-primary">{{ $circular->status == 1 ? 'Published' : 'Unpublished' }}</span>
                                         </td>
                                         <td>
-                                            <a href="" data-blog-id="{{ $circular->id }}" class="btn btn-sm btn-info view-btn" title="View">
-                                                <i class="fa-solid fa-eye"></i>
-                                            </a>
-                                            <a href="" data-blog-id="{{ $circular->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Blog">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </a>
-                                            <form class="d-inline" action="{{ route('circulars.destroy', $circular->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Blog">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
+                                            @can('show-job-circular')
+                                                <a href="" data-blog-id="{{ $circular->id }}" class="btn btn-sm btn-info view-btn" title="View">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </a>
+                                            @endcan
+                                            @can('edit-job-circular')
+                                                <a href="" data-blog-id="{{ $circular->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Blog">
+                                                    <i class="fa-solid fa-edit"></i>
+                                                </a>
+                                                @endcan
+                                            @can('delete-job-circular')
+                                                <form class="d-inline" action="{{ route('circulars.destroy', $circular->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete Blog">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                                @endcan
                                         </td>
                                     </tr>
                                 @endforeach

@@ -8,16 +8,21 @@ use App\Models\Backend\ExamManagement\Exam;
 use App\Models\Backend\ExamManagement\ExamCategory;
 use App\Models\Backend\ExamManagement\ExamOrder;
 use App\Models\Backend\OrderManagement\ParentOrder;
+use App\Models\Backend\UserManagement\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class ExamOrderController extends Controller
 {
+    //    permission seed done
     protected $examOrders;
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        abort_if(Gate::denies('manage-batch-exam-order'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 //        if (!empty($request->category_id))
 //        {
 //            $this->examOrders = ExamOrder::whereExamCategoryId($request->category_id)->get();
@@ -69,8 +74,19 @@ class ExamOrderController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        ParentOrder::updateExamOrderStatus($request, $id);
-        return back()->with('success', 'Order Status Updated Successfully');
+        abort_if(Gate::denies('update-batch-exam-order'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        try {
+            $parentOrder = ParentOrder::updateExamOrderStatus($request, $id);
+            if ($request->status == 'approved')
+            {
+                $student = Student::whereUserId($parentOrder->user_id)->first();
+                $parentOrder->batchExam->students()->attach($student->id);
+            }
+            return back()->with('success', 'Order Status Updated Successfully');
+        } catch (\Exception $exception)
+        {
+            return back()->with('error', $exception->getMessage());
+        }
     }
 
     /**
@@ -78,12 +94,14 @@ class ExamOrderController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-batch-exam-order'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         ParentOrder::find($id)->delete();
         return back()->with('success', 'Order Deleted Successfully');
     }
 
     public function changeContactStatus(Request $request, string $id)
     {
+        abort_if(Gate::denies('change-batch-exam-contact-status'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $courseOrder = ParentOrder:: find($id)->update(['contact_status' => $request->contact_status, 'checked_by' => auth()->id()]);
         return back()->with('success', 'Order Contact Status Updated Successfully');
     }

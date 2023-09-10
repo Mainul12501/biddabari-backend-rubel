@@ -8,7 +8,9 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Notices</h4>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#noticeModal" class="rounded-circle open-modal text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @can('create-notice')
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#noticeModal" class="rounded-circle open-modal text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <table class="table" id="file-datatable">
@@ -40,19 +42,25 @@
                                         <a href="" class="badge badge-sm bg-primary">{{ $notice->status == 1 ? 'Published' : 'Unpublished' }}</a>
                                     </td>
                                     <td>
-                                        <button type="button" data-notice-id="{{ $notice->id }}" class="btn btn-sm btn-primary show-notice-btn" title="Show Notice">
-                                            <i class="fa-solid fa-eye"></i>
-                                        </button>
-                                        <button type="button" data-notice-id="{{ $notice->id }}" class="btn btn-sm btn-warning edit-notice-btn" title="Edit Notice">
-                                            <i class="fa-solid fa-edit"></i>
-                                        </button>
-                                        <form class="d-inline" action="{{ route('notices.destroy', $notice->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                            @csrf
-                                            @method('delete')
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete Notice">
-                                                <i class="fa-solid fa-trash"></i>
+                                        @can('show-notice')
+                                            <button type="button" data-notice-id="{{ $notice->id }}" class="btn btn-sm btn-primary show-notice-btn" title="Show Notice">
+                                                <i class="fa-solid fa-eye"></i>
                                             </button>
-                                        </form>
+                                        @endcan
+                                        @can('edit-notice')
+                                            <button type="button" data-notice-id="{{ $notice->id }}" class="btn btn-sm btn-warning edit-notice-btn" title="Edit Notice">
+                                                <i class="fa-solid fa-edit"></i>
+                                            </button>
+                                            @endcan
+                                        @can('delete-notice')
+                                            <form class="d-inline" action="{{ route('notices.destroy', $notice->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Notice">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+                                            @endcan
                                     </td>
                                 </tr>
                             @endforeach

@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Backend\CourseManagement\Course;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\Course\Course;
 use App\Models\Backend\Course\CourseSection;
+use App\Models\Backend\PdfManagement\PdfStoreCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class CourseSectionController extends Controller
 {
@@ -15,8 +18,10 @@ class CourseSectionController extends Controller
      */
     public function index()
     {
+        abort_if(Gate::denies('manage-course-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.course-management.course.course-sections.index', [
             'courseSections'   => CourseSection::whereCourseId(\request()->input('course_id'))->get(),
+            'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->where('parent_id', 0)->select('id', 'title')->get(),
         ]);
     }
 
@@ -25,6 +30,7 @@ class CourseSectionController extends Controller
      */
     public function create()
     {
+        abort_if(Gate::denies('create-course-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -33,6 +39,7 @@ class CourseSectionController extends Controller
      */
     public function store(Request $request)
     {
+        abort_if(Gate::denies('store-course-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate(['title' => 'required', 'available_at' => 'required',]);
         CourseSection::createOrUpdateCourseSection($request);
         return back()->with('success', 'Course Section Created Successfully.');
@@ -43,6 +50,7 @@ class CourseSectionController extends Controller
      */
     public function show(string $id)
     {
+        abort_if(Gate::denies('show-course-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //
     }
 
@@ -51,6 +59,7 @@ class CourseSectionController extends Controller
      */
     public function edit(string $id)
     {
+        abort_if(Gate::denies('edit-course-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return response()->json(CourseSection::find($id));
     }
 
@@ -59,6 +68,7 @@ class CourseSectionController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        abort_if(Gate::denies('update-course-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $request->validate(['title' => 'required', 'available_at' => 'required',]);
         CourseSection::createOrUpdateCourseSection($request, $id);
         return back()->with('success', 'Course Section Updated Successfully.');
@@ -69,6 +79,7 @@ class CourseSectionController extends Controller
      */
     public function destroy(string $id)
     {
+        abort_if(Gate::denies('delete-course-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         CourseSection::find($id)->delete();
         return back()->with('success', 'Course Section deleted Successfully.');
     }

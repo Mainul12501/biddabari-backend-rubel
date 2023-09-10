@@ -9,7 +9,9 @@
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Course Contents</h4>
                     <div class="position-absolute end-0">
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#courseContentModal" class="rounded-circle text-white border-5 text-light f-s-22 btn float-end me-4 course-section-modal-btn"><i class="fa-solid fa-circle-plus"></i></button>
+                        @can('create-course-section-content')
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#courseContentModal" class="rounded-circle text-white border-5 text-light f-s-22 btn float-end me-4 course-section-modal-btn"><i class="fa-solid fa-circle-plus"></i></button>
+                        @endcan
                         <a href="{{ route('course-sections.index', ['course_id' => $_GET['course_id']]) }}" class="rounded-circle text-white border-5 text-light f-s-22 btn float-end "><i class="fa-solid fa-arrow-left"></i></a>
                     </div>
                 </div>
@@ -63,22 +65,31 @@
                                             <a href="javascript:void(0)" class="badge badge-sm bg-primary">{{ $sectionContent->status == 1 ? 'Published' : 'Unpublished' }}</a>
                                         </td>
                                         <td class="float-end">
-                                            @if($sectionContent->content_type == 'exam' || $sectionContent->content_type == 'written_exam')
-                                                <a href="" data-section-content-id="{{ $sectionContent->id }}" data-xm-type="{{ $sectionContent->content_type }}" class="btn btn-sm btn-primary add-question-modal-btn" title="Add Questions">
-                                                    <i class="fa-solid fa-plus"></i>
-                                                </a>
-                                            @endif
-                                            @if($sectionContent->has_class_xm == 1)
-                                                <a href="" data-section-content-id="{{ $sectionContent->id }}" data-xm-of="{{ $sectionContent->course_section_content_id }}" class="btn btn-sm btn-secondary add-class-question-modal-btn" title="Add Questions">
-                                                    <i class="fa-solid fa-plus-circle"></i>
-                                                </a>
-                                            @endif
+                                            @can('add-question-to-course-section-content')
+                                                @if($sectionContent->content_type == 'exam' || $sectionContent->content_type == 'written_exam')
+                                                    <a href="" data-section-content-id="{{ $sectionContent->id }}" data-xm-type="{{ $sectionContent->content_type }}" class="btn btn-sm btn-primary add-question-modal-btn" title="Add Exam Questions">
+                                                        <i class="fa-solid fa-plus"></i>
+                                                    </a>
+                                                @endif
+                                            @endcan
+                                            @can('add-question-to-course-section-content-class')
+                                                @if($sectionContent->has_class_xm == 1)
+                                                    <a href="" data-section-content-id="{{ $sectionContent->id }}" data-xm-of="{{ $sectionContent->course_section_content_id }}" class="btn btn-sm btn-secondary add-class-question-modal-btn" title="Add Class Exam Questions">
+                                                        <i class="fa-solid fa-plus-circle"></i>
+                                                    </a>
+                                                @endif
+                                                @endcan
+                                                @can('show-course-section-content')
                                             <a href="" data-section-content-id="{{ $sectionContent->id }}" class="btn btn-sm btn-success show-btn" title="Show Course">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
+                                                @endcan
+                                                @can('edit-course-section-content')
                                             <a href="" data-section-content-id="{{ $sectionContent->id }}" class="btn btn-sm btn-warning section-content-edit-btn" title="Edit Course">
                                                 <i class="fa-solid fa-edit"></i>
                                             </a>
+                                                @endcan
+                                                @can('delete-course-section-content')
                                             <form class="d-inline" action="{{ route('course-section-contents.destroy', $sectionContent->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
                                                 @csrf
                                                 @method('delete')
@@ -86,6 +97,7 @@
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
+                                                @endcan
                                         </td>
                                     </tr>
                                 @endforeach
@@ -161,6 +173,7 @@
             // $('#dateTime11').bootstrapMaterialDatePicker({format: 'YYYY-MM-DD HH:mm:ss'});
             // $('#dateTime12').bootstrapMaterialDatePicker({format: 'YYYY-MM-DD HH:mm:ss'});
             // $('#dateTime13').bootstrapMaterialDatePicker({format: 'YYYY-MM-DD HH:mm:ss'});
+            $('input[data-dtp="dtp_Nufud"]').val(currentDateTime);
             $("#datetimepicker").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0})
             $("#datetimepicker1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0})
             $("#datetimepicker2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0})

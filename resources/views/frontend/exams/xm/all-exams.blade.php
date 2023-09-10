@@ -62,7 +62,7 @@
                         <div class="col-md-12">
                             <div>
                                 <ul class="nav nav-pills all-course-page-nav-pills text-center">
-                                    <li class="nav-item mb-3"><button type="button" class="nav-link active border-danger btn py-0 mx-2 text-dark" style="border: 1px solid #F18C53" data-bs-toggle="pill" data-bs-target="#allCourses" ><span class="f-s-35">All Courses</span></button></li>
+                                    <li class="nav-item mb-3"><button type="button" class="nav-link active border-danger btn py-0 mx-2 text-dark" style="border: 1px solid #F18C53" data-bs-toggle="pill" data-bs-target="#allCourses" ><span class="f-s-35">All Exams</span></button></li>
                                     @foreach($examCategories as $index => $examCategory)
                                         <li class="nav-item mb-3"><button type="button" class="nav-link border-danger btn py-0 mx-2 text-dark" style="border: 1px solid #F18C53" data-bs-toggle="pill" data-bs-target="#{{ 'id'.$index }}"><span class="f-s-35">{{ $examCategory->name }}</span></button></li>
                                     @endforeach
@@ -323,6 +323,7 @@
                         if (index == 0)
                         {
                             label += '<label for="pak'+index+'" class=""><input type="radio" class="select-package" checked name="batch_exam_subscription_id" data-package-sell-price="'+(value.price - value.discount_amount)+'" value="'+value.id+'" id="pak'+index+'"> <span class="f-s-23"> &nbsp;'+value.package_title+' ('+(value.price - value.discount_amount)+'tk for '+value.package_duration_in_days+' days)</span></label><br/>';
+                            $('#totalAmount').val(value.price - value.discount_amount);
                         } else {
 
                             label += '<label for="pak'+index+'" class=""><input type="radio" class="select-package" name="batch_exam_subscription_id" data-package-sell-price="'+(value.price - value.discount_amount)+'" value="'+value.id+'" id="pak'+index+'"> <span class="f-s-23"> &nbsp;'+value.package_title+' ('+(value.price - value.discount_amount)+'tk for '+value.package_duration_in_days+' days)</span></label><br/>';

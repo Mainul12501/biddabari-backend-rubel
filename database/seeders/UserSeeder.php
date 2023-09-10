@@ -19,8 +19,16 @@ class UserSeeder extends Seeder
                 'id' => 1,
                 'name'  => 'Super Admin',
                 'email' => 'superadmin@biddabari.com',
+                'mobile' => '01911522517',
+                'password'  => Hash::make('super_admin'), // superadmin
+                'status'    => 1
+            ],
+            [
+                'id' => 2,
+                'name'  => 'Developer',
+                'email' => 'developer@biddabari.com',
                 'mobile' => '01646688970',
-                'password'  => Hash::make('superadmin'), // superadmin
+                'password'  => Hash::make('mainulislam'), // superadmin
                 'status'    => 1
             ],
         ]);
