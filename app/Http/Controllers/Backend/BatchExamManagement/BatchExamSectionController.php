@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\BatchExamManagement;
 
 use App\Http\Controllers\Controller;
 use App\Models\Backend\BatchExamManagement\BatchExamSection;
+use App\Models\Backend\PdfManagement\PdfStoreCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +20,7 @@ class BatchExamSectionController extends Controller
         abort_if(Gate::denies('manage-batch-exam-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.batch-exam-management.batch-exam-sections.index', [
             'batchExamSections'   => BatchExamSection::whereBatchExamId(\request()->input('batch_exam_id'))->get(),
+            'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->select('id', 'title')->get(),
         ]);
     }
 

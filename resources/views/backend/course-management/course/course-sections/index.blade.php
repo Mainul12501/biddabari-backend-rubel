@@ -210,6 +210,13 @@
             </div>
         </div>
     </div>
+    <div class="modal fade " id="courseContentShowModal" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg ">
+            <div class="modal-content" id="courseSectionContentShowForm">
+
+            </div>
+        </div>
+    </div>
     <div class="modal fade " id="setQuestionOnSectionContentModal" data-bs-backdrop="static" >
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content" id="">
@@ -483,7 +490,7 @@
                 // dataType: "JSON",
                 success: function (data) {
                     // console.log(data);
-                    $('#courseSectionContentForm').empty().append(data);
+                    $('#courseSectionContentShowForm').empty().append(data);
                     var summernote = $('#summernote');
                     var summernote1 = $('#summernote1');
                     var summernote2 = $('#summernote2');
@@ -498,7 +505,7 @@
                     summernote4.summernote('destroy');
                     summernote4.summernote();
                     $('.select2').select2();
-                    $('#courseContentModal').modal('show');
+                    $('#courseContentShowModal').modal('show');
                 }
             })
         })

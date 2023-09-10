@@ -84,10 +84,10 @@
                                 <div class="float-start">
                                     <div class="material-switch">
                                         <input id="someSwitchOptionInfo" name="status" type="checkbox" checked />
-                                        <span class="text-danger" id="status"></span>
                                         <label for="someSwitchOptionInfo" class="label-info"></label>
                                     </div>
                                     <label for="" class="switch-label">Active</label>
+                                    <span class="text-danger" id="status"></span>
                                 </div>
 
 {{--                                <input type="checkbox" id="switch4" name="is_featured" switch="warning" />--}}
