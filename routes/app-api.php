@@ -38,6 +38,7 @@ Route::prefix('v1')->name('api.')->group(function (){
     Route::get('app-all-courses-for-nav-tabs', [AppApiController::class, 'allCoursesForNavTabs']);
 
     Route::get('batch-exam-details/{xm_id}', [AppApiController::class, 'showBatchDetailsWithSections']);
+    Route::post('place-app-product-order', [AppApiController::class, 'placeProductOrder']);
 
     Route::middleware([
         'auth:sanctum',

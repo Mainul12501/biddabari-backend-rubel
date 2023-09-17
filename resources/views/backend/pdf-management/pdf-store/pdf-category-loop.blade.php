@@ -1,15 +1,15 @@
 @foreach($pdfStoreCategory->pdfStoreCategories as $index => $subCategory)
-    <option value="{{ $subCategory->id }}" >
+    <option value="{{ $subCategory->id }}" {{ isset($pdfStore) && $subCategory->id == $pdfStore->pdf_store_category_id ? 'selected' : '' }}>
         @for($i = 0; $i <= $child; $i++)
             {{ '>' }}
         @endfor
         {{ $subCategory->title }}
     </option>
-    @if(!empty($subCategory))
-        @if(count($subCategory->pdfStoreCategories) > 0)
-            @include('backend.pdf-management.pdf-store.pdf-category-loop', ['pdfStoreCategory' => $subCategory, 'child' => $child + $child, 'course' => $course ?? ''])
-        @endif
-    @endif
+{{--    @if(!empty($subCategory))--}}
+{{--        @if(count($subCategory->pdfStoreCategories) > 0)--}}
+{{--            @include('backend.pdf-management.pdf-store.pdf-category-loop', ['pdfStoreCategory' => $subCategory, 'child' => $child + $child, 'course' => $course ?? ''])--}}
+{{--        @endif--}}
+{{--    @endif--}}
 @endforeach
 
 

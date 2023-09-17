@@ -175,11 +175,11 @@
                                     </div>
                                     <div class="col-md-6 mt-3">
                                         <label for="questionImage">Que Image</label>
-                                        <input type="file" class="form-control" id="questionImage" name="question[0][question_image]" accept="image/*" />
+                                        <input type="file" class="form-control" id="questionImage" name="question[0][question_image]" accept="application/pdf,image/*" />
                                     </div>
                                     <div class="col-md-6 mt-3">
                                         <label for="queVidDes">Que Video Description</label>
-                                        <input type="text" class="form-control" id="queVidDes" name="question[0][question_video_link]" placeholder="Question Video Description" />
+                                        <input type="text" class="form-control" id="queVidDes" name="question[0][question_video_link]" placeholder="https://youtu.be/xxxxxxxxx" />
                                     </div>
 {{--                                    <div class="col-md-6 mt-3">--}}
 {{--                                        <label for="markPerQue">Mark Per Question</label>--}}
@@ -262,28 +262,37 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card written-ans-sec d-none" data-key-id="0" id="writtenAnsSection">
-                            <div class="card-header">
-                                <h3>Written Question Answer</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="row mt-2" >
-                                    <div class="col-md-12 mt-3">
-                                        <label for="">Written Question Answer</label>
-                                        <textarea name="question[0][written_que_ans]" id="summernote2" class="form-control" cols="30" rows="5"></textarea>
-                                    </div>
-                                    <div class="col-md-12 mt-3">
-                                        <label for="">Written Question Answer Description</label>
-                                        <textarea name="question[0][written_que_ans_description]" id="summernote3" class="form-control" cols="30" rows="5"></textarea>
-                                    </div>
-                                    <div class="col-md-4 mt-3">
-                                        <label for="">Written Question Answer Upload</label>
-                                        <input type="file" name="question[0][written_que_file]" class="form-control" />
+                            <div class="card-body pt-0 border-top-0">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label for="summernoteMcq">Answer Description</label>
+                                        <textarea name="question[0][mcq_ans_description]" class="" id="summernoteMcq" cols="30" rows="10"></textarea>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
+{{--                        <div class="card written-ans-sec d-none" data-key-id="0" id="writtenAnsSection">--}}
+{{--                            <div class="card-header">--}}
+{{--                                <h3>Written Question Answer</h3>--}}
+{{--                            </div>--}}
+{{--                            <div class="card-body">--}}
+{{--                                <div class="row mt-2" >--}}
+{{--                                    <div class="col-md-12 mt-3">--}}
+{{--                                        <label for="">Written Question Answer</label>--}}
+{{--                                        <textarea name="question[0][written_que_ans]" id="summernote2" class="form-control" cols="30" rows="5"></textarea>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="col-md-12 mt-3">--}}
+{{--                                        <label for="">Written Question Answer Description</label>--}}
+{{--                                        <textarea name="question[0][written_que_ans_description]" id="summernote3" class="form-control" cols="30" rows="5"></textarea>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="col-md-4 mt-3">--}}
+{{--                                        <label for="">Written Question Answer Upload</label>--}}
+{{--                                        <input type="file" name="question[0][written_que_file]" class="form-control" />--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
 
                         <div id="fullFormAppendDiv"></div>
                     </div>
@@ -368,6 +377,7 @@
             $('#summernote1').summernote({minHeight:150,inheritPlaceholder: true});
             $('#summernote2').summernote({minHeight:150,inheritPlaceholder: true});
             $('#summernote3').summernote({minHeight:150,inheritPlaceholder: true});
+            $('#summernoteMcq').summernote({minHeight:150,inheritPlaceholder: true});
         })
     </script>
     <!-- Register plugins onload end -->
@@ -386,6 +396,7 @@
         var secondSummernote = 22;
         var thirdSummernote = 33;
         var fourthSummernote = 44;
+        var fifthSummerNote = 55;
         $(document).on('click', '.full-form-append-btn', function () {
             var questionType = $('#questionType').val();
             if (questionType == '')
@@ -476,34 +487,42 @@
                     '                                        </div>\n' +
                     '                                    </div>\n' +
                     '                                </div>\n' +
-                    '                            </div>';
-                if (questionType == 'Written')
-                {
-                    div += '                            <div class="written-ans-sec" data-key-id="'+serial+'" id="writtenAnsSection">';
-                } else {
-                    div += '                            <div class="written-ans-sec d-none" data-key-id="'+serial+'" id="writtenAnsSection">';
-                }
-                div += '                                <div class="card-header">\n' +
-                    '                                    <h3>Written Question Answer</h3>\n' +
-                    '                                </div>\n' +
-                    '                                <div class="card-body">\n' +
-                    '                                    <div class="row mt-2" >\n' +
-                    '                                        <div class="col-md-12 mt-3">\n' +
-                    '                                            <label for="">Written Question Answer</label>\n' +
-                    '                                            <textarea name="question['+serial+'][written_que_ans]" id="summernote'+thirdSummernote+'" class="form-control" cols="30" rows="5"></textarea>\n' +
-                    '                                        </div>\n' +
-                    '                                        <div class="col-md-12 mt-3">\n' +
-                    '                                            <label for="">Written Question Answer Description</label>\n' +
-                    '                                            <textarea name="question['+serial+'][written_que_ans_description]" id="summernote'+fourthSummernote+'" class="form-control" cols="30" rows="5"></textarea>\n' +
-                    '                                        </div>\n' +
-                    '                                        <div class="col-md-4 mt-3">\n' +
-                    '                                            <label for="">Written Question Answer Upload</label>\n' +
-                    '                                            <input type="file" name="question['+serial+'][written_que_file]" class="form-control" />\n' +
-                    '                                        </div>\n' +
+                    '<div class="card-body pt-0 border-top-0">\n' +
+                    '                                <div class="row">\n' +
+                    '                                    <div class="col-md-12">\n' +
+                    '                                        <label for="wrongAns">Answer Description</label>\n' +
+                    '                                        <textarea name="question['+serial+'][mcq_ans_description]" class="" id="summernoteMcq'+fifthSummerNote+'" cols="30" rows="10"></textarea>\n' +
                     '                                    </div>\n' +
                     '                                </div>\n' +
                     '                            </div>\n' +
-                    '                        </div>\n' +
+                    '                            </div>';
+                // if (questionType == 'Written')
+                // {
+                //     div += '                            <div class="written-ans-sec" data-key-id="'+serial+'" id="writtenAnsSection">';
+                // } else {
+                //     div += '                            <div class="written-ans-sec d-none" data-key-id="'+serial+'" id="writtenAnsSection">';
+                // }
+                // div += '                                <div class="card-header">\n' +
+                //     '                                    <h3>Written Question Answer</h3>\n' +
+                //     '                                </div>\n' +
+                    // '                                <div class="card-body">\n' +
+                    // '                                    <div class="row mt-2" >\n' +
+                    // '                                        <div class="col-md-12 mt-3">\n' +
+                    // '                                            <label for="">Written Question Answer</label>\n' +
+                    // '                                            <textarea name="question['+serial+'][written_que_ans]" id="summernote'+thirdSummernote+'" class="form-control" cols="30" rows="5"></textarea>\n' +
+                    // '                                        </div>\n' +
+                    // '                                        <div class="col-md-12 mt-3">\n' +
+                    // '                                            <label for="">Written Question Answer Description</label>\n' +
+                    // '                                            <textarea name="question['+serial+'][written_que_ans_description]" id="summernote'+fourthSummernote+'" class="form-control" cols="30" rows="5"></textarea>\n' +
+                    // '                                        </div>\n' +
+                    // '                                        <div class="col-md-4 mt-3">\n' +
+                    // '                                            <label for="">Written Question Answer Upload</label>\n' +
+                    // '                                            <input type="file" name="question['+serial+'][written_que_file]" class="form-control" />\n' +
+                    // '                                        </div>\n' +
+                    // '                                    </div>\n' +
+                    // '                                </div>\n' +
+                    // '                            </div>\n' +
+                div +='                        </div>\n' +
                     '                    </div>';
                 $('#fullFormAppendDiv').append(div);
                 $('#currentAppendNumber').val(serial);
@@ -511,11 +530,13 @@
                 $('#summernote'+secondSummernote).summernote({minHeight:150,inheritPlaceholder: true});
                 $('#summernote'+thirdSummernote).summernote({minHeight:150,inheritPlaceholder: true});
                 $('#summernote'+fourthSummernote).summernote({minHeight:150,inheritPlaceholder: true});
+                $('#summernoteMcq'+fifthSummerNote).summernote({minHeight:150,inheritPlaceholder: true});
                 serial++;
                 firstSummernote++;
                 secondSummernote++;
                 thirdSummernote++;
                 fourthSummernote++;
+                fifthSummerNote++;
             }
             toastr.success('Question Form Created Successfully.');
         });
@@ -626,6 +647,7 @@
                     $('#summernote222').summernote({minHeight:150,inheritPlaceholder: true});
                     $('#summernote333').summernote({minHeight:150,inheritPlaceholder: true});
                     $('#summernote444').summernote({minHeight:150,inheritPlaceholder: true});
+                    $('#summernoteMcq555').summernote({minHeight:150,inheritPlaceholder: true});
                     $('#questionStoreEditModal').modal('show');
                 }
             })

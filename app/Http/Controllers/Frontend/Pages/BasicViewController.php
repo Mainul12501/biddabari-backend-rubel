@@ -33,7 +33,7 @@ class BasicViewController extends Controller
     protected $comments = [], $galleries = [], $galleryImage, $batchExams = [];
     public function home ()
     {
-        $this->courseCategories = CourseCategory::whereStatus(1)->where('parent_id', 0)->latest()->orderBy('order', 'ASC')->select('id', 'name', 'image', 'slug', 'icon')->get();
+        $this->courseCategories = CourseCategory::whereStatus(1)->where('parent_id', 0)->orderBy('order', 'ASC')->select('id', 'name', 'image', 'slug', 'icon', 'order', 'status')->get();
         $this->courses = Course::whereStatus(1)->latest()->select('id', 'title', 'sub_title', 'price', 'banner', 'total_video', 'total_audio', 'total_pdf', 'total_exam', 'total_note', 'total_zip', 'total_live', 'total_link','total_file','total_written_exam', 'slug', 'discount_type', 'discount_amount', 'starting_date_time')->take(8)->get();
         foreach ($this->courses as $course)
         {
@@ -83,6 +83,7 @@ class BasicViewController extends Controller
         foreach ($data as $datum)
         {
             $datum->banner = asset($datum->banner);
+            $datum->order_status = ViewHelper::checkIfCourseIsEnrolled($datum);
         }
         return response()->json(['courses' => $data]);
     }

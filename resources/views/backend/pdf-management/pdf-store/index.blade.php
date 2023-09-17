@@ -20,9 +20,9 @@
                                 <th>PDF Category</th>
                                 <th>Title</th>
 {{--                                <th>Ext Link</th>--}}
-                                <th>PDF file</th>
+{{--                                <th>PDF file</th>--}}
 {{--                                <th>Size</th>--}}
-                                <th>Slug</th>
+{{--                                <th>Slug</th>--}}
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -34,13 +34,16 @@
                                         <td>{{ $pdfStore->pdfStoreCategory->title }}</td>
                                         <td>{{ $pdfStore->title }}</td>
 {{--                                        <td><a href="{{ $pdfStore->file_external_link }}" target="_blank">External Link</a></td>--}}
+{{--                                        <td>--}}
+{{--                                            <a href="{{ asset($pdfStore->file_url) }}" class="show-pdf" data-id="{{ $pdfStore->id }}">{{ $pdfStore->title }}</a>--}}
+{{--                                        </td>--}}
+{{--                                        <td>{{ $pdfStore->slug }}</td>--}}
                                         <td>
-                                            <a href="{{ asset($pdfStore->file_url) }}" class="show-pdf" data-id="{{ $pdfStore->id }}">{{ $pdfStore->title }}</a>
-                                        </td>
-                                        <td>{{ $pdfStore->slug }}</td>
-                                        <td>
+                                            <a href="" data-id="{{ $pdfStore->id }}" class="btn btn-sm btn-secondary show-pdf" title="View Pdf">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
                                             @can('edit-pdf')
-                                                <a href="" data-blog-id="{{ $pdfStore->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Blog">
+                                                <a href="" data-blog-id="{{ $pdfStore->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Pdf">
                                                     <i class="fa-solid fa-edit"></i>
                                                 </a>
                                             @endcan
@@ -48,7 +51,7 @@
                                                 <form class="d-inline" action="{{ route('pdf-stores.destroy', $pdfStore->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
                                                     @csrf
                                                     @method('delete')
-                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete Blog">
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete Pdf">
                                                         <i class="fa-solid fa-trash"></i>
                                                     </button>
                                                 </form>

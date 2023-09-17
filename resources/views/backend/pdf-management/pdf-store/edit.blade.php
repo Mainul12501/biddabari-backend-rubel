@@ -16,7 +16,12 @@
                         <select name="pdf_store_category_id" required class="form-control select2" data-placeholder="Select a Category" id="discountType">
                             <option value=""></option>
                             @foreach($pdfStoreCategories as $pdfStoreCategory)
-                                <option value="{{ $pdfStoreCategory->id }}" {{ $pdfStoreCategory->id == $pdfStore->pdf_store_category_id ? 'selected' : '' }} >{{ $pdfStoreCategory->title }}</option>
+                                <option value="{{ $pdfStoreCategory->id }}" {{ isset($pdfStore) && $pdfStoreCategory->id == $pdfStore->pdf_store_category_id ? 'selected' : '' }} >{{ $pdfStoreCategory->title }}</option>
+                                @if(!empty($pdfStoreCategory))
+                                    @if(count($pdfStoreCategory->pdfStoreCategories) > 0)
+                                        @include('backend.pdf-management.pdf-store.pdf-category-loop', ['pdfStoreCategory' => $pdfStoreCategory, 'child' => 1])
+                                    @endif
+                                @endif
                             @endforeach
                         </select>
                         <span class="text-danger" id="pdf_store_category_id">{{ $errors->has('pdf_store_category_id') ? $errors->first('pdf_store_category_id') : "" }}</span>

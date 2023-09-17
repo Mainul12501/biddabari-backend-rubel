@@ -29,7 +29,8 @@
                                                                         <div class="accordion-content-left">
 
 {{--                                                                            PDF--}}
-                                                                            <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>
+{{--                                                                            <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>--}}
+                                                                            <p class="f-s-20"><i class="fa-regular fa-file-pdf"></i> {{ $courseSectionContent->title }}</p>
                                                                         </div>
                                                                     </div>
                                                                 </a>
@@ -39,7 +40,8 @@
                                                                         <div class="accordion-content-list pt-2 pb-0">
                                                                             <div class="accordion-content-left">
 {{--                                                                                Video--}}
-                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>
+{{--                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>--}}
+                                                                                <p class="f-s-20"><i class="fa-solid fa-video"></i> {{ $courseSectionContent->title }}</p>
                                                                             </div>
                                                                         </div>
                                                                     </a>
@@ -49,7 +51,8 @@
                                                                         <div class="accordion-content-list pt-2 pb-0">
                                                                             <div class="accordion-content-left">
 {{--                                                                                Note--}}
-                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>
+{{--                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>--}}
+                                                                                <p class="f-s-20"><i class="fa-regular fa-note-sticky"></i> {{ $courseSectionContent->title }}</p>
                                                                             </div>
                                                                         </div>
                                                                     </a>
@@ -59,7 +62,8 @@
                                                                         <div class="accordion-content-list pt-2 pb-0">
                                                                             <div class="accordion-content-left">
 {{--                                                                                Go Live--}}
-                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>
+{{--                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>--}}
+                                                                                <p class="f-s-20"><i class="fa-solid fa-tower-broadcast"></i> {{ $courseSectionContent->title }}</p>
                                                                             </div>
                                                                         </div>
                                                                     </a>
@@ -69,7 +73,8 @@
                                                                         <div class="accordion-content-list pt-2 pb-0">
                                                                             <div class="accordion-content-left">
 {{--                                                                                Regular Link--}}
-                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>
+{{--                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>--}}
+                                                                                <p class="f-s-20"><i class="fa-solid fa-link"></i> {{ $courseSectionContent->title }}</p>
                                                                             </div>
                                                                             {{--                                                                    <div class="accordion-content-right">--}}
                                                                             {{--                                                                        <div class="tag2">--}}
@@ -85,7 +90,8 @@
                                                                         <div class="accordion-content-list pt-2 pb-0">
                                                                             <div class="accordion-content-left">
                                                                                 {{--                                                                        Assignment File--}}
-                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>
+{{--                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>--}}
+                                                                                <p class="f-s-20"><i class="fa-regular fa-copy"></i> {{ $courseSectionContent->title }}</p>
                                                                             </div>
                                                                         </div>
                                                                     </a>
@@ -95,7 +101,7 @@
                                                                         <div class="accordion-content-list pt-2 pb-0">
                                                                             <div class="accordion-content-left">
                                                                                 {{--                                                                        TestMoj--}}
-                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>
+                                                                                <p class="f-s-20"><i class="fa-regular fa-copy"></i> {{ $courseSectionContent->title }}</p>
                                                                             </div>
                                                                         </div>
                                                                     </a>
@@ -104,7 +110,7 @@
                                                                     <a href="javascript:void(0)" class="w-100 get-text-data" data-has-class-xm="{{ $courseSectionContent->has_class_xm }}" data-complete-class-xm="{{ $courseSectionContent->classXmStatus }}" data-content-id="{{ $courseSectionContent->id }}">
                                                                         <div class="accordion-content-list pt-2 pb-0">
                                                                             <div class="accordion-content-left">
-                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>
+                                                                                <p class="f-s-20"><i class="fa-regular fa-note-sticky"></i> {{ $courseSectionContent->title }}</p>
                                                                             </div>
                                                                         </div>
                                                                     </a>
@@ -114,7 +120,7 @@
                                                                         <div class="accordion-content-list pt-2 pb-0">
                                                                             <div class="accordion-content-left">
                                                                                 {{--                                                                        Written Exam--}}
-                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>
+                                                                                <p class="f-s-20"><i class="fa-regular fa-paste"></i> {{ $courseSectionContent->title }}</p>
                                                                             </div>
                                                                         </div>
                                                                     </a>
@@ -172,6 +178,11 @@
                                 <iframe id="vimeoPlayer" src="" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
                             </div>
                         </div>
+                        <div class="mt-4">
+                            <div id="videoCommentDiv">
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -202,7 +213,8 @@
         .written-xm th {font-size: 24px}
         .written-xm td {font-size: 22px}
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{{--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">--}}
     <link rel="stylesheet" href="{{ asset('/') }}backend/assets/plugins/pdf-draw/pdfannotate.css">
     <link rel="stylesheet" href="{{ asset('/') }}backend/assets/plugins/pdf-draw/styles.css">
     <style>
@@ -234,6 +246,30 @@
             pointer-events:auto;
         }
 
+    </style>
+    <style>
+        /*review section*/
+        .no-pad p {
+            margin-bottom: 2px!important;
+        }
+        .comment-user-image {
+            border-radius: 60%;
+            width: 40px;
+            height: 40px;
+        }
+        .com-img-box {
+            /*height: 78px;*/
+            width: 56px;
+        }
+        .main-comment p {
+            margin-bottom: 2px!important;
+        }
+        .sub-replay p {
+            margin-bottom: 2px !important;
+        }
+        .bb-1px {
+            border-bottom: 1px solid black;
+        }
     </style>
 @endpush
 
@@ -395,7 +431,16 @@
             var status = checkHasClassXm($(this));
             if (status == true)
             {
-
+                var contentId = $(this).attr('data-content-id');
+                $.ajax({
+                    url: base_url+'get-video-comments/'+contentId+'/course_content',
+                    method: "GET",
+                    // data: {content_id:elementObject.attr('data-content-id')},
+                    success: function (data) {
+                        // console.log(data);
+                        $('#videoCommentDiv').html(data);
+                    }
+                })
                 var videoVendor = $(this).attr('data-video-vendor');
                 var videoLink = $(this).attr('data-video-link');
                 if (videoVendor == 'youtube')
@@ -460,6 +505,7 @@
                         } else {
                             pdflink = base_url+data.sectionContent.pdf_file;
                         }
+                        $('#pdf-container').empty();
                         var pdf = new PDFAnnotate("pdf-container", pdflink, {
                             onPageUpdated(page, oldData, newData) {
                                 console.log(page, oldData, newData);

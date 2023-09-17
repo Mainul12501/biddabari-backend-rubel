@@ -20,7 +20,7 @@ class PdfStoreController extends Controller
     {
         abort_if(Gate::denies('manage-pdf'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.pdf-management.pdf-store.index', [
-            'pdfStoreCategories'    => PdfStoreCategory::whereStatus(1)->select('id', 'title', 'parent_id')->whereParentId(0)->get(),
+            'pdfStoreCategories'    => PdfStoreCategory::whereStatus(1)->where('parent_id', 0)->select('id', 'title', 'parent_id')->whereParentId(0)->get(),
             'pdfStores'             => PdfStore::all(),
         ]);
     }
@@ -69,7 +69,7 @@ class PdfStoreController extends Controller
     {
         abort_if(Gate::denies('edit-pdf'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.pdf-management.pdf-store.edit', [
-            'pdfStoreCategories'    => PdfStoreCategory::whereStatus(1)->select('id', 'title')->get(),
+            'pdfStoreCategories'    => PdfStoreCategory::whereStatus(1)->where('parent_id', 0)->select('id', 'title')->get(),
             'pdfStore'             => PdfStore::find($id),
         ]);
     }

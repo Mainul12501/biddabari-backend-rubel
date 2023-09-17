@@ -105,13 +105,13 @@ class QuestionStoreController extends Controller
     {
         abort_if(Gate::denies('update-question-store'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         try {
-
             foreach ($request->question as $key => $singleQuestion)
             {
+
                 $this->questionStore = QuestionStore::createOrUpdateQuestion($request, $singleQuestion, $id);
                 if ($request->question_type == 'MCQ')
                 {
-                    $this->questionStore->questionOptions->each()->delete();
+                    $this->questionStore->questionOptions->each->delete();
                     foreach ($singleQuestion['answer'] as $answer)
                     {
                         QuestionOption::saveQuestionOptions($answer, $this->questionStore->id);

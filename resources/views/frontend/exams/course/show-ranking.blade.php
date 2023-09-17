@@ -34,13 +34,15 @@
                                                     </tr>
                                                 @endif
                                             @endforeach
-                                            @if($myPosition->position > 4)
-                                                <tr class="correct-ans-bg">
-                                                    <td>{{ $myPosition->position }}</td>
-                                                    <td>{{ $myPosition->user->name }}</td>
-                                                    <td>{{ $myPosition->result_mark ?? 0 }}</td>
-                                                    <td>{{ \Carbon\CarbonInterval::seconds($myPosition->required_time)->cascade()->forHumans() }}</td>
-                                                </tr>
+                                            @if(isset($myPosition->position))
+                                                @if($myPosition->position > 4)
+                                                    <tr class="correct-ans-bg">
+                                                        <td>{{ $myPosition->position }}</td>
+                                                        <td>{{ $myPosition->user->name }}</td>
+                                                        <td>{{ $myPosition->result_mark ?? 0 }}</td>
+                                                        <td>{{ \Carbon\CarbonInterval::seconds($myPosition->required_time)->cascade()->forHumans() }}</td>
+                                                    </tr>
+                                                @endif
                                             @endif
                                             @foreach($courseExamResults as $index => $courseExamResultx)
                                                 @if($index > 4)

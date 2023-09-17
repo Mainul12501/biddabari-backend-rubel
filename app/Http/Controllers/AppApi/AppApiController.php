@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\AppApi;
 
+use App\helper\ViewHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\BatchExamManagement\BatchExam;
 use App\Models\Backend\BatchExamManagement\BatchExamResult;
@@ -9,15 +10,47 @@ use App\Models\Backend\Course\Course;
 use App\Models\Backend\Course\CourseCategory;
 use App\Models\Backend\Course\CourseExamResult;
 use App\Models\Backend\Course\CourseSectionContent;
+use App\Models\Backend\OrderManagement\ParentOrder;
+use App\Models\Backend\ProductManagement\Product;
 use App\Models\Backend\UserManagement\Student;
 use App\Models\Backend\UserManagement\Teacher;
+use App\Models\Frontend\AdditionalFeature\ContactMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use function Nette\Utils\data;
 
 class AppApiController extends Controller
 {
     protected $course, $courses = [], $courseCategories = [], $courseCategory, $courseSections = [], $courseSectionContent, $courseSectionContents = [], $date = [];
+    protected $comments = [];
+
+    public function placeProductOrder (Request $request)
+    {
+        try {
+            foreach ($request->product_orders as $product_order)
+            {
+                ParentOrder::create([
+                    'parent_model_id'           => $product_order['id'],
+                    'user_id'                   => auth('sanctum')->id(),
+                    'order_invoice_number'      => ParentOrder::generateOrderNumber(),
+                    'ordered_for'               => 'product',
+                    'payment_method'            => $product_order['payment_method'],
+                    'vendor'                    => $product_order['vendor'],
+                    'paid_to'                   => $product_order['paid_to'],
+                    'paid_from'                 => $product_order['paid_from'],
+                    'txt_id'                    => $product_order['txt_id'],
+//            'paid_amount'   => $request->paid_amount,
+                    'total_amount'              => $product_order['price'],
+                ]);
+            }
+            return response()->json(['success' => 'Product orders submitted successfully.']);
+        } catch (\Exception $exception)
+        {
+            return response()->json($exception->getMessage());
+        }
+    }
+
     public function courseDetails($id, $slug = null)
     {
         $this->course = Course::whereId($id)
@@ -31,7 +64,12 @@ class AppApiController extends Controller
                 $courseSections->whereStatus(1)->select('id', 'course_id', 'title', 'available_at', 'is_paid', 'status')->get()->except(['created_at', 'updated_at']);
             }
         ])->first();
-        return response()->json(['course' => $this->course]);
+        $courseEnrollStatus = ViewHelper::checkIfCourseIsEnrolled($this->course);
+        if (isset($this->course))
+        {
+            $this->comments = ContactMessage::where(['status' => 1, 'type' => 'course', 'parent_model_id' => $this->course->id, 'is_seen' => 1])->get();
+        }
+        return response()->json(['course' => $this->course, 'courseEnrollStatus' => $courseEnrollStatus, 'comments'  => $this->comments]);
     }
 
     public function allCourses()

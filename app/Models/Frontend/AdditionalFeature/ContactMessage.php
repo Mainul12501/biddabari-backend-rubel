@@ -2,6 +2,7 @@
 
 namespace App\Models\Frontend\AdditionalFeature;
 
+use App\helper\ViewHelper;
 use App\Models\Backend\BatchExamManagement\BatchExam;
 use App\Models\Backend\BatchExamManagement\BatchExamSectionContent;
 use App\Models\Backend\Course\Course;
@@ -35,8 +36,9 @@ class ContactMessage extends Model
 
     public static function createOrUpdateContactMessage ($request, $contactId = null)
     {
+        $loggedUser = ViewHelper::loggedUser();
         static::updateOrCreate(['id' => $contactId], [
-            'user_id'   => auth()->id(),
+            'user_id'   => $loggedUser->id,
             'parent_model_id'   => isset($request->parent_model_id) ? $request->parent_model_id : 0,
             'batch_exam_section_content_id' => isset($request->batch_exam_section_content_id) ? $request->batch_exam_section_content_id : null,
             'type'  => $request->type,

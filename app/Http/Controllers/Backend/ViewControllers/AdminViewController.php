@@ -22,9 +22,12 @@ class AdminViewController extends Controller
         $user = auth()->user();
         foreach ($user->roles as $role)
         {
-            if ($role->id == 4)
+            if (count($user->roles) < 2)
             {
-                return redirect()->route('front.student.dashboard');
+                if ($role->id == 4)
+                {
+                    return redirect()->route('front.student.dashboard');
+                }
             }
         }
         $this->data = [

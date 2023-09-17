@@ -16,6 +16,7 @@ use App\Models\Backend\ExamManagement\ExamOrder;
 use App\Models\Backend\OrderManagement\ParentOrder;
 use App\Models\Backend\ProductManagement\Product;
 use App\Models\Backend\UserManagement\Student;
+use App\Models\Frontend\AdditionalFeature\ContactMessage;
 use App\Models\Frontend\CourseOrder\CourseOrder;
 use App\Models\User;
 use http\Env\Response;
@@ -25,22 +26,22 @@ use Illuminate\Support\Carbon;
 class StudentController extends Controller
 {
     protected $data = [], $courseOrders = [], $myCourses = [], $myProfile, $myPayments = [], $loggedUser, $course, $courses = [], $courseSections;
-    protected $hasValidSubscription, $exam, $exams = [], $tempExamArray = [], $examOrders = [], $order, $orders = [];
+    protected $hasValidSubscription, $exam, $exams = [], $tempExamArray = [], $examOrders = [], $order, $orders = [], $products = [], $product;
     public function dashboard ()
     {
-        $isStudent = false;
-        foreach (auth()->user()->roles as $role)
-        {
-            if ($role->id == 4)
-            {
-                $isStudent = true;
-            }
-        }
-        if ($isStudent == false)
-        {
-            return redirect()->route('dashboard')->with('success', 'You logged in successfully.');
-//            return back()->with('error', 'You don\'t have permission to view this page.');
-        }
+//        $isStudent = false;
+//        foreach (auth()->user()->roles as $role)
+//        {
+//            if ($role->id == 4)
+//            {
+//                $isStudent = true;
+//            }
+//        }
+//        if ($isStudent == false)
+//        {
+//            return redirect()->route('dashboard')->with('success', 'You logged in successfully.');
+////            return back()->with('error', 'You don\'t have permission to view this page.');
+//        }
         $this->orders = ParentOrder::whereUserId(auth()->id())->latest()->get();
         $totalEnrolledCourse = 0;
         $totalEnrolledExams = 0;
@@ -138,21 +139,39 @@ class StudentController extends Controller
 
     public function myExams ()
     {
-        $this->loggedUser = auth()->user();
+        $this->loggedUser = ViewHelper::loggedUser();
         $this->exams   = ParentOrder::where(['ordered_for' => 'batch_exam', 'user_id' => $this->loggedUser->id])->with([
             'batchExam' => function($batchExam) {
-                $batchExam->whereStatus(1)->select('id', 'title', 'banner', 'slug', 'sub_title', 'is_paid', 'is_featured', 'is_approved', 'status', 'is_master_exam')->first();
+                $batchExam->whereStatus(1)->select('id', 'title', 'banner', 'slug', 'sub_title', 'is_paid', 'is_featured', 'is_approved', 'status', 'is_master_exam')->get();
             }
         ])->select('id', 'user_id', 'parent_model_id', 'batch_exam_subscription_id', 'ordered_for', 'status')->get();
         foreach ($this->exams as $exam)
         {
-            $exam->has_validity = ViewHelper::checkIfBatchExamIsEnrollmentAndHasValidity(auth()->user(), $exam);
-            $exam->order_status = ViewHelper::checkUserBatchExamIsEnrollment(auth()->user(), $exam->batchExam);
+            $exam->has_validity = ViewHelper::checkIfBatchExamIsEnrollmentAndHasValidity($this->loggedUser, $exam);
+            $exam->order_status = ViewHelper::checkUserBatchExamIsEnrollment($this->loggedUser, $exam->batchExam);
         }
         $this->data = [
             'exams' => $this->exams
         ];
         return ViewHelper::checkViewForApi($this->data, 'frontend.student.my-pages.exams');
+    }
+
+    public function myProducts ()
+    {
+        $this->loggedUser = ViewHelper::loggedUser();
+        $this->products   = ParentOrder::where(['ordered_for' => 'product', 'user_id' => $this->loggedUser->id])->with([
+            'product' => function($product) {
+                $product->whereStatus(1)->select('id', 'product_author_id', 'title', 'image', 'slug', 'featured_pdf', 'pdf')->with('productAuthor')->first();
+            }
+        ])->select('id', 'user_id', 'parent_model_id', 'batch_exam_subscription_id', 'ordered_for', 'status')->get();
+        foreach ($this->products as $product)
+        {
+            $product->image = asset($product->image);
+        }
+        $this->data = [
+            'products' => $this->products
+        ];
+        return ViewHelper::checkViewForApi($this->data, 'frontend.student.my-pages.products');
     }
 
     protected function getNestedCategoryExams($examCategory)
@@ -268,6 +287,15 @@ class StudentController extends Controller
             return response()->json($this->data);
         }
         return ViewHelper::checkViewForApi($this->data, 'frontend.student.course.contents.pdf');
+    }
+
+    public function getVideoComments($contentId, $type = null)
+    {
+        return view('frontend.student.course.contents.comment-div', [
+            'comments'  => ContactMessage::where(['user_id' => auth()->id(), 'parent_model_id' => $contentId, 'is_seen' => 1])->get(),
+            'contentId' => $contentId,
+            'type'      => $type
+        ]);
     }
 
     public function batchExamShowPdf($contentId)

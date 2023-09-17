@@ -42,7 +42,7 @@ class CourseCategoryController extends Controller
         $decoded_json = json_decode($json, TRUE);
 
         $simplified_list = [];
-        $this->recur1($decoded_json, $simplified_list);
+         $this->recur1($decoded_json, $simplified_list);
 
         DB::beginTransaction();
         try {

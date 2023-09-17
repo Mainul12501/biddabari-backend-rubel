@@ -17,15 +17,15 @@ Route::get('/te', function (){
 //    return explode('https://www.youtube.com/watch?v=', 'https://www.youtube.com/watch?v=i0QcjNi2c8E')[1];
 //    return \Illuminate\Support\Facades\Hash::make('superadmin');
 //    shell_exec('composer require "darryldecode/cart"');
-//    phpinfo();
+    phpinfo();
 //    $user = auth()->user();
 //    return \App\Models\User::whereId(auth()->id())->with(['roles' => function($roles){
 //        $roles->with('permissions')->get();
 //    }])->first();
-    if (!File::isDirectory(public_path('backend/assets/uploaded-files/course-written-xm-ans-files')))
-    {
-        File::makeDirectory(public_path('backend/assets/uploaded-files/course-written-xm-ans-files'));
-    }
+//    if (!File::isDirectory(public_path('backend/assets/uploaded-files/course-written-xm-ans-files')))
+//    {
+//        File::makeDirectory(public_path('backend/assets/uploaded-files/course-written-xm-ans-files'));
+//    }
 });
 Route::get('/exam-test', [FrontExamController::class, 'xmTestForDev'])->name('exm-test-for-dev');
 Route::get('/pdf-view-test', [FrontExamController::class, 'pdfViewTest'])->name('pdf-view-test');
@@ -74,6 +74,7 @@ Route::as('front.')->group(function (){
     Route::post('/new-comment', [FrontendViewController::class, 'newComment'])->name('new-comment');
 
     Route::get('show-product-pdf/{content_id}', [StudentController::class, 'showProductPdf'])->name('show-product-pdf');
+    Route::get('get-video-comments/{content_id}/{type?}', [StudentController::class, 'getVideoComments'])->name('get-video-comments');
 
     Route::middleware([
         'auth:sanctum',
@@ -87,6 +88,7 @@ Route::as('front.')->group(function (){
             Route::get('my-courses', [StudentController::class, 'myCourses'])->name('my-courses');
             Route::get('my-exams', [StudentController::class, 'myExams'])->name('my-exams');
             Route::get('my-orders', [StudentController::class, 'myOrders'])->name('my-orders');
+            Route::get('my-products', [StudentController::class, 'myProducts'])->name('my-products');
             Route::get('view-profile', [StudentController::class, 'viewProfile'])->name('view-profile');
             Route::get('change-password', [StudentController::class, 'studentChangePassword'])->name('change-password');
             Route::get('show-pdf/{content_id}', [StudentController::class, 'showPdf'])->name('show-pdf');

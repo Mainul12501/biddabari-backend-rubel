@@ -149,6 +149,7 @@
         .written-xm th {font-size: 24px}
         .written-xm td {font-size: 22px}
     </style>
+
 @endpush
 
 @section('js')

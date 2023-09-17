@@ -5,28 +5,30 @@
         <div class="hero-slider owl-carousel owl-theme">
             @foreach($homeSliderCourses as $homeSliderCourse)
                 <div class="hero-item">
-                    <div class="container-fluid">
-                        <div class="row align-items-center">
-                            <div class="col-lg-6 c-dnone">
-                                <div class="hero-content ms-3">
-                                    <h1 style="font-size: 36px">{{ \Illuminate\Support\Str::words($homeSliderCourse->title, 8, '....') }}</h1>
-                                    <p>
-                                        {!! str()->words(strip_tags($homeSliderCourse->description), 25) !!}
-                                    </p>
-                                    <div class="banner-btn">
-{{--                                        <a href="{{ route('front.course-details', ['id' => $homeSliderCourse->id, 'slug' => $homeSliderCourse->slug]) }}" class="default-btn border-radius-50">Read More</a>--}}
-                                        <a href="{{ $homeSliderCourse->link }}" class="default-btn border-radius-50 text-dark f-s-22" style="background-color: #dedede!important;">ভর্তি হতে এখানে ক্লিক করুন</a>
+                    <a href="{{ $homeSliderCourse->link }}" class="w-100">
+                        <div class="container-fluid">
+                            <div class="row align-items-center">
+                                <div class="col-lg-6 c-dnone">
+                                    <div class="hero-content ms-3">
+                                        <h1 style="font-size: 36px">{{ \Illuminate\Support\Str::words($homeSliderCourse->title, 8, '....') }}</h1>
+                                        <p>
+                                            {!! str()->words(strip_tags($homeSliderCourse->description), 25) !!}
+                                        </p>
+                                        <div class="banner-btn">
+                                            {{--                                        <a href="{{ route('front.course-details', ['id' => $homeSliderCourse->id, 'slug' => $homeSliderCourse->slug]) }}" class="default-btn border-radius-50">Read More</a>--}}
+                                            <button type="" class="default-btn border-radius-50 text-dark f-s-22" style="background-color: #dedede!important;">ভর্তি হতে এখানে ক্লিক করুন</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="">
+                                        {{--                                    <a href="{{ route('front.course-details', ['id' => $homeSliderCourse->id, 'slug' => $homeSliderCourse->slug]) }}" ><img src="{{ asset($homeSliderCourse->image) }}" class="w-100" alt="Home Slider"/></a>--}}
+                                        <img src="{{ asset($homeSliderCourse->image) }}" class="w-100" alt="Home Slider"/>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
-                                <div class="">
-{{--                                    <a href="{{ route('front.course-details', ['id' => $homeSliderCourse->id, 'slug' => $homeSliderCourse->slug]) }}" ><img src="{{ asset($homeSliderCourse->image) }}" class="w-100" alt="Home Slider"/></a>--}}
-                                    <a href="javascript:void(0)" ><img src="{{ asset($homeSliderCourse->image) }}" class="w-100" alt="Home Slider"/></a>
-                                </div>
-                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             @endforeach
         </div>
@@ -149,11 +151,11 @@
                         <div class="col-lg-4 col-md-6">
                             <div class="courses-item">
                                 <a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}">
-                                    <img src="{{ asset($course->banner) }}" alt="Courses" class="w-100" style="height: 230px"/>
+                                    <img src="{{ asset($course->banner) }}" alt="Courses" class="w-100 p-2" style="height: 230px"/>
                                 </a>
                                 <a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}">
                                     <div class="content">
-                                        <h3><a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}">{{ $course->title }}</a></h3>
+                                        <h3 class="py-2"><a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}">{{ $course->title }}</a></h3>
                                         <ul class="course-list">
                                             {{--                                        <li><i class="ri-time-fill"></i> 06 hr</li>--}}
                                             <li><i class="ri-vidicon-fill"></i> {{ $course->total_note ?? 0 }} lectures</li>
@@ -196,27 +198,61 @@
         </div>
     @endif
 
+    @if(!empty($products))
+        <div class="section-bg py-5">
+            <div class="container">
+                <div class="row mb-3">
+                    <div class="col">
+                        <div class="section-title mt-rs-20">
+                            <h2 class="text-center">বইসমূহ</h2>
+                            <hr class="w-25 mx-auto bg-danger"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    @foreach($products as $product)
+                        <div class="col-lg-3 col-md-6">
+                            <div class="blog-card">
+                                <div class="book-btn-sec">
+                                    <a href="{{ route('front.product-details',['id'=>$product->id, 'slug'=>$product->slug]) }}" class="read-btn btn btn-warning">Read More</a>
+                                    <a href="javascript:void(0)" class="read-btn btn btn-warning mt-1"> Add To Cart </a>
+                                </div>
+                                <a href="{{ route('front.product-details',['id'=>$product->id, 'slug'=>$product->slug]) }}">
+                                    <img src="{{ asset($product->image) }}" alt="{{ $product->title }}">
+                                </a>
+                                <div class="content">
+                                    <h3><a href="{{ route('front.product-details', ['id' => $product->id, 'slug' => $product->slug]) }}">{{ $product->title }}</a></h3>
+                                    <h5>TK {{$product->price}} </h5>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div class="counter-area pt-5 pb-4" style="background-color: #F18345 !important;">
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-6 col-md-3">
                     <div class="counter-content">
                         <i class="flaticon-online-course"></i>
-                        <h3><span class="odometer" data-count="15000">00000</span>+</h3>
+                        <h3><span class="odometer" data-count="1500">00000</span>+</h3>
                         <p>Courses & videos</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-6 col-md-3">
                     <div class="counter-content">
                         <i class="flaticon-student"></i>
-                        <h3><span class="odometer" data-count="145000">000000</span>+</h3>
+                        <h3><span class="odometer" data-count="50000">000000</span>+</h3>
                         <p>Students enrolled</p>
                     </div>
                 </div>
                 <div class="col-lg-3 col-6 col-md-3">
                     <div class="counter-content">
                         <i class="flaticon-online-course-1"></i>
-                        <h3><span class="odometer" data-count="10000">00000</span>+</h3>
+                        <h3><span class="odometer" data-count="100">00000</span>+</h3>
                         <p>Courses instructors</p>
                     </div>
                 </div>
@@ -376,39 +412,7 @@
         </div>
     </div>
 
-    @if(!empty($products))
-        <div class="section-bg py-5">
-            <div class="container">
-                <div class="row mb-3">
-                    <div class="col">
-                        <div class="section-title mt-rs-20">
-                            <h2 class="text-center">বইসমূহ</h2>
-                            <hr class="w-25 mx-auto bg-danger"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    @foreach($products as $product)
-                        <div class="col-lg-3 col-md-6">
-                            <div class="blog-card">
-                                <div class="book-btn-sec">
-                                    <a href="{{ route('front.product-details',['id'=>$product->id, 'slug'=>$product->slug]) }}" class="read-btn btn btn-warning">Read More</a>
-                                    <a href="javascript:void(0)" class="read-btn btn btn-warning mt-1"> Add To Cart </a>
-                                </div>
-                                <a href="{{ route('front.product-details',['id'=>$product->id, 'slug'=>$product->slug]) }}">
-                                    <img src="{{ asset($product->image) }}" alt="{{ $product->title }}">
-                                </a>
-                                <div class="content">
-                                    <h3><a href="{{ route('front.product-details', ['id' => $product->id, 'slug' => $product->slug]) }}">{{ $product->title }}</a></h3>
-                                    <h5>TK {{$product->price}} </h5>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    @endif
+
     <div class="courses-area-two py-5">
         <div class="container">
             <div class="section-title text-center mb-3">

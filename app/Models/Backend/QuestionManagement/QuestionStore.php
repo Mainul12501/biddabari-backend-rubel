@@ -32,6 +32,7 @@ class QuestionStore extends Model
         'status',
         'slug',
         'subject_name',
+        'mcq_ans_description',
     ];
 
     protected $searchableFields = ['*'];
@@ -82,18 +83,23 @@ class QuestionStore extends Model
 //        self::$questionStore->negative_mark                         = $singleQuestion['negative_mark'];
 //            self::$questionStore->question_hardness                     = $singleQuestion['question_hardness'];
 //        self::$questionStore->status                                = isset($singleQuestion['status']) && $singleQuestion['status'] == 'on' ? 1 : 0;
-        if ($request->question_type == 'Written')
-        {
-            self::$questionStore->written_que_ans                   = $singleQuestion['written_que_ans'];
-            self::$questionStore->written_que_ans_description       = $singleQuestion['written_que_ans_description'];
-            self::$questionStore->written_que_file                  = isset($singleQuestion['written_que_file']) ? fileUpload($singleQuestion['written_que_file'], 'question-management/written-ans-files', 'written-ans-') : null;
-        } elseif ($request->question_type == 'MCQ')
+//        if ($request->question_type == 'Written')
+//        {
+//            self::$questionStore->written_que_ans                   = $singleQuestion['written_que_ans'];
+//            self::$questionStore->written_que_ans_description       = $singleQuestion['written_que_ans_description'];
+//            self::$questionStore->written_que_file                  = isset($singleQuestion['written_que_file']) ? fileUpload($singleQuestion['written_que_file'], 'question-management/written-ans-files', 'written-ans-') : null;
+//        } elseif
+        if ($request->question_type == 'MCQ')
         {
             self::$questionStore->has_all_wrong_ans                 = $request['has_all_wrong_ans'] == 'on' ? 1 : 0;
         }
         self::$questionStore->subject_name                          = $request->subject_name;
+        self::$questionStore->mcq_ans_description                   = $singleQuestion['mcq_ans_description'];
         self::$questionStore->save();
-        self::$questionStore->questionTopics()->attach($request->question_topics);
+        if (!isset($id))
+        {
+            self::$questionStore->questionTopics()->attach($request->question_topics);
+        }
         return self::$questionStore;
     }
 

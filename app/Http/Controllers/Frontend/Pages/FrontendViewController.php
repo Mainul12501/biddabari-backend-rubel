@@ -40,6 +40,7 @@ class FrontendViewController extends Controller
             $product->image = asset($product->image);
 //            $product->pdf = asset($product->pdf);
 //            $product->featured_image = asset($product->featured_image);
+            $product->order_status = ViewHelper::checkIfProductIsPurchased($product);
         }
         $this->data = [
             'products'  => $this->products
@@ -62,10 +63,12 @@ class FrontendViewController extends Controller
 
             $this->product->has_discount_validity = 'false';
         }
+        $this->product->order_status = ViewHelper::checkIfProductIsPurchased($this->product);
         if (isset($this->product))
         {
             $this->comments = ContactMessage::where(['status' => 1, 'type' => 'product', 'parent_model_id' => $this->product->id, 'is_seen' => 1])->get();
         }
+
         $latestProducts = Product::where(['status' => 1])->select('id', 'title', 'image', 'status', 'slug')->latest()->take(4)->get();
         if (str()->contains(url()->current(), '/api/'))
         {
@@ -304,7 +307,8 @@ class FrontendViewController extends Controller
             'message' => 'required'
         ]);
         ContactMessage::createOrUpdateContactMessage($request);
-        return back()->with('success', 'Comment submitted successfully.');
+        return ViewHelper::returnSuccessMessage('Comment submitted successfully.');
+//        return back()->with('success', 'Comment submitted successfully.');
     }
 
     public function instructorDetails ($id, $slug = null)

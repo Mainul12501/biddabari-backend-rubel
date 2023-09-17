@@ -4,7 +4,7 @@
 
 @section('body')
     <div class="row py-5">
-        <div class="col-md-6 mx-auto">
+        <div class="col-md-10 mx-auto">
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">Permission Create</h4>
@@ -28,8 +28,8 @@
                             <label for="" class="fw-bolder">Permissions</label>
                             <div>
                                 @foreach($permissionCategories as $key => $permissionCategory)
-                                <div class="parent-permission-div">
-                                    <h5 class="ms-3 mt-2"><input type="checkbox" class="permission-category" data-permission-category-id="{{ $permissionCategory->id }}"> <span class="f-s-14">{{ $permissionCategory->name }}</span></h5>
+                                <div class="parent-permission-div shadow bg-success-gradient">
+                                    <label for="parentInput{{ $key }}" class="ms-3 mt-2"><input type="checkbox" id="parentInput{{ $key }}" class="permission-category" data-permission-category-id="{{ $permissionCategory->id }}"> <span class="f-s-20">{{ $permissionCategory->name }}</span></label>
                                     <div class="ms-5 permission-div" id="permissionCategory{{ $permissionCategory->id }}">
                                         @if(!empty($permissionCategory->permissions))
                                             @foreach($permissionCategory->permissions as $permissionKey => $permission)
@@ -68,6 +68,7 @@
 @push('style')
     <style>
         .permission-div input[type="checkbox"] { margin-right: 1px }
+        .parent-permission-div label { cursor: pointer; color: white; font-size: 17px }
     </style>
 @endpush
 

@@ -30,30 +30,30 @@
                                 <img src="{{ asset(isset($teacher->image) ? '' : 'https://png.pngtree.com/png-vector/20190710/ourmid/pngtree-user-vector-avatar-png-image_1541962.jpg' ) }}" alt="Team Images">
                             </a>
                             <div class="content py-1">
-                                <ul class="instructors-social">
-                                    <li class="share-btn"><i class="ri-add-line"></i></li>
-                                    <li>
-                                        <a href="https://www.facebook.com/" target="_blank">
-                                            <i class="ri-facebook-fill"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="https://www.instagram.com/" target="_blank">
-                                            <i class="ri-instagram-line"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="https://twitter.com/" target="_blank">
-                                            <i class="ri-twitter-fill"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="https://www.linkedin.com/" target="_blank">
-                                            <i class="ri-linkedin-box-line"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                                <h3><a href="{{ route('front.instructor-details', ['id' => $teacher->id, 'slug' => str_replace(' ', '-', $teacher->name)]) }}">Sally welch</a></h3>
+{{--                                <ul class="instructors-social">--}}
+{{--                                    <li class="share-btn"><i class="ri-add-line"></i></li>--}}
+{{--                                    <li>--}}
+{{--                                        <a href="https://www.facebook.com/" target="_blank">--}}
+{{--                                            <i class="ri-facebook-fill"></i>--}}
+{{--                                        </a>--}}
+{{--                                    </li>--}}
+{{--                                    <li>--}}
+{{--                                        <a href="https://www.instagram.com/" target="_blank">--}}
+{{--                                            <i class="ri-instagram-line"></i>--}}
+{{--                                        </a>--}}
+{{--                                    </li>--}}
+{{--                                    <li>--}}
+{{--                                        <a href="https://twitter.com/" target="_blank">--}}
+{{--                                            <i class="ri-twitter-fill"></i>--}}
+{{--                                        </a>--}}
+{{--                                    </li>--}}
+{{--                                    <li>--}}
+{{--                                        <a href="https://www.linkedin.com/" target="_blank">--}}
+{{--                                            <i class="ri-linkedin-box-line"></i>--}}
+{{--                                        </a>--}}
+{{--                                    </li>--}}
+{{--                                </ul>--}}
+                                <h3><a href="{{ route('front.instructor-details', ['id' => $teacher->id, 'slug' => str_replace(' ', '-', $teacher->name)]) }}">{{ $teacher->user->name }}</a></h3>
                                 <span>{{ $teacher->subject }}</span>
                             </div>
                         </div>

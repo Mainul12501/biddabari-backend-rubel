@@ -52,12 +52,57 @@ class ViewHelper
         }
     }
 
+    public static function authCheck()
+    {
+        if (str_contains(url()->current(), '/api/'))
+        {
+            return auth('sanctum')->check();
+        } else {
+            return auth()->check();
+        }
+    }
+
+    public static function loggedUser()
+    {
+        if (str_contains(url()->current(), '/api/'))
+        {
+            return auth('sanctum')->user();
+        } else {
+            return auth()->user();
+        }
+    }
+
     public static function checkIfCourseIsEnrolled($course)
     {
-        if (auth()->check())
+        if (self::authCheck())
         {
-            self::$loggedUser = auth()->user();
-            self::$courseOrder = ParentOrder::where(['user_id' => self::$loggedUser->id, 'ordered_for' => 'course'])->where('parent_model_id', $course->id)->first();
+
+            self::$loggedUser = ViewHelper::loggedUser();
+
+             self::$courseOrder = ParentOrder::where(['user_id' => self::$loggedUser->id, 'ordered_for' => 'course'])->where('parent_model_id', $course->id)->first();
+            if (!empty(self::$courseOrder))
+            {
+                if (self::$courseOrder->status == 'pending')
+                {
+                    return 'pending';
+                } elseif (self::$courseOrder->status == 'approved')
+                {
+                    return self::$status = 'true';
+                }
+            } else {
+                return self::$status = 'false';
+            }
+        }
+        return self::$status = 'false';
+    }
+    public static function checkIfProductIsPurchased($product)
+    {
+        if (self::authCheck())
+        {
+
+            self::$loggedUser = ViewHelper::loggedUser();
+
+             self::$courseOrder = ParentOrder::where(['user_id' => self::$loggedUser->id, 'ordered_for' => 'product'])->where('parent_model_id', $product->id)->first();
             if (!empty(self::$courseOrder))
             {
                 if (self::$courseOrder->status == 'pending')
@@ -76,9 +121,14 @@ class ViewHelper
 
     public static function checkIfExamCategoryIsEnrolled($examCategory = null)
     {
-        if (auth()->check())
+        if (self::authCheck())
         {
-            self::$loggedUser = auth()->user();
+            if (str_contains(url()->current(), '/api/'))
+            {
+                self::$loggedUser = auth('sanctum')->user();
+            } else {
+                self::$loggedUser = auth()->user();
+            }
             if (!empty(self::$loggedUser->examSubscriptionPackages))
             {
                 foreach (self::$loggedUser->examSubscriptionPackages as $examSubscriptionPackage)
@@ -104,7 +154,7 @@ class ViewHelper
 
     public static function checkUserBatchExamIsEnrollment ($loggedUser, $exam)
     {
-        if (auth()->check())
+        if (self::authCheck())
         {
             if (!empty($loggedUser->parentOrders))
             {
@@ -154,7 +204,12 @@ class ViewHelper
 
     public static function checkIfUserHasValidSubscription ()
     {
-        self::$loggedUser = auth()->user();
+        if (str_contains(url()->current(), '/api/'))
+        {
+            self::$loggedUser = auth('sanctum')->user();
+        } else {
+            self::$loggedUser = auth()->user();
+        }
         if (!empty(self::$loggedUser->subscriptionOrders))
         {
             foreach (self::$loggedUser->subscriptionOrders as $subscriptionOrder)
@@ -171,9 +226,14 @@ class ViewHelper
 
     public static function checkIfSubscriptionIsPurchased($subscription)
     {
-        if (auth()->check())
+        if (self::authCheck())
         {
-            self::$loggedUser = auth()->user();
+            if (str_contains(url()->current(), '/api/'))
+            {
+                self::$loggedUser = auth('sanctum')->user();
+            } else {
+                self::$loggedUser = auth()->user();
+            }
             if (isset($subscription))
             {
                 self::$subscriptionOrder = SubscriptionOrder::where(['exam_subscription_package_id' => $subscription->id, 'user_id' => self::$loggedUser->id])->first();

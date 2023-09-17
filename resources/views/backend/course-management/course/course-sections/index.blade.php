@@ -160,7 +160,7 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <label for="">Available at</label>
-                                    <input type="text" id="dateTime" class="form-control" required name="available_at" placeholder="Available At" />
+                                    <input type="text" id="dateTimexx" class="form-control" required name="available_at" placeholder="Available At" />
                                     <span class="text-danger" id="available_at">{{ $errors->has('available_at') ? $errors->first('available_at') : '' }}</span>
                                 </div>
                             </div>
@@ -241,7 +241,7 @@
         input[switch]+label {
             margin-bottom: 0px;
         }
-
+        .section-content-title i { font-size: 14px!important; }
     </style>
 @endpush
 

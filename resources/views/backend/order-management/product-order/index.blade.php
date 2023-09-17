@@ -115,11 +115,11 @@
                                             </a>
                                             @endcan
                                             <br>
-                                            @can('change-product-order-contact-status')
-                                            <a href="" data-blog-category-id="{{ $productOrder->id }}" class="btn btn-sm btn-primary blog-category-edit-btnx mt-1" title="Change Order Status">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </a>
-                                                @endcan
+{{--                                            @can('change-product-order-contact-status')--}}
+{{--                                            <a href="" data-blog-category-id="{{ $productOrder->id }}" class="btn btn-sm btn-primary blog-category-edit-btnx mt-1" title="Change Order Status">--}}
+{{--                                                <i class="fa-solid fa-edit"></i>--}}
+{{--                                            </a>--}}
+{{--                                                @endcan--}}
                                             <br>
                                             @can('delete-product-order')
                                             <form class="d-inline" action="{{ route('course-orders.destroy', $productOrder->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">

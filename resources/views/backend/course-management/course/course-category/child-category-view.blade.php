@@ -12,10 +12,10 @@
                         <a href="{{ route('course-categories.edit', $sub_category['id']) }}" data-category-id="{{ $sub_category['id'] }}" class="btn btn-success btn-sm category-edit-btn" ><i class="fa-solid fa-edit"></i></a>
                     @endcan
                     @can('delete-course-category')
-                        <form action="{{ route('course-categories.destroy', $sub_category['id']) }}" method="post" class="d-inline" onsubmit="return confirm('Are you sure to delete this?')">
+                        <form action="{{ route('course-categories.destroy', $sub_category['id']) }}" method="post" class="d-inline" {{--onsubmit="return confirm('Are you sure to delete this?')"--}} >
                             @csrf
                             @method('delete')
-                            <button type="submit" data-category-id="{{ $sub_category['id'] }}" class="btn btn-danger btn-sm " ><i class="fa-solid fa-trash"></i></button>
+                            <button type="submit" data-category-id="{{ $sub_category['id'] }}" class="btn btn-danger btn-sm data-delete-form" ><i class="fa-solid fa-trash"></i></button>
                         </form>
                     @endcan
 {{--                    <a href="{{ route('course-categories.edit', ['category_id' => $sub_category['category_id'] ]) }}" class="btn btn-success btn-sm" >Edit</a>--}}

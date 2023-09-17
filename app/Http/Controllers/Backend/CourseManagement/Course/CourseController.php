@@ -33,7 +33,7 @@ class CourseController extends Controller
         }
         return view('backend.course-management.course.courses.index', [
             'courses'   => $this->courses,
-            'courseCategories'  => CourseCategory::whereStatus(1)->where('parent_id', 0)->get(),
+            'courseCategories'  => CourseCategory::whereStatus(1)->where('parent_id', 0)->orderBy('order', 'ASC')->get(),
             'teachers'  => Teacher::whereStatus(1)->get()
         ]);
     }
@@ -85,7 +85,7 @@ class CourseController extends Controller
         abort_if(Gate::denies('edit-course'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.course-management.course.courses.edit', [
             'course'    => Course::where('id',$id)->with('courseCategories')->first(),
-            'courseCategories'  => CourseCategory::whereStatus(1)->where('parent_id', 0)->get(),
+            'courseCategories'  => CourseCategory::whereStatus(1)->where('parent_id', 0)->orderBy('order', 'ASC')->get(),
             'teachers'  => Teacher::whereStatus(1)->get()
         ]);
     }

@@ -5,7 +5,36 @@
             @if(count($sectionContent->courseSectionContents) > 0)
                 <i class="fa-solid fa-arrow-circle-down f-s-16"></i>
             @endif
-            <span class="f-s-18">{{ $sectionContent->title }}</span>
+            <span class="f-s-18 section-content-title">
+                @if($sectionContent->content_type == 'pdf')
+                    <i class="fa-regular fa-file-pdf"></i>
+                @endif
+                @if($sectionContent->content_type == 'video')
+                    <i class="fa-solid fa-video"></i>
+                @endif
+                @if($sectionContent->content_type == 'note')
+                    <i class="fa-regular fa-note-sticky"></i>
+                @endif
+                @if($sectionContent->content_type == 'live')
+                    <i class="fa-solid fa-tower-broadcast"></i>
+                @endif
+                @if($sectionContent->content_type == 'link')
+                    <i class="fa-solid fa-link"></i>
+                @endif
+                @if($sectionContent->content_type == 'assignment')
+                    <i class="fa-regular fa-copy"></i>
+                @endif
+                @if($sectionContent->content_type == 'testmoj')
+                    <i class="fa-regular fa-copy"></i>
+                @endif
+                @if($sectionContent->content_type == 'exam')
+                    <i class="fa-regular fa-note-sticky"></i>
+                @endif
+                @if($sectionContent->content_type == 'written_exam')
+                    <i class="fa-regular fa-paste"></i>
+                @endif
+                &nbsp;{{ $sectionContent->title }}
+            </span>
         </h3>
         <div class="col-sm-3">
             <div class="float-end">

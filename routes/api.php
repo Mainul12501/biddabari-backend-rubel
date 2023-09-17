@@ -45,8 +45,8 @@ Route::prefix('v1')->name('api.')->group(function (){
     Route::get('course-details/{id}/{slug?}', [BasicViewController::class, 'courseDetails'])->name('course-details');
     Route::get('checkout/{slug}', [BasicViewController::class, 'checkout'])->name('checkout');
     Route::get('category-courses/{id}/{slug?}', [BasicViewController::class, 'categoryCourses'])->name('category-courses');
-    Route::get('all-instructors', [BasicViewController::class, 'instructors'])->name('instructors');
-    Route::get('instructor-details/{slug}', [BasicViewController::class, 'instructorDetails'])->name('instructor-details');
+    Route::get('all-instructors', [FrontendViewController::class, 'instructors'])->name('instructors');
+    Route::get('instructor-details/{slug}', [FrontendViewController::class, 'instructorDetails'])->name('instructor-details');
     Route::get('all-blogs', [FrontendViewController::class, 'allBLogs']);
     Route::get('category-blogs/{slug}', [BasicViewController::class, 'categoryBlogs']);
     Route::get('/blog-details/{id}/{slug?}', [FrontendViewController::class, 'blogDetails']);
@@ -59,7 +59,7 @@ Route::prefix('v1')->name('api.')->group(function (){
 
     Route::get('/all-exams', [FrontExamController::class, 'showAllExams']);
     Route::get('/category-exams/{xm_cat_id}/{name?}', [FrontExamController::class, 'categoryExams']);
-    Route::post('order-exam/{xm_cat_id}', [FrontExamController::class, 'orderXm']);
+
 
     Route::post('/add-to-cart', [FrontendViewController::class, 'addToCart']);
     Route::get('/remove-from-cart/{id}', [FrontendViewController::class, 'removeFromCart']);
@@ -76,6 +76,10 @@ Route::prefix('v1')->name('api.')->group(function (){
     Route::get('/all-gallery-images', [FrontViewTwoController::class, 'GalleryImageView']);
     Route::get('/gallery-images/{id}/{title?}', [FrontViewTwoController::class, 'GalleryImages']);
     Route::post('/new-comment', [FrontendViewController::class, 'newComment']);
+    Route::get('get-video-comments/{content_id}/{type?}', [StudentController::class, 'getVideoComments']);
+
+
+    Route::get('get-batch-exam-text-type-content', [StudentController::class, 'getBatchExamTextTypeContent']);
 
 //    temp routes
     Route::post('check-user-status-for-app', [CustomAuthController::class, 'checkUserForApp']);
@@ -93,8 +97,11 @@ Route::prefix('v1')->name('api.')->group(function (){
             Route::get('my-courses', [StudentController::class, 'myCourses']);
             Route::get('my-exams', [StudentController::class, 'myExams']);
             Route::get('my-orders', [StudentController::class, 'myOrders']);
+            Route::get('my-products', [StudentController::class, 'myProducts']);
             Route::get('course-contents/{course_id}/{slug?}', [StudentController::class, 'showCourseContents']);
             Route::get('batch-exam-contents/{xm_id}/{master?}/{slug?}', [StudentController::class, 'showBatchExamContents']);
+            Route::post('order-exam/{xm_cat_id}', [FrontExamController::class, 'orderXm']);
+
 
             Route::post('get-course-exam-result/{content_id}/{slug?}', [FrontExamController::class, 'getCourseExamResult']);
             Route::post('get-course-class-exam-result/{content_id}/{slug?}', [FrontExamController::class, 'getCourseClassExamResult']);

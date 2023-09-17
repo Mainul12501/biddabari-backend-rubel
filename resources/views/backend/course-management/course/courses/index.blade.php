@@ -55,7 +55,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>
                                             <div class="mt-3">
-                                                <a href="" >
+                                                <a href="{{ route('course-sections.index', ['course_id' => $course->id]) }}" >
                                                     <div class="text-center">
                                                         <img src="{{ asset($course->banner) }}" alt="" style="height: 100px;" />
                                                     </div>

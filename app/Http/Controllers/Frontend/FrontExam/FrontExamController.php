@@ -507,28 +507,10 @@ class FrontExamController extends Controller
 
     public function showAllExams ()
     {
-//        $this->examCategories =  ExamCategory::whereStatus(1)->where(['open_for_sale' => 1])->where('valid_to', '>', Carbon::today()->format('Y-m-d'))->select('id', 'name', 'slug', 'price', 'image', 'valid_to', 'status')->get();
-//        $this->examCategories =  ExamCategory::whereStatus(1)->where(['open_for_sale' => 1])->select('id', 'name', 'slug', 'price', 'image', 'valid_to', 'status')->get();
-//        $this->subscriptions = ExamSubscriptionPackage::whereStatus(1)->take(3)->inRandomOrder()->get();
-//        foreach ($this->examCategories as $examCategory)
-//        {
-//            $examCategory->purchase_status = ViewHelper::checkUserExamOrderEnrollment(auth()->user(), $examCategory);
-//        }
-//        foreach ($this->subscriptions as $subscription)
-//        {
-//            $subscription->purchase_status  = ViewHelper::checkIfSubscriptionIsPurchased($subscription);
-//        }
-//        $this->exams = BatchExam::whereStatus(1)->whereIsMasterExam(0)->whereIsPaid(1)->latest()->select('id', 'banner', 'title', 'status')->with(['batchExamSubscriptions' => function ($package) {
-//            $package->whereStatus(1)->select('id', 'batch_exam_id', 'price', 'package_duration_in_days', 'package_title', 'discount_amount', 'discount_start_date', 'discount_end_date')->get();
-//        }])->paginate(9);
-//        foreach ($this->exams as $exam)
-//        {
-//            $exam->purchase_status  = ViewHelper::checkUserBatchExamIsEnrollment(auth()->user(), $exam);
-//        }
         $masterExam = BatchExam::whereIsMasterExam(1)->first();
         if (isset($masterExam))
         {
-            $masterExam->purchase_status = ViewHelper::checkUserBatchExamIsEnrollment(auth()->user(), $masterExam);
+            $masterExam->purchase_status = ViewHelper::checkUserBatchExamIsEnrollment(ViewHelper::loggedUser(), $masterExam);
         }
 
         $this->examCategories = BatchExamCategory::where(['status' => 1])->has('batchExams')->with(['batchExams' => function($batchExams) {
@@ -541,7 +523,7 @@ class FrontExamController extends Controller
             {
                 if (isset($batchExam))
                 {
-                    $batchExam->purchase_status  = ViewHelper::checkUserBatchExamIsEnrollment(auth()->user(), $batchExam);
+                    $batchExam->purchase_status  = ViewHelper::checkUserBatchExamIsEnrollment(ViewHelper::loggedUser(), $batchExam);
                 }
             }
         }
@@ -561,7 +543,7 @@ class FrontExamController extends Controller
 //        $this->examCategory->validity = Carbon::parse($this->examCategory->valid_from)->format('d-m-Y').' - '. Carbon::parse($this->examCategory->valid_to)->format('d-m-Y');
         return response()->json([
             'exam' => $this->exam,
-            'enrollStatus'  => auth()->check() ? ViewHelper::checkIfBatchExamIsEnrollmentAndHasValidity(auth()->user(),$this->exam) : 'false',
+            'enrollStatus'  => ViewHelper::authCheck() ? ViewHelper::checkIfBatchExamIsEnrollmentAndHasValidity(ViewHelper::loggedUser(),$this->exam) : 'false',
         ]);
 //        $this->data = [
 //            'examCategories'    => ExamCategory::where(['exam_category_id' => $id, 'status' => 1])->select('id', 'name', 'image', 'status')->get(),
@@ -575,7 +557,7 @@ class FrontExamController extends Controller
         $this->exam = Exam::find($id);
         $this->data = [
             'exam'  => $this->exam,
-            'enrollStatus'  => ViewHelper::checkUserBatchExamIsEnrollment(auth()->user(),$this->exam)
+            'enrollStatus'  => ViewHelper::checkUserBatchExamIsEnrollment(ViewHelper::loggedUser(),$this->exam)
         ];
         return ViewHelper::checkViewForApi($this->data, 'frontend.exams.xm.details');
     }

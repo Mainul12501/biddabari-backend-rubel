@@ -101,42 +101,31 @@ class CustomAuthController extends Controller
     {
         $otpNumber = rand(100000, 999999);
         try {
-//            test one
-//            SMS::shoot('8801646688970', 'Hello THere');
-//            $sender = Sender::getInstance();
-//            $sender->setProvider(MimSms::class);
-//            $sender->setMobile('8801646688970');
-//            $sender->setMessage('This is test message');
-//            $sender->setQueue(false); //if you want to sent sms from queue
-//            $sender->setConfig(
-//                [
-//                    'api_key' => 'Yjz9sdgH6q1vZMq7LrmNIv1DA52WRj2a',
-////                    'api_token' => 'tqza1685515700',
-//                    'type' => 'text',
-//                    'senderid' => '8809601004822',
-//                ]
-//            );
-//            $status = $sender->send();
-//            return $status;
-
-//            test two
-            $client = new Client();
-//            mimsms
-//            $body = $client->request('GET', 'http://app.mimsms.com/smsAPI?sendsms&apikey=LLQhcjHkGX0s1dEG8K5EFack2d0S2GbA&apitoken=W7Ld1687428498&type=sms&from=8809601004822&to=88'.$request->mobile.'&text=Biddabari+otp+is+'.$otpNumber.'&route=0');
-//            gelnadma
-            $body = $client->request('GET', 'http://sms.felnadma.com/api/v1/send?api_key=44516684285595991668428559&contacts=88'.$request->mobile.'&senderid=01844532630&msg=Biddabari+otp+is+'.$otpNumber);
-            $responseCode = explode(':', explode(',', $body->getBody()->getContents())[0])[1];
+            $existUser = User::whereMobile($request->mobile)->first();
+            if (!isset($existUser))
+            {
+                //            test two
+                $client = new Client();
+                $body = $client->request('GET', 'http://sms.felnadma.com/api/v1/send?api_key=44516684285595991668428559&contacts=88'.$request->mobile.'&senderid=01844532630&msg=Biddabari+otp+is+'.$otpNumber);
+                $responseCode = explode(':', explode(',', $body->getBody()->getContents())[0])[1];
 //            return response()->json(gettype($responseCode));
 
-            if (isset($responseCode) && !empty($responseCode) && $responseCode === "\"445000\"")
-            {
+                if (isset($responseCode) && !empty($responseCode) && $responseCode === "\"445000\"")
+                {
 //                \session()->put('otp', $otpNumber);
-                session_start();
-                $_SESSION['otp'] = $otpNumber;
-                return response()->json(['otp' => $otpNumber, 'status' => 'success']);
+                    session_start();
+                    $_SESSION['otp'] = $otpNumber;
+                    return response()->json(['otp' => $otpNumber, 'status' => 'success', 'user_status' => isset($existUser) ? 'exist' : 'not_exist']);
+                } else {
+                    return response()->json(['status' => 'false']);
+                }
             } else {
-                return response()->json(['status' => 'false']);
+                return response()->json([
+                    'status' => 'success',
+                    'user_status' => isset($existUser) ? 'exist' : 'not_exist',
+                ]);
             }
+
         } catch (\Exception $exception)
         {
             return response()->json($exception->getMessage());
