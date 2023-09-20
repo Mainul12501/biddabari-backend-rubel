@@ -65,13 +65,14 @@
 <div class="card mcq-ans-sec {{ $questionStore->question_type == 'MCQ' ? '' : 'd-none' }}" data-key-id="0" id="mcqAnsSection">
     <div class="card-header">
         <h3 class="float-start">MCQ Options</h3>
-        <button type="button" data-key-id="0" class="btn append-div position-absolute end-0 me-4 btn-outline-success "><i class="fa-solid fa-circle-plus"></i></button>
+        <button type="button" data-key-id="0" class="btn edit-append-div position-absolute end-0 me-4 btn-outline-success "><i class="fa-solid fa-circle-plus"></i></button>
     </div>
-    <div class="card-body" id="mcqOptionSection0">
+    <div class="card-body">
         @if(!empty($questionStore->questionOptions))
-            @foreach($questionStore->questionOptions as $questionOption)
-                <div class="row">
-                    <div class="col-md-12">
+            @php($i=193)
+            <div class="row" id="editmcqOptionSection0">
+                @foreach($questionStore->questionOptions as $questionOption)
+                    <div class="col-md-6">
                         <label for="optionTitle">Option Title</label>
                         <div class="input-group">
                             <input type="text" name="question[0][answer][0][option_title]" value="{{ $questionOption->option_title }}" id="optionTitle" class="form-control" placeholder="Option" />
@@ -79,12 +80,13 @@
                         </div>
                         <label for="" class="mt-2">Is Correct?</label>
                         <div class="material-switch">
-                            <input id="someSwitchOptionInfo" name="question[0][answer][0][is_correct]" type="checkbox" {{ $questionOption->is_correct == 1 ? 'checked' : '' }} />
-                            <label for="someSwitchOptionInfo" class="label-info"></label>
+                            <input id="someSwitchOptionInfo{{ $i }}" name="question[0][answer][0][is_correct]" type="checkbox" {{ $questionOption->is_correct == 1 ? 'checked' : '' }} />
+                            <label for="someSwitchOptionInfo{{ $i }}" class="label-info"></label>
                         </div>
                     </div>
-                </div>
-            @endforeach
+                    @php($i++)
+                @endforeach
+            </div>
         @endif
     </div>
     <div class="card-body pt-0 border-top-0">

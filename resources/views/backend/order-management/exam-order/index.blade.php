@@ -87,8 +87,8 @@
                                         <td>{{ $examOrder->created_at->format('d M, Y') }}</td>
 {{--                                        <td>{{ $examOrder->payment_status }}</td>--}}
                                         <td>
-                                            <span href="javascript:void(0)" class="badge bg-primary m-1">Contact - {{ $examOrder->contact_status }}</span>
-                                            <br>
+{{--                                            <span href="javascript:void(0)" class="badge bg-primary m-1">Contact - {{ $examOrder->contact_status }}</span>--}}
+{{--                                            <br>--}}
                                             <span href="javascript:void(0)" class="badge bg-primary m-1">Order - {{ $examOrder->status }}</span>
                                         </td>
 {{--                                        <td>--}}

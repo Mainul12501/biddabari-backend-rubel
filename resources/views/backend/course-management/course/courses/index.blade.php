@@ -20,12 +20,28 @@
                                 <div class="row" >
                                     <div class="col select2-div">
                                         <label for="">Course Category </label>
-                                        <select name="category_id" class="form-control select2" id="categoryId" data-placeholder="Select Course Category">
-                                            <option value=""></option>
-                                            @foreach($courseCategories as $courseCategory)
-                                                <option value="{{ $courseCategory->id }}">{{ $courseCategory->name }}</option>
-                                            @endforeach
+{{--                                        <select name="category_id" class="form-control select2" id="categoryId" data-placeholder="Select Course Category">--}}
+{{--                                            <option value=""></option>--}}
+{{--                                            @foreach($courseCategories as $courseCategory)--}}
+{{--                                                <option value="{{ $courseCategory->id }}">{{ $courseCategory->name }}</option>--}}
+{{--                                            @endforeach--}}
+{{--                                        </select>--}}
+
+
+                                        <select name="category_id" class="form-control select2" id="courseCategories" data-placeholder="Select Course Categories" >
+                                            @if(isset($courseCategories))
+                                                @foreach($courseCategories as $courseCategory)
+                                                    <option value="{{ $courseCategory->id }}" {{ isset($_GET['category_id']) && $_GET['category_id'] == $courseCategory->id ? 'selected' : '' }} >{{ $courseCategory->name }}</option>
+                                                    @if(!empty($courseCategory))
+                                                        @if(count($courseCategory->courseCategories) > 0)
+                                                            @include('backend.course-management.course.courses.course-category-loop-type-two', ['courseCategory' => $courseCategory, 'child' => 1])
+                                                        @endif
+                                                    @endif
+                                                @endforeach
+                                            @endif
                                         </select>
+
+
                                     </div>
                                     <div class="col-auto">
                                         <button type="submit" class="btn btn-success ms-4 " style="margin-top: 18px" >Search</button>
@@ -55,7 +71,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>
                                             <div class="mt-3">
-                                                <a href="{{ route('course-sections.index', ['course_id' => $course->id]) }}" >
+                                                <a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}" target="_blank">
                                                     <div class="text-center">
                                                         <img src="{{ asset($course->banner) }}" alt="" style="height: 100px;" />
                                                     </div>
@@ -91,8 +107,10 @@
                                             <a href="javascript:void(0)" class="nav-link">{{ $course->status == 1 ? 'Published' : 'Unpublished' }}</a>
                                         </td>
                                         <td class="">
+
+
                                             @can('show-course')
-                                                <a href="" data-course-id="{{ $course->id }}" class="btn btn-sm mt-1 btn-primary show-btn" title="View Course">
+                                                <a href="" data-course-id="{{ $course->id }}"  class="btn btn-sm mt-1 btn-primary show-btn" title="View Course">
                                                     <i class="fa-solid fa-eye"></i>
                                                 </a>
                                             @endcan
@@ -157,9 +175,12 @@
                 });
 
             const date = new Date();
-            var currentDateTime = date.getFullYear()+'-'+date.getMonth()+1+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes();
+            // var currentDateTime = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes();
 
             $('input[data-dtp="dtp_Nufud"]').val(currentDateTime);
+            // $('input[data-dtp="dtp_Nufud"]').each(function () {
+            //     $(this).val(currentDateTime);
+            // });
             // $('input[name="starting_date_time"]').val(currentDateTime);
             // $('input[name="discount_start_date"]').val(currentDateTime);
             // $('#dateTime1').bootstrapMaterialDatePicker({
@@ -174,9 +195,9 @@
             //     format: 'YYYY-MM-DD HH:mm',
             //     minDate : new Date(),
             // });
-            // $("#dateTime").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
-            // $("#dateTime1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
-            // $("#dateTime2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+            $("#dateTime").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+            $("#dateTime1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+            $("#dateTime2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $("#dateTime3").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $('.select2').select2();
 
@@ -257,6 +278,7 @@
                 }
             })
         })
+
     </script>
 {{-- update course category--}}
     <script>

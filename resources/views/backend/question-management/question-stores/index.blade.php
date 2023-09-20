@@ -99,7 +99,7 @@
                                                     <div class="card-body">
                                                         <div>
                                                             <ol type="A">
-                                                                @foreach($question->questionOptions as $questionOption)
+                                                                @foreach($question->questionOptionsAscOrder as $questionOption)
                                                                     <li class="{{ $questionOption->is_correct == 1 ? 'text-success' : '' }}"><p class="{{ $questionOption->is_correct == 1 ? 'fw-bold' : '' }}">{{ $questionOption->option_title }}</p></li>
                                                                 @endforeach
                                                             </ol>
@@ -195,8 +195,8 @@
                                 <h3 class="float-start">MCQ Options</h3>
                                 <button type="button" data-key-id="0" class="btn append-div position-absolute end-0 me-4 btn-outline-success "><i class="fa-solid fa-circle-plus"></i></button>
                             </div>
-                            <div class="card-body" id="mcqOptionSection0">
-                                <div class="row">
+                            <div class="card-body" >
+                                <div class="row" id="mcqOptionSection0">
                                     <div class="col-md-6 mt-1">
                                         <label for="optionTitle">Option Title</label>
                                         <div class="input-group">
@@ -602,8 +602,8 @@
         $(document).on('click', '.append-div', function () {
             var numberSerial = $(this).attr('data-key-id');
             var div = '';
-            div = '<div class="row mt-2">\n' +
-                '                            <div class="col-md-6">\n' +
+            // div = '<div class="row mt-2">\n' +
+            div = '                            <div class="col-md-6">\n' +
                 '                                <label for="">Option Title</label>\n' +
                 '                                <div class="input-group">\n' +
                 '                                    <input type="text" name="question['+numberSerial+'][answer]['+ansOption+'][option_title]" class="form-control" placeholder="Option" />\n' +
@@ -614,16 +614,40 @@
                 '                                    <input id="someSwitchOptionInfo'+switchBtnId+'" name="question['+numberSerial+'][answer]['+ansOption+'][is_correct]" type="checkbox" >\n' +
                 '                                    <label for="someSwitchOptionInfo'+switchBtnId+'" class="label-info"></label>\n' +
                 '                                </div>\n' +
-                '                            </div>\n' +
-                '                        </div>';
+                '                            </div>\n' ;
+                // '                        </div>';
 
             $('#mcqOptionSection'+numberSerial).append(div);
             switchBtnId++;
             ansOption++;
         })
+        var switchBtnIdx = 121;
+
+        $(document).on('click', '.edit-append-div', function () {
+            var numberSerial = $(this).attr('data-key-id');
+            var div = '';
+            // div = '<div class="row mt-2">\n' +
+            div = '                            <div class="col-md-6">\n' +
+                '                                <label for="">Option Title</label>\n' +
+                '                                <div class="input-group">\n' +
+                '                                    <input type="text" name="question['+numberSerial+'][answer]['+ansOption+'][option_title]" class="form-control" placeholder="Option" />\n' +
+                '                                    <button type="button" class="btn btn-danger input-group-text delete-option-btn"><i class="fa-solid fa-trash"></i></button>\n' +
+                '                                </div>\n' +
+                '                                <label for="" class="mt-2">Is Correct?</label>\n' +
+                '                                <div class="material-switch">\n' +
+                '                                    <input id="someSwitchOptionInfo'+switchBtnIdx+'" name="question['+numberSerial+'][answer]['+ansOption+'][is_correct]" type="checkbox" >\n' +
+                '                                    <label for="someSwitchOptionInfo'+switchBtnIdx+'" class="label-info"></label>\n' +
+                '                                </div>\n' +
+                '                            </div>\n' ;
+                // '                        </div>';
+
+            $('#editmcqOptionSection'+numberSerial).append(div);
+            switchBtnIdx++;
+            ansOption++;
+        })
 
         $(document).on('click', '.delete-option-btn', function () {
-            $(this).closest('.row').remove();
+            $(this).closest('.col-md-6').remove();
         })
     </script>
     <!-- append delete end -->

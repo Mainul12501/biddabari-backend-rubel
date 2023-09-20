@@ -20,11 +20,17 @@
                                 <div class="row" >
                                     <div class="col select2-div">
                                         <label for="">Batch Exam Category </label>
-                                        <select name="category_id" class="form-control select2" id="categoryId" data-placeholder="Select Batch Exam Category">
-                                            <option value=""></option>
-                                            @foreach($batchExamCategories as $batchExamCategory)
-                                                <option value="{{ $batchExamCategory->id }}">{{ $batchExamCategory->name }}</option>
-                                            @endforeach
+                                        <select name="category_id" class="form-control select2" id="categoryId" data-placeholder="Select Batch Exam Categories" >
+                                            @if(isset($batchExamCategories))
+                                                @foreach($batchExamCategories as $batchExamCategory)
+                                                    <option value="{{ $batchExamCategory->id }}" {{ isset($_GET['category_id']) && $_GET['category_id'] == $batchExamCategory->id ? 'selected' : '' }} >{{ $batchExamCategory->name }}</option>
+                                                    @if(!empty($batchExamCategory))
+                                                        @if(count($batchExamCategory->batchExamCategories) > 0)
+                                                            @include('backend.batch-exam-management.batch-exams.course-category-loop-type-two', ['batchExamCategory' => $batchExamCategory, 'child' => 1])
+                                                        @endif
+                                                    @endif
+                                                @endforeach
+                                            @endif
                                         </select>
                                     </div>
                                     <div class="col-auto">
@@ -55,7 +61,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>
                                             <div class="mt-3">
-                                                <a href="javascript:void(0)" >
+                                                <a href="{{ route('batch-exam-sections.index', ['batch_exam_id' => $batchExam->id]) }}" >
                                                     <div class="text-center">
                                                         <img src="{{ asset($batchExam->banner) }}" alt="" style="height: 100px;" />
                                                     </div>

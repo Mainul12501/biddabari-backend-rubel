@@ -90,6 +90,7 @@ Route::prefix('v1')->name('api.')->group(function (){
         'verified'
     ])->group(function (){
         Route::post('place-course-order/{course_id}', [CheckoutController::class, 'placeCourseOrder'])->name('place-course-order');
+        Route::post('/place-free-course-order/{course_id}', [CheckoutController::class, 'placeFreeCourseOrder']);
         Route::prefix('student')->name('student.')->group(function (){
             Route::get('dashboard', [StudentController::class, 'dashboard'])->name('dashboard');
             Route::post('profile-update', [StudentController::class, 'profileUpdate'])->name('profile-update');

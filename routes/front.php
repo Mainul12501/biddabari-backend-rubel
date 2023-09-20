@@ -82,6 +82,7 @@ Route::as('front.')->group(function (){
         'verified'
     ])->group(function (){
         Route::post('/place-course-order/{course_id}', [CheckoutController::class, 'placeCourseOrder'])->name('place-course-order');
+        Route::post('/place-free-course-order/{course_id}', [CheckoutController::class, 'placeFreeCourseOrder'])->name('place-free-course-order');
         Route::post('/contact', [FrontendViewController::class, 'newContact'])->name('contact');
         Route::prefix('student')->name('student.')->group(function (){
             Route::get('dashboard', [StudentController::class, 'dashboard'])->name('dashboard');

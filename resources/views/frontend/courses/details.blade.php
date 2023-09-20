@@ -26,9 +26,9 @@
                                                 <li>
                                                     Overview
                                                 </li>
-                                                <li>
-                                                    Course Content
-                                                </li>
+{{--                                                <li>--}}
+{{--                                                    Course Content--}}
+{{--                                                </li>--}}
                                                 <li>
                                                     Instructor
                                                 </li>
@@ -47,160 +47,160 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="tabs_item">
-                                                    <div class="courses-details-tab-content">
-                                                        <div class="courses-details-accordion">
-                                                            <ul class="accordion">
-                                                                @if($courseEnrollStatus == 'true')
-                                                                    @if(!empty($course->courseSections))
-                                                                        @forelse($course->courseSections as $courseSection)
-                                                                            <li class="accordion-item">
-                                                                                <a class="accordion-title" href="javascript:void(0)">
-                                                                                    <i class="ri-add-fill"></i>
-                                                                                    {{ $courseSection->title }}
-                                                                                </a>
-                                                                                @if(!empty($courseSection->courseSectionContents))
-                                                                                    <div class="accordion-content">
-                                                                                        @foreach($courseSection->courseSectionContents as $courseSectionContent)
-                                                                                            @if($courseSectionContent->content_type == 'pdf')
-                                                                                                <div class="accordion-content-list">
-                                                                                                    <div class="accordion-content-left">
-                                                                                                        {{--                                                                                                <i class="ri-file-text-line"></i>--}}
-                                                                                                        {{--                                                                                                PDF--}}
-                                                                                                    </div>
-                                                                                                    {{--                                                                                            <div class="accordion-content-right">--}}
-                                                                                                    {{--                                                                                                <div class="tag2">--}}
-                                                                                                    {{--                                                                                                    <a href="{{ !empty($courseSectionContent->pdf_link) ? $courseSectionContent->pdf_link : asset($courseSectionContent->pdf_file) }}" download="download">Download</a>--}}
-                                                                                                    {{--                                                                                                </div>--}}
-                                                                                                    {{--                                                                                                <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
-                                                                                                    {{--                                                                                            </div>--}}
-                                                                                                </div>
-                                                                                            @endif
-                                                                                            @if($courseSectionContent->content_type == 'video')
-                                                                                                <div class="accordion-content-list">
-                                                                                                    <div class="accordion-content-left">
-                                                                                                        {{--                                                                                                <i class="ri-file-text-line"></i>--}}
-                                                                                                        {{--                                                                                                Video--}}
-                                                                                                    </div>
-                                                                                                    {{--                                                                                            <div class="accordion-content-right">--}}
-                                                                                                    {{--                                                                                                <div class="tag2">--}}
-                                                                                                    {{--                                                                                                    <a href="{{ !empty($courseSectionContent->video_link) ? $courseSectionContent->video_link : '' }}" download="download">Download</a>--}}
-                                                                                                    {{--                                                                                                </div>--}}
-                                                                                                    {{--                                                                                                <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
-                                                                                                    {{--                                                                                            </div>--}}
-                                                                                                </div>
-                                                                                            @endif
-                                                                                            @if($courseSectionContent->content_type == 'live')
-                                                                                                <div class="accordion-content-list">
-                                                                                                    <div class="accordion-content-left">
-                                                                                                        {{--                                                                                                <i class="ri-file-text-line"></i>--}}
-                                                                                                        {{--                                                                                                Go Live--}}
-                                                                                                    </div>
-                                                                                                    {{--                                                                                            <div class="accordion-content-right">--}}
-                                                                                                    {{--                                                                                                <div class="tag2">--}}
-                                                                                                    {{--                                                                                                    <a href="{{ !empty($courseSectionContent->live_link) ? $courseSectionContent->live_link : '' }}" target="_blank">Go Live</a>--}}
-                                                                                                    {{--                                                                                                </div>--}}
-                                                                                                    {{--                                                                                                <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
-                                                                                                    {{--                                                                                            </div>--}}
-                                                                                                </div>
-                                                                                            @endif
-                                                                                            @if($courseSectionContent->content_type == 'link')
-                                                                                                <div class="accordion-content-list">
-                                                                                                    <div class="accordion-content-left">
-                                                                                                        {{--                                                                                                <i class="ri-file-text-line"></i>--}}
-                                                                                                        {{--                                                                                                Regular Link--}}
-                                                                                                    </div>
-                                                                                                    {{--                                                                                            <div class="accordion-content-right">--}}
-                                                                                                    {{--                                                                                                <div class="tag2">--}}
-                                                                                                    {{--                                                                                                    <a href="{{ !empty($courseSectionContent->regular_link) ? $courseSectionContent->regular_link : '' }}" target="_blank">Visit</a>--}}
-                                                                                                    {{--                                                                                                </div>--}}
-                                                                                                    {{--                                                                                                <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
-                                                                                                    {{--                                                                                            </div>--}}
-                                                                                                </div>
-                                                                                            @endif
-                                                                                            @if($courseSectionContent->content_type == 'assignment')
-                                                                                                <div class="accordion-content-list">
-                                                                                                    <div class="accordion-content-left">
-                                                                                                        {{--                                                                                                <i class="ri-file-text-line"></i>--}}
-                                                                                                        {{--                                                                                                Assignment File--}}
-                                                                                                    </div>
-                                                                                                    {{--                                                                                            <div class="accordion-content-right">--}}
-                                                                                                    {{--                                                                                                <div class="tag2">--}}
-                                                                                                    {{--                                                                                                    <a href="{{ !empty($courseSectionContent->assignment_question) ? $courseSectionContent->assignment_question : '' }}" download>Download</a>--}}
-                                                                                                    {{--                                                                                                </div>--}}
-                                                                                                    {{--                                                                                                <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
-                                                                                                    {{--                                                                                            </div>--}}
-                                                                                                </div>
-                                                                                            @endif
-                                                                                            @if($courseSectionContent->content_type == 'testmoj')
-                                                                                                <div class="accordion-content-list">
-                                                                                                    <div class="accordion-content-left">
-                                                                                                        {{--                                                                                                <i class="ri-file-text-line"></i>--}}
-                                                                                                        {{--                                                                                                TestMoj--}}
-                                                                                                    </div>
-                                                                                                    {{--                                                                                            <div class="accordion-content-right">--}}
-                                                                                                    {{--                                                                                                <div class="tag2">--}}
-                                                                                                    {{--                                                                                                    <a href="{{ !empty($courseSectionContent->testmoj_link) ? $courseSectionContent->testmoj_link : '' }}" download>Visit</a>--}}
-                                                                                                    {{--                                                                                                </div>--}}
-                                                                                                    {{--                                                                                                <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
-                                                                                                    {{--                                                                                            </div>--}}
-                                                                                                </div>
-                                                                                            @endif
-                                                                                            @if($courseSectionContent->content_type == 'exam')
-                                                                                                <div class="accordion-content-list">
-                                                                                                    <div class="accordion-content-left">
-                                                                                                        {{--                                                                                                <i class="ri-file-text-line"></i>--}}
-                                                                                                        {{--                                                                                                Exam--}}
-                                                                                                    </div>
-                                                                                                    {{--                                                                                            <div class="accordion-content-right">--}}
-                                                                                                    {{--                                                                                                <div class="tag2">--}}
-                                                                                                    {{--                                                                                                    Exam--}}
-                                                                                                    {{--                                                                                                    --}}{{--                                                                                            <a href="{{ !empty($courseSectionContent->testmoj_link) ? $courseSectionContent->testmoj_link : '' }}" download>View</a>--}}
-                                                                                                    {{--                                                                                                </div>--}}
-                                                                                                    {{--                                                                                                <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
-                                                                                                    {{--                                                                                            </div>--}}
-                                                                                                </div>
-                                                                                            @endif
-                                                                                            @if($courseSectionContent->content_type == 'written_exam')
-                                                                                                <div class="accordion-content-list">
-                                                                                                    <div class="accordion-content-left">
-                                                                                                        {{--                                                                                                <i class="ri-file-text-line"></i>--}}
-                                                                                                        {{--                                                                                                Written Exam--}}
-                                                                                                        <p class="f-s-22"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>
-                                                                                                    </div>
-                                                                                                    {{--                                                                                    <div class="accordion-content-right">--}}
-                                                                                                    {{--                                                                                        <div class="tag2">--}}
-                                                                                                    {{--                                                                                            Exam--}}
-                                                                                                    {{--                                                                                            <a href="{{ !empty($courseSectionContent->testmoj_link) ? $courseSectionContent->testmoj_link : '' }}" download>View</a>--}}
-                                                                                                    {{--                                                                                        </div>--}}
-                                                                                                    {{--                                                                                        <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
-                                                                                                    {{--                                                                                    </div>--}}
-                                                                                                </div>
-                                                                                            @endif
-                                                                                        @endforeach
-                                                                                    </div>
-                                                                                @endif
-                                                                            </li>
-                                                                        @empty
-                                                                            <li class="accordion-item">
-                                                                                <a class="accordion-title" href="javascript:void(0)">
-                                                                                    No Content Available Yet
-                                                                                </a>
-                                                                            </li>
-                                                                        @endforelse
-                                                                    @endif
-                                                                @else
-                                                                    <li class="accordion-item">
-                                                                        <a class="accordion-title" href="javascript:void(0)">
-                                                                            <i class="ri-add-fill"></i>
-                                                                            You need to enroll to view course contents.
-                                                                        </a>
-                                                                    </li>
-                                                                @endif
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
+{{--                                                <div class="tabs_item">--}}
+{{--                                                    <div class="courses-details-tab-content">--}}
+{{--                                                        <div class="courses-details-accordion">--}}
+{{--                                                            <ul class="accordion">--}}
+{{--                                                                @if($courseEnrollStatus == 'true')--}}
+{{--                                                                    @if(!empty($course->courseSections))--}}
+{{--                                                                        @forelse($course->courseSections as $courseSection)--}}
+{{--                                                                            <li class="accordion-item">--}}
+{{--                                                                                <a class="accordion-title" href="javascript:void(0)">--}}
+{{--                                                                                    <i class="ri-add-fill"></i>--}}
+{{--                                                                                    {{ $courseSection->title }}--}}
+{{--                                                                                </a>--}}
+{{--                                                                                @if(!empty($courseSection->courseSectionContents))--}}
+{{--                                                                                    <div class="accordion-content">--}}
+{{--                                                                                        @foreach($courseSection->courseSectionContents as $courseSectionContent)--}}
+{{--                                                                                            @if($courseSectionContent->content_type == 'pdf')--}}
+{{--                                                                                                <div class="accordion-content-list">--}}
+{{--                                                                                                    <div class="accordion-content-left">--}}
+{{--                                                                                                        --}}{{--                                                                                                <i class="ri-file-text-line"></i>--}}
+{{--                                                                                                        --}}{{--                                                                                                PDF--}}
+{{--                                                                                                    </div>--}}
+{{--                                                                                                    --}}{{--                                                                                            <div class="accordion-content-right">--}}
+{{--                                                                                                    --}}{{--                                                                                                <div class="tag2">--}}
+{{--                                                                                                    --}}{{--                                                                                                    <a href="{{ !empty($courseSectionContent->pdf_link) ? $courseSectionContent->pdf_link : asset($courseSectionContent->pdf_file) }}" download="download">Download</a>--}}
+{{--                                                                                                    --}}{{--                                                                                                </div>--}}
+{{--                                                                                                    --}}{{--                                                                                                <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
+{{--                                                                                                    --}}{{--                                                                                            </div>--}}
+{{--                                                                                                </div>--}}
+{{--                                                                                            @endif--}}
+{{--                                                                                            @if($courseSectionContent->content_type == 'video')--}}
+{{--                                                                                                <div class="accordion-content-list">--}}
+{{--                                                                                                    <div class="accordion-content-left">--}}
+{{--                                                                                                        --}}{{--                                                                                                <i class="ri-file-text-line"></i>--}}
+{{--                                                                                                        --}}{{--                                                                                                Video--}}
+{{--                                                                                                    </div>--}}
+{{--                                                                                                    --}}{{--                                                                                            <div class="accordion-content-right">--}}
+{{--                                                                                                    --}}{{--                                                                                                <div class="tag2">--}}
+{{--                                                                                                    --}}{{--                                                                                                    <a href="{{ !empty($courseSectionContent->video_link) ? $courseSectionContent->video_link : '' }}" download="download">Download</a>--}}
+{{--                                                                                                    --}}{{--                                                                                                </div>--}}
+{{--                                                                                                    --}}{{--                                                                                                <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
+{{--                                                                                                    --}}{{--                                                                                            </div>--}}
+{{--                                                                                                </div>--}}
+{{--                                                                                            @endif--}}
+{{--                                                                                            @if($courseSectionContent->content_type == 'live')--}}
+{{--                                                                                                <div class="accordion-content-list">--}}
+{{--                                                                                                    <div class="accordion-content-left">--}}
+{{--                                                                                                        --}}{{--                                                                                                <i class="ri-file-text-line"></i>--}}
+{{--                                                                                                        --}}{{--                                                                                                Go Live--}}
+{{--                                                                                                    </div>--}}
+{{--                                                                                                    --}}{{--                                                                                            <div class="accordion-content-right">--}}
+{{--                                                                                                    --}}{{--                                                                                                <div class="tag2">--}}
+{{--                                                                                                    --}}{{--                                                                                                    <a href="{{ !empty($courseSectionContent->live_link) ? $courseSectionContent->live_link : '' }}" target="_blank">Go Live</a>--}}
+{{--                                                                                                    --}}{{--                                                                                                </div>--}}
+{{--                                                                                                    --}}{{--                                                                                                <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
+{{--                                                                                                    --}}{{--                                                                                            </div>--}}
+{{--                                                                                                </div>--}}
+{{--                                                                                            @endif--}}
+{{--                                                                                            @if($courseSectionContent->content_type == 'link')--}}
+{{--                                                                                                <div class="accordion-content-list">--}}
+{{--                                                                                                    <div class="accordion-content-left">--}}
+{{--                                                                                                        --}}{{--                                                                                                <i class="ri-file-text-line"></i>--}}
+{{--                                                                                                        --}}{{--                                                                                                Regular Link--}}
+{{--                                                                                                    </div>--}}
+{{--                                                                                                    --}}{{--                                                                                            <div class="accordion-content-right">--}}
+{{--                                                                                                    --}}{{--                                                                                                <div class="tag2">--}}
+{{--                                                                                                    --}}{{--                                                                                                    <a href="{{ !empty($courseSectionContent->regular_link) ? $courseSectionContent->regular_link : '' }}" target="_blank">Visit</a>--}}
+{{--                                                                                                    --}}{{--                                                                                                </div>--}}
+{{--                                                                                                    --}}{{--                                                                                                <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
+{{--                                                                                                    --}}{{--                                                                                            </div>--}}
+{{--                                                                                                </div>--}}
+{{--                                                                                            @endif--}}
+{{--                                                                                            @if($courseSectionContent->content_type == 'assignment')--}}
+{{--                                                                                                <div class="accordion-content-list">--}}
+{{--                                                                                                    <div class="accordion-content-left">--}}
+{{--                                                                                                        --}}{{--                                                                                                <i class="ri-file-text-line"></i>--}}
+{{--                                                                                                        --}}{{--                                                                                                Assignment File--}}
+{{--                                                                                                    </div>--}}
+{{--                                                                                                    --}}{{--                                                                                            <div class="accordion-content-right">--}}
+{{--                                                                                                    --}}{{--                                                                                                <div class="tag2">--}}
+{{--                                                                                                    --}}{{--                                                                                                    <a href="{{ !empty($courseSectionContent->assignment_question) ? $courseSectionContent->assignment_question : '' }}" download>Download</a>--}}
+{{--                                                                                                    --}}{{--                                                                                                </div>--}}
+{{--                                                                                                    --}}{{--                                                                                                <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
+{{--                                                                                                    --}}{{--                                                                                            </div>--}}
+{{--                                                                                                </div>--}}
+{{--                                                                                            @endif--}}
+{{--                                                                                            @if($courseSectionContent->content_type == 'testmoj')--}}
+{{--                                                                                                <div class="accordion-content-list">--}}
+{{--                                                                                                    <div class="accordion-content-left">--}}
+{{--                                                                                                        --}}{{--                                                                                                <i class="ri-file-text-line"></i>--}}
+{{--                                                                                                        --}}{{--                                                                                                TestMoj--}}
+{{--                                                                                                    </div>--}}
+{{--                                                                                                    --}}{{--                                                                                            <div class="accordion-content-right">--}}
+{{--                                                                                                    --}}{{--                                                                                                <div class="tag2">--}}
+{{--                                                                                                    --}}{{--                                                                                                    <a href="{{ !empty($courseSectionContent->testmoj_link) ? $courseSectionContent->testmoj_link : '' }}" download>Visit</a>--}}
+{{--                                                                                                    --}}{{--                                                                                                </div>--}}
+{{--                                                                                                    --}}{{--                                                                                                <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
+{{--                                                                                                    --}}{{--                                                                                            </div>--}}
+{{--                                                                                                </div>--}}
+{{--                                                                                            @endif--}}
+{{--                                                                                            @if($courseSectionContent->content_type == 'exam')--}}
+{{--                                                                                                <div class="accordion-content-list">--}}
+{{--                                                                                                    <div class="accordion-content-left">--}}
+{{--                                                                                                        --}}{{--                                                                                                <i class="ri-file-text-line"></i>--}}
+{{--                                                                                                        --}}{{--                                                                                                Exam--}}
+{{--                                                                                                    </div>--}}
+{{--                                                                                                    --}}{{--                                                                                            <div class="accordion-content-right">--}}
+{{--                                                                                                    --}}{{--                                                                                                <div class="tag2">--}}
+{{--                                                                                                    --}}{{--                                                                                                    Exam--}}
+{{--                                                                                                    --}}{{--                                                                                                    --}}{{----}}{{--                                                                                            <a href="{{ !empty($courseSectionContent->testmoj_link) ? $courseSectionContent->testmoj_link : '' }}" download>View</a>--}}
+{{--                                                                                                    --}}{{--                                                                                                </div>--}}
+{{--                                                                                                    --}}{{--                                                                                                <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
+{{--                                                                                                    --}}{{--                                                                                            </div>--}}
+{{--                                                                                                </div>--}}
+{{--                                                                                            @endif--}}
+{{--                                                                                            @if($courseSectionContent->content_type == 'written_exam')--}}
+{{--                                                                                                <div class="accordion-content-list">--}}
+{{--                                                                                                    <div class="accordion-content-left">--}}
+{{--                                                                                                        --}}{{--                                                                                                <i class="ri-file-text-line"></i>--}}
+{{--                                                                                                        --}}{{--                                                                                                Written Exam--}}
+{{--                                                                                                        <p class="f-s-22"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>--}}
+{{--                                                                                                    </div>--}}
+{{--                                                                                                    --}}{{--                                                                                    <div class="accordion-content-right">--}}
+{{--                                                                                                    --}}{{--                                                                                        <div class="tag2">--}}
+{{--                                                                                                    --}}{{--                                                                                            Exam--}}
+{{--                                                                                                    --}}{{--                                                                                            <a href="{{ !empty($courseSectionContent->testmoj_link) ? $courseSectionContent->testmoj_link : '' }}" download>View</a>--}}
+{{--                                                                                                    --}}{{--                                                                                        </div>--}}
+{{--                                                                                                    --}}{{--                                                                                        <!--                                                            <i class="ri-play-circle-line"></i>-->--}}
+{{--                                                                                                    --}}{{--                                                                                    </div>--}}
+{{--                                                                                                </div>--}}
+{{--                                                                                            @endif--}}
+{{--                                                                                        @endforeach--}}
+{{--                                                                                    </div>--}}
+{{--                                                                                @endif--}}
+{{--                                                                            </li>--}}
+{{--                                                                        @empty--}}
+{{--                                                                            <li class="accordion-item">--}}
+{{--                                                                                <a class="accordion-title" href="javascript:void(0)">--}}
+{{--                                                                                    No Content Available Yet--}}
+{{--                                                                                </a>--}}
+{{--                                                                            </li>--}}
+{{--                                                                        @endforelse--}}
+{{--                                                                    @endif--}}
+{{--                                                                @else--}}
+{{--                                                                    <li class="accordion-item">--}}
+{{--                                                                        <a class="accordion-title" href="javascript:void(0)">--}}
+{{--                                                                            <i class="ri-add-fill"></i>--}}
+{{--                                                                            You need to enroll to view course contents.--}}
+{{--                                                                        </a>--}}
+{{--                                                                    </li>--}}
+{{--                                                                @endif--}}
+{{--                                                            </ul>--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
                                                 <div class="tabs_item">
                                                     <div class="courses-details-tab-content">
                                                         <div class="courses-details-instructor">
@@ -363,13 +363,14 @@
                                     <span class="f-s-22">{!! $course->sub_title !!}</span>
                                     <div class="row">
                                         <div class="col-md-6">
+
                                              @if($course->discount_end_date > \Illuminate\Support\Carbon::today()->format('Y-m-d') && $course->discount_amount > 0)
-                                                <p class="f-s-20">Price: <del>{{ $course->price }}</del> tk</p>
+                                                <p class="f-s-20">Price: <del>{{ $course->is_paid == 1 ? $course->price : 'Free' }}</del> tk</p>
                                                 <p class="f-s-20">Discount Price: {{ $course->price - $course->discount_amount }} tk</p>
 {{--                                                <p class="f-s-20">Discount Price: {{ $discountPrice = $course->discount_type == 1 ? $course->discount_amount : ($course->price * $course->discount_amount)/100 }} tk</p>--}}
 {{--                                                <p class="f-s-20">After Discount: {{ $course->price - $discountPrice }} tk</p>--}}
                                             @else
-                                                <p class="f-s-20">Price: {{ $course->price }} tk</p>
+                                                <p class="f-s-20">Price: {{ $course->is_paid == 1 ? $course->price.' tk' : 'Free' }} </p>
                                             @endif
                                         </div>
                                     </div>
@@ -389,35 +390,42 @@
                                             <div class="f-s-20"><i class="ri-store-3-line"></i>{{ $course->total_live ?? '' }} live class</div>
                                         </div>
                                     </div>
-{{--                                    <ul class="courses-details-list">--}}
-{{--                                        <li><i class="ri-time-fill"></i> {{ $course->total_hours ?? '' }} hr</li>--}}
-{{--                                        <li><i class="ri-vidicon-fill"></i> {{ $course->total_class ?? '' }} lectures</li>--}}
-{{--                                        <li><i class="ri-file-pdf-line"></i> {{ $course->total_pdf ?? '' }} PDF</li>--}}
-{{--                                        <li><i class="ri-a-b"></i> {{ $course->total_exam ?? '' }} Exam</li>--}}
-{{--                                        <li><i class="ri-store-3-line"></i>{{ $course->total_live ?? '' }} live class</li>--}}
-{{--                                    </ul>--}}
-                                    @if($courseEnrollStatus == 'false')
-                                    <a href="{{ route('front.checkout', ['id' => $course->id, 'slug' => $course->slug]) }}" class="default-btn bg-default-color">কোর্সটি কিনুন</a>
-                                        <ul class="social-link">
-{{--                                            <li class="social-title">Share this course:</li>--}}
-{{--                                            <li>--}}
-{{--                                                <a href="https://www.facebook.com/" target="_blank">--}}
-{{--                                                    <i class="ri-facebook-fill"></i>--}}
-{{--                                                </a>--}}
-{{--                                            </li>--}}
-{{--                                            <li>--}}
-{{--                                                <a href="https://twitter.com/" target="_blank">--}}
-{{--                                                    <i class="ri-twitter-fill"></i>--}}
-{{--                                                </a>--}}
-{{--                                            </li>--}}
-{{--                                            <li>--}}
-{{--                                                <a href="https://www.pinterest.com/" target="_blank">--}}
-{{--                                                    <i class="ri-instagram-line"></i>--}}
-{{--                                                </a>--}}
-{{--                                            </li>--}}
-                                        </ul>
-                                    @elseif($courseEnrollStatus == 'pending')
-                                        <a href="javascript:void(0)" class="default-btn bg-default-color mt-2">Your Order is Pending</a>
+                                    @if($course->is_paid == 1)
+                                        @if($courseEnrollStatus == 'false')
+                                        <a href="{{ route('front.checkout', ['id' => $course->id, 'slug' => $course->slug]) }}" class="default-btn bg-default-color">কোর্সটি কিনুন</a>
+                                            <ul class="social-link">
+    {{--                                            <li class="social-title">Share this course:</li>--}}
+    {{--                                            <li>--}}
+    {{--                                                <a href="https://www.facebook.com/" target="_blank">--}}
+    {{--                                                    <i class="ri-facebook-fill"></i>--}}
+    {{--                                                </a>--}}
+    {{--                                            </li>--}}
+    {{--                                            <li>--}}
+    {{--                                                <a href="https://twitter.com/" target="_blank">--}}
+    {{--                                                    <i class="ri-twitter-fill"></i>--}}
+    {{--                                                </a>--}}
+    {{--                                            </li>--}}
+    {{--                                            <li>--}}
+    {{--                                                <a href="https://www.pinterest.com/" target="_blank">--}}
+    {{--                                                    <i class="ri-instagram-line"></i>--}}
+    {{--                                                </a>--}}
+    {{--                                            </li>--}}
+                                            </ul>
+                                        @elseif($courseEnrollStatus == 'pending')
+                                            <a href="javascript:void(0)" class="default-btn bg-default-color mt-2">Your Order is Pending</a>
+                                        @endif
+                                    @else
+                                        @if($courseEnrollStatus == 'false')
+                                            @if(auth()->check())
+                                                <a href="" data-course-id="{{ $course->id }}" onclick="event.preventDefault(); document.getElementById('freeCourseOrderForm').submit()" class="default-btn bg-default-color order-free-course">কোর্সটি করুন</a>
+                                            @else
+                                                <a href="javascript:void(0)" data-course-id="{{ $course->id }}" data-bs-toggle="modal" data-bs-target="#authModal" class="default-btn bg-default-color order-free-course">কোর্সটি করুন</a>
+                                            @endif
+                                                <form action="{{ route('front.place-free-course-order', ['course_id' => $course->id]) }}" method="post" id="freeCourseOrderForm">
+                                                    @csrf
+                                                    <input type="hidden" name="ordered_for" value="course">
+                                                </form>
+                                        @endif
                                     @endif
                                 </div>
                             </div>
@@ -482,4 +490,125 @@
 @endpush
 @push('script')
     <script src="{{ asset('/') }}frontend/assets/js/page-js/product-comments.js"></script>
+
+
+    <script>
+        $(document).on('click', '.next', function () {
+            event.preventDefault();
+            var getClassDivOrder = $('.auth-div').find('[data-active="1"]').attr('data-order');
+            var mobileNumber = $('.auth-div input[name="mobile"]').val();
+            if (getClassDivOrder == 0)
+            {
+
+
+                $.ajax({
+                    url: "{{ route('front.send-otp') }}",
+                    method: "POST",
+                    dataType: "JSON",
+                    data: {mobile:mobileNumber},
+                    success: function (data) {
+                        console.log(data);
+                        // if (data.status == 'success')
+                        if (data.status == 'success')
+                        {
+                            $('.mobile-div').addClass('d-none').attr('data-active', '');
+
+                            if (data.user_status == 'exist')
+                            {
+                                $('.password-div').removeClass('d-none').attr('data-active', 1);
+                                $('.next').removeClass('next').addClass('submit').text('Login').attr('data-status', 'login');
+                            } else if (data.user_status == 'not_exist')
+                            {
+                                $('.otp-div').removeClass('d-none').attr('data-active', 1);
+                                toastr.success('You will get otp shortly. Please input Otp correctly.');
+                            }
+
+
+
+                            // $('.otp-div').removeClass('d-none').attr('data-active', 1);
+                            // toastr.success('You will get otp shortly. Please input Otp correctly.');
+                            // $('.mobile-div').addClass('d-none').attr('data-active', '');
+                            // $('.otp-div').removeClass('d-none').attr('data-active', 1);
+                        } else {
+                            toastr.error('something went wrong. Please check your mobile Number & try again.');
+                        }
+                    }
+                })
+            } else if (getClassDivOrder == 1)
+            {
+                var otpNumber = $('#otpInput').val();
+
+                $.ajax({
+                    url: "{{ route('front.verify-otp') }}",
+                    method: "POST",
+                    dataType: "JSON",
+                    data: {otp:otpNumber, mobile_number:mobileNumber},
+                    success: function (data) {
+                        console.log(data);
+                        if (data.status == 'success')
+                        {
+                            $('.otp-div').addClass('d-none').attr('data-active', '');
+                            if (data.user_status == 'exist')
+                            {
+                                $('.password-div').removeClass('d-none').attr('data-active', 1);
+                                $('.next').removeClass('next').addClass('submit').text('Login').attr('data-status', 'login');
+                            } else if (data.user_status == 'not_exist')
+                            {
+                                $('.name-div').removeClass('d-none').attr('data-active', 1);
+                                $('.password-div').removeClass('d-none').attr('data-active', 1);
+                                $('.next').removeClass('next').addClass('submit').text('Register').attr('data-status', 'register');
+                            }
+                            // $('#registerForm').submit();
+                        } else {
+                            console.log('something went wrong. Please try again.');
+                        }
+                    }
+                })
+            }
+        })
+        $(document).on('click', '.submit', function () {
+            event.preventDefault();
+            var formData = $('#authModalForm').serialize();
+            var authStatus = $(this).attr('data-status');
+            var ajaxUrl = '';
+            if (authStatus == 'login')
+            {
+                ajaxUrl = "{{ route('login') }}";
+            } else if (authStatus == 'register')
+            {
+                ajaxUrl = "{{ route('register') }}"
+            }
+            $.ajax({
+                url: ajaxUrl,
+                method: "POST",
+                dataType: "JSON",
+                data: formData,
+                success: function (data) {
+                    console.log(data);
+                    if (data.status == 'success')
+                    {
+                        var courseId = $('.order-free-course').attr('data-course-id');
+                        toastr.success('Your are successfully logged in.');
+                        $('#freeCourseOrderForm').submit();
+                        // window.location.href = base_url+'place-free-course-order/'+courseId;
+                    } else if (data.status == 'error')
+                    {
+                        toastr.error('Something went wrong. Please try again');
+                    }
+                },
+                error: function (errors) {
+                    if (errors.responseJSON)
+                    {
+
+                        var allErrors = errors.responseJSON.errors;
+                        for (key in allErrors)
+                        {
+                            $('#'+key).empty().append(allErrors[key]);
+                        }
+                    }
+                }
+            })
+        })
+    </script>
+
 @endpush

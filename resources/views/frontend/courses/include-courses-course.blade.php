@@ -24,7 +24,13 @@
             <div class="bottom-content">
                 <a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}" class="btn btn-warning">বিস্তারিত দেখুন</a>
                 <div class="rating ">
+                    @if($course->order_status == 'false')
                     <a href="{{ route('front.checkout', ['id' => $course->id, 'slug' => $course->slug]) }}" class="btn btn-warning">কোর্সটি কিনুন</a>
+                    @elseif($course->order_status == 'pending')
+                        <a href="javascript:void(0)" class="text-warning">Pending</a>
+                    @elseif($course->order_status == 'true')
+                        <a href="javascript:void(0)" class="">Active</a>
+                    @endif
                 </div>
             </div>
         </div>

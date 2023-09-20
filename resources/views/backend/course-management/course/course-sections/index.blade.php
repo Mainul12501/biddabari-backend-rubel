@@ -38,6 +38,7 @@
 {{--                                                                <i class="fa-solid fa-plus"></i>--}}
 {{--                                                            </button>--}}
 {{--                                                        @endcan--}}
+
                                                         @can('create-course-section-content')
                                                             <button type="button"  data-section-id="{{ $courseSection->id }}" class="btn btn-sm btn-info {{--add-sub-category-btn--}} open-section-content-form-modal" title="Add Section Content">
                                                                 <i class="fa-solid fa-plus"></i>
@@ -160,7 +161,7 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <label for="">Available at</label>
-                                    <input type="text" id="dateTimexx" class="form-control" required name="available_at" placeholder="Available At" />
+                                    <input type="text" id="dateTimexx" data-dtp="dtp_Nufud" class="form-control" required name="available_at" placeholder="Available At" />
                                     <span class="text-danger" id="available_at">{{ $errors->has('available_at') ? $errors->first('available_at') : '' }}</span>
                                 </div>
                             </div>
@@ -217,6 +218,44 @@
             </div>
         </div>
     </div>
+    <div class="modal fade " id="courseVideoPdfContentShowModal" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg ">
+            <div class="modal-content" id="">
+                <div class="modal-header">
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-none" id="pdfContentPrintDiv">
+                        <div class="" style="">
+                            <div id="pdf-container"></div>
+                        </div>
+                    </div>
+                    <div id="videoShowSection" class="d-none">
+                        <div class="private d-none">
+                            <video class="w-100 video" height="500" controls="controls" controlist="nodownload">
+                                <source id="privatVid" src="//samplelib.com/lib/preview/mp4/sample-5s.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                        <div class="youtube d-none">
+                            {{--                            <iframe style="width: 100%!important;" id="youtubePlayer" height="500" src="" title="YouTube video player" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; " allowfullscreen></iframe>--}}
+                            {{--                            <iframe width="560" height="315" src="https://www.youtube.com/embed/PNF0OJITows" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>--}}
+                            <div class="video-container" >
+                                <div class="video-foreground">
+                                    <iframe style="width: 100%!important;" height="500" id="youtubePlayer" src="" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ></iframe>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vimeo d-none">
+                            <div style="padding:56.25% 0 0 0;position:relative;">
+                                <iframe id="vimeoPlayer" src="" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade " id="setQuestionOnSectionContentModal" data-bs-backdrop="static" >
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content" id="">
@@ -243,6 +282,36 @@
         }
         .section-content-title i { font-size: 14px!important; }
     </style>
+    <style>
+        .canvas-container, canvas { /*width: 100%!important;*/ margin-top: 10px!important;}
+    </style>
+    <style>
+        .video-container{
+            width:100%!important;
+            height: 440px;
+            overflow:hidden;
+            position:relative;
+        }
+        .video-container iframe{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .video-container iframe{
+            position: absolute;
+            top: -60px;
+            left: 0;
+            width: 100%;
+            /*height: calc(80% + 100px);*/
+            height: 500px!important;
+        }
+        .video-foreground{
+            pointer-events:auto;
+        }
+
+    </style>
 @endpush
 
 @push('script')
@@ -259,6 +328,103 @@
             @endif
         })
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.3.0/fabric.min.js"></script>
+    <script src="{{ asset('/') }}backend/assets/plugins/pdf-draw/arrow.fabric.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.2.0/jspdf.umd.min.js"></script>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <script src="{{ asset('/') }}backend/assets/plugins/pdf-draw/pdfannotate.js"></script>
+    <script>
+
+        function changeActiveTool(event) {
+            var element = $(event.target).hasClass("tool-button")
+                ? $(event.target)
+                : $(event.target).parents(".tool-button").first();
+            $(".tool-button.active").removeClass("active");
+            $(element).addClass("active");
+        }
+
+        function enableSelector(event) {
+            event.preventDefault();
+            changeActiveTool(event);
+            pdf.enableSelector();
+        }
+
+        function enablePencil(event) {
+            event.preventDefault();
+            changeActiveTool(event);
+            pdf.enablePencil();
+        }
+
+        function enableAddText(event) {
+            event.preventDefault();
+            changeActiveTool(event);
+            pdf.enableAddText();
+        }
+
+        function enableAddArrow(event) {
+            event.preventDefault();
+            changeActiveTool(event);
+            pdf.enableAddArrow();
+        }
+
+        function addImage(event) {
+            event.preventDefault();
+            pdf.addImageToCanvas()
+        }
+
+        function enableRectangle(event) {
+            event.preventDefault();
+            changeActiveTool(event);
+            pdf.setColor('rgba(255, 0, 0, 0.3)');
+            pdf.setBorderColor('blue');
+            pdf.enableRectangle();
+        }
+
+        function deleteSelectedObject(event) {
+            event.preventDefault();
+            pdf.deleteSelectedObject();
+        }
+
+        function savePDF() {
+            // pdf.savePdf();
+            pdf.savePdf("written-ans"); // save with given file name
+        }
+
+        function clearPage() {
+            pdf.clearActivePage();
+        }
+
+        function showPdfData() {
+            var string = pdf.serializePdf();
+            $('#dataModal .modal-body pre').first().text(string);
+            PR.prettyPrint();
+            $('#dataModal').modal('show');
+        }
+
+        $(function () {
+            $('.color-tool').click(function () {
+                $('.color-tool.active').removeClass('active');
+                $(this).addClass('active');
+                color = $(this).get(0).style.backgroundColor;
+                pdf.setColor(color);
+            });
+
+            $('#brush-size').change(function () {
+                var width = $(this).val();
+                pdf.setBrushSize(width);
+            });
+
+            $('#font-size').change(function () {
+                var font_size = $(this).val();
+                pdf.setFontSize(font_size);
+            });
+        });
+
+    </script>
+
     {{--    store course--}}
     <script>
         $(document).on('click', '.course-section-modal-btn', function () {
@@ -278,6 +444,63 @@
             var ele = $(this);
             var sectionId = $(this).attr('data-section-id');
             changeStatus('course_sections', sectionId, ele);
+        })
+    </script>
+    <script>
+        $(document).on('click', '.show-pdf-video-btn', function () {
+            event.preventDefault();
+            var dataContentType = $(this).attr('data-content-type');
+            if (dataContentType == 'pdf')
+            {
+                var pdflink = $(this).attr('data-pdf-url');
+
+                $('#pdf-container').empty();
+                var pdf = new PDFAnnotate("pdf-container", pdflink, {
+                    onPageUpdated(page, oldData, newData) {
+                        console.log(page, oldData, newData);
+                    },
+                    ready() {
+                        console.log("Plugin initialized successfully");
+                    },
+                    scale: 1.5,
+                    pageImageCompression: "MEDIUM", // FAST, MEDIUM, SLOW(Helps to control the new PDF file size)
+                });
+                $('#pdfContentPrintDiv').removeClass('d-none');
+                $('#videoShowSection').addClass('d-none');
+            } else if (dataContentType == 'video')
+            {
+                var videoVendor = $(this).attr('data-video-vendor');
+                var videoLink = $(this).attr('data-video-url');
+                // console.log(videoLink);
+                if (videoVendor == 'youtube')
+                {
+                    // const arrayOne = videoLink.split('https://www.youtube.com/watch?v=')
+                    const arrayOne = videoLink.split('https://youtu.be/')
+                    var splitVidUrl = arrayOne[1].split('&')[0];
+                    $('.youtube').removeClass('d-none');
+                    $('.private').addClass('d-none');
+                    $('.vimeo').addClass('d-none');
+                    $('#youtubePlayer').attr('src', 'https://www.youtube.com/embed/'+splitVidUrl+'?rel=0&amp;modestbranding=1');
+                    // $('.video-modal').modal('show');
+                } else if (videoVendor == 'private')
+                {
+                    $('.private').removeClass('d-none');
+                    $('.youtube').addClass('d-none');
+                    $('.vimeo').addClass('d-none');
+                    $('#privatVid').attr('src', videoLink);
+                    // $('.video-modal').modal('show');
+                } else if (videoVendor == 'vimeo')
+                {
+                    $('.private').removeClass('d-none');
+                    $('.youtube').addClass('d-none');
+                    $('.vimeo').addClass('d-none');
+                    $('#vimeoPlayer').attr('src', 'https://player.vimeo.com/video/'+videoLink+'?h=627084a88d&autoplay=0&loop=1&title=0&byline=0&portrait=0');
+                    // $('.video-modal').modal('show');
+                }
+                $('#pdfContentPrintDiv').addClass('d-none');
+                $('#videoShowSection').removeClass('d-none');
+            }
+            $('#courseVideoPdfContentShowModal').modal('show');
         })
     </script>
 

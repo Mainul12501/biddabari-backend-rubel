@@ -133,6 +133,17 @@ class BasicViewController extends Controller
                 $courseCategories->select('id', 'parent_id', 'name', 'image', 'slug')->whereStatus(1)->get();
             }])->get();
         $this->courses = Course::where(['status' => 1])->select('id','title','sub_title','price','banner','total_video','total_audio','total_pdf','total_exam','total_note','total_zip','total_live','total_link','total_file','total_written_exam','slug','discount_type','discount_amount','starting_date_time')->latest()->get();
+        foreach ($this->courseCategories as $courseCategory)
+        {
+            foreach ($courseCategory->courses as $course)
+            {
+                $course->order_status = ViewHelper::checkIfCourseIsEnrolled($course);
+            }
+        }
+        foreach ($this->courses as $course)
+        {
+            $course->order_status = ViewHelper::checkIfCourseIsEnrolled($course);
+        }
         $this->data = ['courseCategories' => $this->courseCategories, 'allCourses' => $this->courses];
         return ViewHelper::checkViewForApi($this->data, 'frontend.courses.courses');
     }
@@ -145,6 +156,10 @@ class BasicViewController extends Controller
             'courseCategories' => function($courseCategories){
                 $courseCategories->whereStatus(1)->select('id', 'parent_id','name', 'image', 'icon', 'slug', 'status')->get();
             }])->first();
+        foreach ($this->courseCategory->courses as $course)
+        {
+            $course->order_status = ViewHelper::checkIfCourseIsEnrolled($course);
+        }
         $this->data = ['courseCategory' => $this->courseCategory];
         return ViewHelper::checkViewForApi($this->data, 'frontend.courses.course-category', 'Category Not Found');
     }

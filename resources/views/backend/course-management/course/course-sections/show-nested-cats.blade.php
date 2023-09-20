@@ -43,6 +43,11 @@
 {{--                        <i class="fa-solid fa-plus-square"></i>--}}
 {{--                    </button>--}}
 {{--                @endcan--}}
+                @if($sectionContent->content_type == 'pdf' || $sectionContent->content_type == 'video')
+                    <a href="" data-course-id="{{ $sectionContent->id }}" data-content-type="{{ $sectionContent->content_type }}" @if($sectionContent->content_type == 'pdf') data-pdf-url="{{ isset($sectionContent->pdf_link) ? $sectionContent->pdf_link : (isset($sectionContent->pdf_file) ? $sectionContent->pdf_file : '') }}" @endif @if($sectionContent->content_type == 'video') data-video-vendor="{{ $sectionContent->video_vendor }}" data-video-url="{{ $sectionContent->video_link }}" @endif class="btn btn-sm mt-1 btn-warning show-pdf-video-btn" title="View Pdf Or Video" >
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                @endif
                     @can('add-question-to-course-section-content')
                         @if($sectionContent->content_type == 'exam' || $sectionContent->content_type == 'written_exam')
                             <a href="" data-section-content-id="{{ $sectionContent->id }}" data-xm-type="{{ $sectionContent->content_type }}" class="btn btn-sm btn-primary add-question-modal-btn" title="Add Exam Questions">

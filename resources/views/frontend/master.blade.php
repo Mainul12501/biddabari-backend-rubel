@@ -170,106 +170,106 @@
 <script>
     let base_url = {!! json_encode(url('/')) !!}+'/';
 </script>
-<script>
-    $(document).on('click', '.next', function () {
-        event.preventDefault();
-        var getClassDivOrder = $('.auth-div').find('[data-active="1"]').attr('data-order');
-        var mobileNumber = $('.auth-div input[name="mobile"]').val();
-        if (getClassDivOrder == 0)
-        {
-            $('.mobile-div').addClass('d-none').attr('data-active', '');
-            $('.otp-div').removeClass('d-none').attr('data-active', 1);
-            $.ajax({
-                url: "{{ route('front.send-otp') }}",
-                method: "POST",
-                dataType: "JSON",
-                data: {mobile:mobileNumber},
-                success: function (data) {
-                    console.log(data);
-                    if (data.status == 'success')
-                    {
-                        toastr.success('You will get otp shortly. Please input Otp correctly.');
-                        // $('.mobile-div').addClass('d-none').attr('data-active', '');
-                        // $('.otp-div').removeClass('d-none').attr('data-active', 1);
-                    } else {
-                        console.log('something went wrong. Please try again.');
-                    }
-                }
-            })
-        } else if (getClassDivOrder == 1)
-        {
-            var otpNumber = $('#otpInput').val();
+{{--<script>--}}
+{{--    $(document).on('click', '.next', function () {--}}
+{{--        event.preventDefault();--}}
+{{--        var getClassDivOrder = $('.auth-div').find('[data-active="1"]').attr('data-order');--}}
+{{--        var mobileNumber = $('.auth-div input[name="mobile"]').val();--}}
+{{--        if (getClassDivOrder == 0)--}}
+{{--        {--}}
+{{--            $('.mobile-div').addClass('d-none').attr('data-active', '');--}}
+{{--            $('.otp-div').removeClass('d-none').attr('data-active', 1);--}}
+{{--            $.ajax({--}}
+{{--                url: "{{ route('front.send-otp') }}",--}}
+{{--                method: "POST",--}}
+{{--                dataType: "JSON",--}}
+{{--                data: {mobile:mobileNumber},--}}
+{{--                success: function (data) {--}}
+{{--                    console.log(data);--}}
+{{--                    if (data.status == 'success')--}}
+{{--                    {--}}
+{{--                        toastr.success('You will get otp shortly. Please input Otp correctly.');--}}
+{{--                        // $('.mobile-div').addClass('d-none').attr('data-active', '');--}}
+{{--                        // $('.otp-div').removeClass('d-none').attr('data-active', 1);--}}
+{{--                    } else {--}}
+{{--                        console.log('something went wrong. Please try again.');--}}
+{{--                    }--}}
+{{--                }--}}
+{{--            })--}}
+{{--        } else if (getClassDivOrder == 1)--}}
+{{--        {--}}
+{{--            var otpNumber = $('#otpInput').val();--}}
 
-            $.ajax({
-                url: "{{ route('front.verify-otp') }}",
-                method: "POST",
-                dataType: "JSON",
-                data: {otp:otpNumber, mobile_number:mobileNumber},
-                success: function (data) {
-                    console.log(data);
-                    if (data.status == 'success')
-                    {
-                        $('.otp-div').addClass('d-none').attr('data-active', '');
-                        if (data.user_status == 'exist')
-                        {
-                            $('.password-div').removeClass('d-none').attr('data-active', 1);
-                            $('.next').removeClass('next').addClass('submit').text('Login').attr('data-status', 'login');
-                        } else if (data.user_status == 'not_exist')
-                        {
-                            $('.name-div').removeClass('d-none').attr('data-active', 1);
-                            $('.password-div').removeClass('d-none').attr('data-active', 1);
-                            $('.next').removeClass('next').addClass('submit').text('Register').attr('data-status', 'register');
-                        }
-                        // $('#registerForm').submit();
-                    } else {
-                        console.log('something went wrong. Please try again.');
-                    }
-                }
-            })
-        }
-    })
-    $(document).on('click', '.submit', function () {
-        event.preventDefault();
-        var formData = $('#authModalForm').serialize();
-        var authStatus = $(this).attr('data-status');
-        var ajaxUrl = '';
-        if (authStatus == 'login')
-        {
-            ajaxUrl = "{{ route('login') }}";
-        } else if (authStatus == 'register')
-        {
-            ajaxUrl = "{{ route('register') }}"
-        }
-        $.ajax({
-            url: ajaxUrl,
-            method: "POST",
-            dataType: "JSON",
-            data: formData,
-            success: function (data) {
-                console.log(data);
-                if (data.status == 'success')
-                {
-                    toastr.success('Your are successfully logged in.');
-                    window.location.reload();
-                } else if (data.status == 'error')
-                {
-                    toastr.error('Something went wrong. Please try again');
-                }
-            },
-            error: function (errors) {
-                if (errors.responseJSON)
-                {
+{{--            $.ajax({--}}
+{{--                url: "{{ route('front.verify-otp') }}",--}}
+{{--                method: "POST",--}}
+{{--                dataType: "JSON",--}}
+{{--                data: {otp:otpNumber, mobile_number:mobileNumber},--}}
+{{--                success: function (data) {--}}
+{{--                    console.log(data);--}}
+{{--                    if (data.status == 'success')--}}
+{{--                    {--}}
+{{--                        $('.otp-div').addClass('d-none').attr('data-active', '');--}}
+{{--                        if (data.user_status == 'exist')--}}
+{{--                        {--}}
+{{--                            $('.password-div').removeClass('d-none').attr('data-active', 1);--}}
+{{--                            $('.next').removeClass('next').addClass('submit').text('Login').attr('data-status', 'login');--}}
+{{--                        } else if (data.user_status == 'not_exist')--}}
+{{--                        {--}}
+{{--                            $('.name-div').removeClass('d-none').attr('data-active', 1);--}}
+{{--                            $('.password-div').removeClass('d-none').attr('data-active', 1);--}}
+{{--                            $('.next').removeClass('next').addClass('submit').text('Register').attr('data-status', 'register');--}}
+{{--                        }--}}
+{{--                        // $('#registerForm').submit();--}}
+{{--                    } else {--}}
+{{--                        console.log('something went wrong. Please try again.');--}}
+{{--                    }--}}
+{{--                }--}}
+{{--            })--}}
+{{--        }--}}
+{{--    })--}}
+{{--    $(document).on('click', '.submit', function () {--}}
+{{--        event.preventDefault();--}}
+{{--        var formData = $('#authModalForm').serialize();--}}
+{{--        var authStatus = $(this).attr('data-status');--}}
+{{--        var ajaxUrl = '';--}}
+{{--        if (authStatus == 'login')--}}
+{{--        {--}}
+{{--            ajaxUrl = "{{ route('login') }}";--}}
+{{--        } else if (authStatus == 'register')--}}
+{{--        {--}}
+{{--            ajaxUrl = "{{ route('register') }}"--}}
+{{--        }--}}
+{{--        $.ajax({--}}
+{{--            url: ajaxUrl,--}}
+{{--            method: "POST",--}}
+{{--            dataType: "JSON",--}}
+{{--            data: formData,--}}
+{{--            success: function (data) {--}}
+{{--                console.log(data);--}}
+{{--                if (data.status == 'success')--}}
+{{--                {--}}
+{{--                    toastr.success('Your are successfully logged in.');--}}
+{{--                    window.location.reload();--}}
+{{--                } else if (data.status == 'error')--}}
+{{--                {--}}
+{{--                    toastr.error('Something went wrong. Please try again');--}}
+{{--                }--}}
+{{--            },--}}
+{{--            error: function (errors) {--}}
+{{--                if (errors.responseJSON)--}}
+{{--                {--}}
 
-                    var allErrors = errors.responseJSON.errors;
-                    for (key in allErrors)
-                    {
-                        $('#'+key).empty().append(allErrors[key]);
-                    }
-                }
-            }
-        })
-    })
-</script>
+{{--                    var allErrors = errors.responseJSON.errors;--}}
+{{--                    for (key in allErrors)--}}
+{{--                    {--}}
+{{--                        $('#'+key).empty().append(allErrors[key]);--}}
+{{--                    }--}}
+{{--                }--}}
+{{--            }--}}
+{{--        })--}}
+{{--    })--}}
+{{--</script>--}}
 @stack('script')
 </body>
 </html>

@@ -108,6 +108,11 @@ class QuestionStore extends Model
         return $this->hasMany(QuestionOption::class);
     }
 
+    public function questionOptionsAscOrder()
+    {
+        return $this->hasMany(QuestionOption::class)->orderBy('id', 'ASC');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'created_by');

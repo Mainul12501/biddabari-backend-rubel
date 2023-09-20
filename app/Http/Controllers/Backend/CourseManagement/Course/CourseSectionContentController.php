@@ -98,7 +98,7 @@ class CourseSectionContentController extends Controller
             return view('backend.course-management.course.section-contents.edit', [
                 'sectionContent'    => $this->sectionContent,
                 'sectionContents'    => CourseSectionContent::whereCourseSectionId($this->sectionContent->course_section_id)->latest()->get(),
-                'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->select('id', 'title')->get(),
+                'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->where('parent_id', 0)->select('id', 'title')->get(),
             ]);
         } catch (\Exception $exception)
         {

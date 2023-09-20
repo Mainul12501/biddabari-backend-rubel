@@ -88,8 +88,16 @@
                         <label for="">PDF Store Category</label>
                         <select name="" id="pdfStoreCategory" class="form-control select2" data-placeholder="Select a Pdf Category">
                             <option disabled selected>Select a Pdf Category</option>
+{{--                            @foreach($pdfStoreCategories as $pdfStoreCategory)--}}
+{{--                                <option value="{{ $pdfStoreCategory->id }}">{{ $pdfStoreCategory->title }}</option>--}}
+{{--                            @endforeach--}}
                             @foreach($pdfStoreCategories as $pdfStoreCategory)
                                 <option value="{{ $pdfStoreCategory->id }}">{{ $pdfStoreCategory->title }}</option>
+                                @if(!empty($pdfStoreCategory->pdfStoreCategories))
+                                    @if(count($pdfStoreCategory->pdfStoreCategories) > 0)
+                                        @include('backend.course-management.course.section-contents.pdf-category-loop', ['courseCategory' => $pdfStoreCategory, 'child' => 1])
+                                    @endif
+                                @endif
                             @endforeach
                         </select>
                     </div>

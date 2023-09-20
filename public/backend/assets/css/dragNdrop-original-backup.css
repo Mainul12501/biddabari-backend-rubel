@@ -10,7 +10,6 @@
     margin: 0;
     padding: 0;
     max-width: 600px;
-    /*max-width: 100%;*/
     list-style: none;
     font-size: 13px;
     line-height: 20px;
@@ -34,7 +33,6 @@
 
 .dd-item > .dd-handle {
     width: 70%;
-    /*width: 80%;*/
     float: left;
     padding: 6px 0px;
 }
@@ -92,7 +90,6 @@
 
 .dd-item>button[data-action="collapse"]:before {
     content: '-';
-    /*content: '\f063';*/
 }
 
 .dd-placeholder,

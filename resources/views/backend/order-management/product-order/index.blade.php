@@ -99,7 +99,7 @@
                                         {{--                                        <td>{{ $productOrder->payment_status }}</td>--}}
                                         <td>
 {{--                                            <a href="javascript:void(0)" class="badge bg-primary m-1">Payment {{ $productOrder->payment_status }}</a><br>--}}
-                                            <a href="javascript:void(0)" class="badge bg-primary m-1">Contact {{ $productOrder->contact_status }}</a><br>
+{{--                                            <a href="javascript:void(0)" class="badge bg-primary m-1">Contact {{ $productOrder->contact_status }}</a><br>--}}
                                             <a href="javascript:void(0)" class="badge bg-primary m-1">Order {{ $productOrder->status }}</a>
                                         </td>
                                         {{--                                        <td>--}}
@@ -125,7 +125,7 @@
                                             <form class="d-inline" action="{{ route('course-orders.destroy', $productOrder->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
                                                 @csrf
                                                 @method('delete')
-                                                <button type="submit" class="btn btn-sm btn-danger mt-1" title="Delete Blog Category">
+                                                <button type="submit" class="btn btn-sm btn-danger mt-1" title="Delete Product Order">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>

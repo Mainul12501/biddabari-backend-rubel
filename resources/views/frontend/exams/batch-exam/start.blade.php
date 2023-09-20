@@ -3,7 +3,7 @@
 @section('body')
 
 <div class="container-fluid" id="grad1">
-    <div class="row">
+    <div class="row" style=" min-height: 500px;">
         <div class="col-md-8 quiz-wizard mx-auto">
             <div class="card border-0">
                 <div class="card-header d-flex align-items-center position-sticky" style="top: 105px!important; z-index: 10;">
@@ -139,6 +139,7 @@
 </style>
 
 @endpush
+
 @push('script')
 
 <script type="application/javascript" src="{{ asset('/') }}backend/assets/plugins/clock-counter/jquery.flipTimer.js"></script>
@@ -163,8 +164,15 @@
                         {{ $diffTime = 0 }}
                     @endif
                 @endif
+                    @if($exam->written_is_strict == 1)
+                        @if(currentDateTimeYmdHi() < dateTimeFormatYmdHi($exam->written_end_time))
+                            {{ $writtenDiffTime  = \Illuminate\Support\Carbon::now()->diffInMinutes($exam->written_end_time) }}
+                        @else
+                            {{ $writtenDiffTime = 0 }}
+                        @endif
+                    @endif
                 var currentTime = new Date();
-                currentTime.setMinutes(currentTime.getMinutes() + {!! isset($exam) ? ($exam->content_type == 'exam' ? ($exam->exam_is_strict == 1 ? ++$diffTime :  $exam->exam_duration_in_minutes) : $exam->written_exam_duration_in_minutes) : 1 !!}); //set custom time instead 60
+                currentTime.setMinutes(currentTime.getMinutes() + {!! isset($exam) ? ($exam->content_type == 'exam' ? ($exam->exam_is_strict == 1 ? /*++$diffTime*/ ($diffTime < $exam->exam_duration_in_minutes ? $diffTime : $exam->exam_duration_in_minutes) :  $exam->exam_duration_in_minutes) : (($exam->written_is_strict == 1 ? /*++$diffTime*/ ($writtenDiffTime < $exam->written_exam_duration_in_minutes ? $writtenDiffTime : $exam->written_exam_duration_in_minutes) :  $exam->written_exam_duration_in_minutes))) : 1 !!}); //set custom time instead 60
 
                 $('.flipTimer').flipTimer({
                     direction: 'down',

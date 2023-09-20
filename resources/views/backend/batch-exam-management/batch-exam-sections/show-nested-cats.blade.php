@@ -5,7 +5,22 @@
             @if(count($sectionContent->batchExamSectionContents) > 0)
                 <i class="fa-solid fa-arrow-circle-down f-s-16"></i>
             @endif
-            <span class="f-s-18">{{ $sectionContent->title }}</span>
+            <span class="f-s-18 section-content-title">
+                @if($sectionContent->content_type == 'pdf')
+                    <i class="fa-regular fa-file-pdf"></i>
+                @endif
+
+                @if($sectionContent->content_type == 'note')
+                    <i class="fa-regular fa-note-sticky"></i>
+                @endif
+                @if($sectionContent->content_type == 'exam')
+                    <i class="fa-regular fa-note-sticky"></i>
+                @endif
+                @if($sectionContent->content_type == 'written_exam')
+                    <i class="fa-regular fa-paste"></i>
+                @endif
+                {{ $sectionContent->title }}
+            </span>
         </h3>
         <div class="col-sm-3">
             <div class="float-end">
@@ -14,6 +29,11 @@
 {{--                        <i class="fa-solid fa-plus-square"></i>--}}
 {{--                    </button>--}}
 {{--                @endcan--}}
+                @if($sectionContent->content_type == 'pdf')
+                    <a href="" data-course-id="{{ $sectionContent->id }}" data-content-type="{{ $sectionContent->content_type }}" @if($sectionContent->content_type == 'pdf') data-pdf-url="{{ isset($sectionContent->pdf_link) ? $sectionContent->pdf_link : (isset($sectionContent->pdf_file) ? $sectionContent->pdf_file : '') }}" @endif @if($sectionContent->content_type == 'video') data-video-vendor="{{ $sectionContent->video_vendor }}" data-video-url="{{ $sectionContent->video_link }}" @endif class="btn btn-sm mt-1 btn-warning show-pdf-video-btn" title="View Pdf Or Video" >
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                @endif
                 @can('add-question-to-batch-exam-section-content')
                     @if($sectionContent->content_type == 'exam' || $sectionContent->content_type == 'written_exam')
                         <a href="" data-section-content-id="{{ $sectionContent->id }}" data-xm-type="{{ $sectionContent->content_type }}" class="btn btn-sm btn-primary add-question-modal-btn" title="Add Questions">

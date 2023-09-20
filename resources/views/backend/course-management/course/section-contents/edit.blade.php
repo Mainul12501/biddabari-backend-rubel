@@ -80,7 +80,7 @@
                         </select>
                     </div>
                     <div class="col-md-2 mt-2">
-                        <span class="mt-2"><a href="{{ $sectionContent->pdf_file }}" target="_blank">View PDF</a></span>
+                        <span class="mt-2"><a href="{{ $sectionContent->pdf_file }}" download="">Download PDF</a></span>
                     </div>
                 </div>
                 <div class="row mt-2 d-none" id="manualPdf">

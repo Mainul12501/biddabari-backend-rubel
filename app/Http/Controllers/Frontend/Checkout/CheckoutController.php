@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Checkout;
 
+use App\helper\ViewHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\Order\OrderSubmitRequest;
 use App\Models\Backend\OrderManagement\ParentOrder;
@@ -50,5 +51,31 @@ class CheckoutController extends Controller
             }
         }
 
+    }
+
+    public function placeFreeCourseOrder(Request $request, $courseId)
+    {
+        ParentOrder::create([
+            'user_id'   => ViewHelper::loggedUser()->id,
+            'parent_model_id'   => $courseId,
+            'ordered_for'   => $request->ordered_for,
+            'paid_amount'   => 0,
+            'total_amount'   => 0,
+            'status'   => 'approved',
+            'payment_status'   => 'complete',
+            'is_free_course'   => 1,
+        ]);
+        if (str_contains(url()->current(), '/api/'))
+        {
+            return ViewHelper::returnSuccessMessage('You ordered this course successfully.');
+        } else {
+            if ($request->ordered_for == 'course')
+            {
+                return redirect()->route('front.student.course-contents', ['course_id' => $courseId])->with('success', 'You ordered this course successfully.');
+            } else {
+                return redirect()->route('front.student.batch-exam-contents', ['xm_id' => $courseId])->with('success', 'You ordered this Exam successfully.');
+            }
+
+        }
     }
 }

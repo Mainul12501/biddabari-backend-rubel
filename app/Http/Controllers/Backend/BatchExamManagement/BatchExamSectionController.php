@@ -20,7 +20,7 @@ class BatchExamSectionController extends Controller
         abort_if(Gate::denies('manage-batch-exam-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.batch-exam-management.batch-exam-sections.index', [
             'batchExamSections'   => BatchExamSection::whereBatchExamId(\request()->input('batch_exam_id'))->get(),
-            'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->select('id', 'title')->get(),
+            'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->where('parent_id', 0)->select('id', 'title')->get(),
         ]);
     }
 

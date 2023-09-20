@@ -106,7 +106,7 @@
 {{--                                        <td>{{ $courseOrder->payment_status }}</td>--}}
                                         <td>
                                             <a href="javascript:void(0)" class="badge bg-primary m-1">Payment {{ $courseOrder->payment_status }}</a><br>
-                                            <a href="javascript:void(0)" class="badge bg-primary m-1">Contact {{ $courseOrder->contact_status }}</a><br>
+{{--                                            <a href="javascript:void(0)" class="badge bg-primary m-1">Contact {{ $courseOrder->contact_status }}</a><br>--}}
                                             <a href="javascript:void(0)" class="badge bg-primary m-1">Order {{ $courseOrder->status }}</a>
                                         </td>
 {{--                                        <td>--}}

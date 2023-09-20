@@ -34,6 +34,7 @@ class ParentOrder extends Model
         'coupon_amount',
         'status',
         'contact_status',
+        'is_free_course',
     ];
 
     protected $searchableFields = ['*'];

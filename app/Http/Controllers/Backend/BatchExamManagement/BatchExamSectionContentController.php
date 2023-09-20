@@ -27,7 +27,7 @@ class BatchExamSectionContentController extends Controller
             return view('backend.batch-exam-management.section-contents.index', [
                 'sectionContents'   => BatchExamSectionContent::whereBatchExamSectionId(\request()->input('section_id'))->latest()->get(),
                 'batchExamSections'   => BatchExamSection::whereBatchExamId(\request()->input('batch_exam_id'))->get(),
-                'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->select('id', 'title')->get(),
+                'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->where('parent_id', 0)->select('id', 'title')->get(),
             ]);
         }
         return back()->with('error', 'Please Select a Batch Exam Section to get it\'s contents.');
@@ -82,7 +82,7 @@ class BatchExamSectionContentController extends Controller
         abort_if(Gate::denies('edit-batch-exam-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.batch-exam-management.section-contents.edit', [
             'sectionContent'    => BatchExamSectionContent::find($id),
-            'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->select('id', 'title')->get(),
+            'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->where('parent_id', 0)->select('id', 'title')->get(),
         ]);
     }
 
