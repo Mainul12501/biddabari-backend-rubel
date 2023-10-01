@@ -94,7 +94,7 @@
 {{--                                        <td>{{ $allOrder->payment_status }}</td>--}}
                                         <td>
                                             <a href="javascript:void(0)" class="badge bg-primary m-1">Payment {{ $allOrder->payment_status }}</a><br>
-                                            <a href="javascript:void(0)" class="badge bg-primary m-1">Contact {{ $allOrder->contact_status }}</a><br>
+{{--                                            <a href="javascript:void(0)" class="badge bg-primary m-1">Contact {{ $allOrder->contact_status }}</a><br>--}}
                                             <a href="javascript:void(0)" class="badge bg-primary m-1">Order {{ $allOrder->status }}</a>
                                         </td>
 {{--                                        <td>--}}

@@ -104,6 +104,7 @@ class QuestionStoreController extends Controller
     public function update(Request $request, string $id)
     {
         abort_if(Gate::denies('update-question-store'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+//        return $request;
         try {
             foreach ($request->question as $key => $singleQuestion)
             {

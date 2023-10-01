@@ -269,6 +269,19 @@
             </div>
         </div>
     </div>
+    <div class="modal fade " id="appendXmParticipants" data-bs-backdrop="static" >
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" id="">
+                <div class="modal-header">
+                    <h2 class="text-center">Exam Participants</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                </div>
+                <div class="modal-body" id="xmParticipantsDiv">
+
+                </div>
+            </div>
+        </div>
+    </div>
 {{--    section contents modal end--}}
 
 @endsection
@@ -862,6 +875,22 @@
                     $('#addQueModalBody').empty().append(data);
                     $('.select2').select2();
                     $('#setQuestionOnSectionContentModal').modal('show');
+                }
+            })
+        });
+        $(document).on('click', '.view-participants', function () {
+            event.preventDefault();
+            var sectionContentId = $(this).attr('data-section-content-id');
+            var examType = $(this).attr('data-xm-type');
+            $.ajax({
+                url: base_url+"get-xm-participants/course/"+sectionContentId,
+                method: "GET",
+                // dataType: "JSON",
+                // data: {section_content_id:sectionContentId,exam_type:examType},
+                success: function (data) {
+                    // console.log(data);
+                    $('#xmParticipantsDiv').empty().append(data);
+                    $('#appendXmParticipants').modal('show');
                 }
             })
         });

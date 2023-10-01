@@ -20,7 +20,7 @@ class AllOrdersController extends Controller
         abort_if(Gate::denies('manage-all-order'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (!empty($request->order_type) && $request->order_type != 'all')
         {
-            $this->allOrders = ParentOrder::where('ordered_for', $request->order_type)->latest()->get();
+            $this->allOrders = ParentOrder::where(['ordered_for' => $request->order_type, 'is_free_course' => 0])->latest()->get();
         } else {
 //            $this->courseOrders = CourseOrder::latest()->take(30)->get();
             $this->allOrders = ParentOrder::latest()->take(30)->get();

@@ -91,6 +91,7 @@ Route::middleware([
     Route::post('/assign-question-to-class-content', [CourseSectionContentController::class, 'assignQuestionToClassContent'])->name('assign-question-to-class-content');
     Route::get('/detach-question-from-course-content', [CourseSectionContentController::class, 'detachQuestionFromCourseContent'])->name('detach-question-from-course-content');
     Route::get('/detach-question-from-course-class-content', [CourseSectionContentController::class, 'detachQuestionFromCourseClassContent'])->name('detach-question-from-course-class-content');
+    Route::get('/get-xm-participants/{xm_model}/{model_id}', [CourseSectionContentController::class, 'getXmParticipants'])->name('get-xm-participants');
 
     Route::get('/get-xm-for-add-question', [ExamController::class, 'getXmForAddQuestion'])->name('get-xm-for-add-question');
     Route::post('/assign-question-to-exam', [ExamController::class, 'assignQuestionToExam'])->name('assign-question-to-exam');
@@ -213,9 +214,12 @@ Route::middleware([
     Route::get('/get-exams-by-category/{id}', [ExamController::class, 'getExamsByCategory'])->name('get-exams-by-category');
     Route::get('/get-courses-by-category/{id}', [CourseController::class, 'getCoursesByCategory'])->name('get-courses-by-category');
     Route::get('/show-exam-sheet', [ExamController::class, 'showExamSheet'])->name('show-exam-sheet');
+    Route::get('/get-course-or-batch-exam-names/{xmOf}', [ExamController::class, 'getCourseOrExamNames'])->name('get-course-or-batch-exam-names');
+    Route::get('/get-exam-names/{xmOf}/{typeId}', [ExamController::class, 'getExamNames'])->name('get-exam-names');
+    Route::get('/get-written-section-contents/{xmOf}/{sectionId}', [ExamController::class, 'getWrittenSectionContents'])->name('get-written-section-contents');
     Route::get('/get-exam-sheet-data/{id}', [ExamController::class, 'getExamSheet'])->name('get-exam-sheet');
-    Route::get('/check-xm-paper/{id}', [ExamController::class, 'checkExamPaper'])->name('check-xm-paper');
-    Route::post('/update-exam-result/{id}', [ExamController::class, 'updateWrittenExamResult'])->name('update-written-xm-result');
+    Route::get('/check-xm-paper/{id}/{typeOf?}', [ExamController::class, 'checkExamPaper'])->name('check-xm-paper');
+    Route::post('/update-exam-result/{id}/{examOf?}', [ExamController::class, 'updateWrittenExamResult'])->name('update-written-xm-result');
     Route::post('/update-exam-sheet', [ExamController::class, 'updateExamResult'])->name('update-xm-result');
     Route::post('/exam-categories/update/{id}', [ExamCategoryController::class, 'update'])->name('exam-categories.update');
     Route::post('exam-categories/save-nested-categories', [ExamCategoryController::class, 'saveNestedCategories'])->name('examCategories.saveNestedCategories');

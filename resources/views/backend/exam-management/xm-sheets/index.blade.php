@@ -4,21 +4,41 @@
 
 @section('body')
     <div class="row mt-5">
-        <div class="col-sm-8 mx-auto">
+        <div class="col-sm-10 mx-auto">
             <div class="card card-body">
                 <form action="" method="get">
                     {{--                    @csrf--}}
                     <div class="row" >
                         <div class="col select2-div">
-                            <label for="">Exam Name</label>
-                            <select name="exam_id" class="form-control select2" id="courseId" data-placeholder="Select a Exam">
-                                <option value=""></option>
-                                @foreach($exams as $exam)
-                                    <option value="{{ $exam->id }}">{{ $exam->title }}</option>
-                                @endforeach
+                            <label for="">Exam Of</label>
+                            <select name="exam_of" id="examOf" class="form-control select2" data-placeholder="Exam Of">
+                                <option value="" selected disabled>Select a Exam Type</option>
+                                <option value="course">Course</option>
+                                <option value="batch_exam">Batch Exam</option>
                             </select>
                         </div>
-                        <div class="col-auto">
+                        <div class="col select2-div " >
+                            <label for="">Exam Type Name</label>
+                            <select name="exam_type_id" class="form-control select2" id="xmTypeId" data-placeholder="Select a Exam">
+                                <option value=""></option>
+
+                            </select>
+                        </div>
+                        <div class="col select2-div " >
+                            <label for="">Select Section Name</label>
+                            <select name="exam_section_id" class="form-control select2" id="sectionId" data-placeholder="Select a Exam">
+                                <option value=""></option>
+
+                            </select>
+                        </div>
+                        <div class="col select2-div " >
+                            <label for="">Select Exam</label>
+                            <select name="section_content_id" class="form-control select2" id="xmId" data-placeholder="Select a Exam">
+                                <option value=""></option>
+
+                            </select>
+                        </div>
+                        <div class="col-auto xm-name-show-hide d-none">
                             <input type="submit" class="btn btn-success ms-4 " style="margin-top: 18px" value="Search" />
                         </div>
                     </div>
@@ -52,10 +72,10 @@
                                 @foreach($examSheets as $examSheet)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $examSheet->exam->title ?? '' }}</td>
+                                        <td>{{ $examOf == 'course' ? $examSheet->courseSectionContent->title : $examSheet->batchExamSectionContent->title }}</td>
                                         <td>{{ $examSheet->user->name ?? '' }}</td>
                                         <td>
-                                            <a href="{{ route('check-xm-paper', ['id' => $examSheet->id]) }}" target="_blank" >pdf file</a>
+                                            <a href="{{ route('check-xm-paper', ['id' => $examSheet->id, 'typeOf' => $examOf]) }}" target="_blank" >pdf file</a>
                                         </td>
                                         <td>{{ $examSheet->exam->total_mark ?? '' }}</td>
                                         <td>{{ $examSheet->result_mark ?? '' }}</td>
@@ -144,6 +164,62 @@
                 }
             })
 
+        })
+    </script>
+    <script>
+        $(document).on('change', '#examOf', function () {
+            event.preventDefault();
+            var xmOf = $(this).val(); //change value
+            $.ajax({
+                url: base_url+"get-course-or-batch-exam-names/"+xmOf,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data) {
+                    console.log(data);
+                    var option = '';
+                    $.each(data, function (key, xmOf) {
+                        option += '<option value="'+xmOf.id+'">'+xmOf.title+'</option>';
+                    })
+                    $('#xmTypeId').empty().append(option);
+                }
+            })
+        })
+        $(document).on('change', '#xmTypeId', function () {
+            event.preventDefault();
+            var xmOf = $('#examOf').val(); //change value
+            var xmTypeId = $(this).val(); //change value
+            $.ajax({
+                url: base_url+"get-exam-names/"+xmOf+'/'+xmTypeId,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data) {
+                    console.log(data);
+                    var option = '';
+                    $.each(data, function (key, xmTypeId) {
+                        option += '<option value="'+xmTypeId.id+'">'+xmTypeId.title+'</option>';
+                    })
+                    $('#sectionId').empty().append(option);
+                }
+            })
+        })
+        $(document).on('change', '#sectionId', function () {
+            event.preventDefault();
+            var xmOf = $('#examOf').val(); //change value
+            var sectionId = $(this).val(); //change value
+            $.ajax({
+                url: base_url+"get-written-section-contents/"+xmOf+'/'+sectionId,
+                method: "GET",
+                dataType: "JSON",
+                success: function (data) {
+                    console.log(data);
+                    var option = '';
+                    $.each(data, function (key, sectionId) {
+                        option += '<option value="'+sectionId.id+'">'+sectionId.title+'</option>';
+                    })
+                    $('#xmId').empty().append(option);
+                    $('.xm-name-show-hide').removeClass('d-none');
+                }
+            })
         })
     </script>
 @endpush

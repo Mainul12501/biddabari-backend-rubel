@@ -44,39 +44,50 @@
                                             <div class="form-card " id="fildset{{ $question->id }}">
                                                 <div class="question-title" id="loop{{ $question->id }}" data-loop="{{ $loop->iteration }}" style="margin-top: 10px">
                                                     <span class="float-start f-s-26">{{ $loop->iteration }}.  &nbsp;</span>
-                                                    <span class="float-start f-s-26"> {!! $question->question !!}</span>
+                                                    <h6 class="float-start f-s-26"> {!! $question->question !!}</h6>
                                                 </div>
                                                 @if(!empty($question->question_image))
-                                                    <div class="image-container">
-                                                        <img src="{{ $question->question_image }}" class="fit-image" alt="">
+                                                    <div class="{{--image-container--}}">
+                                                        <img src="{{ asset($question->question_image) }}" class="fit-image" alt="" style="max-height: 350px" />
                                                     </div>
-
                                                 @endif
-                                                <div class="answer-items mt-3" id="queRadio{{ $question->id }}">
-                                                    @foreach($question->questionOptions as $optionIndex => $questionOption)
-                                                        @if(!empty($questionOption->option_title))
-                                                            <div class="form-radio" >
-                                                                <input id="asw{{ $questionOption->id }}" type="checkbox" name="question[{{ $question->id }}][answer]" value="{{ $questionOption->id }}">
 
-                                                                <label class="answer-label" id="ali{{ $questionOption->id }}" data-que-id="{{ $question->id }}" data-ans-id="{{ $questionOption->id }}" for="asw{{ $questionOption->id }}">
-                                                                    <span class="answer-title mx-0">{{$loop->iteration .' . '. $questionOption->option_title }}</span>
-                                                                </label>
-                                                                <span class="ps-1 d-none cont" id="ansCheck{{ $questionOption->id }}">
+                                                @if(isset($question->question_option_image))
+                                                    <div class="row py-2">
+                                                        <div class="col-12">
+                                                            <img src="{{ asset($question->question_option_image) }}" class="" alt="" style="max-height: 350px">
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                                <div>
+                                                    <div class="answer-items mt-3" id="queRadio{{ $question->id }}">
+
+                                                        @foreach($question->questionOptions as $optionIndex => $questionOption)
+                                                            @if(!empty($questionOption->option_title))
+                                                                <div class="form-radio" >
+                                                                    <input id="asw{{ $questionOption->id }}" type="checkbox" name="question[{{ $question->id }}][answer]" value="{{ $questionOption->id }}">
+
+                                                                    <label class="answer-label" id="ali{{ $questionOption->id }}" data-que-id="{{ $question->id }}" data-ans-id="{{ $questionOption->id }}" for="asw{{ $questionOption->id }}">
+                                                                        <span class="answer-title mx-0">{{$loop->iteration .' . '. $questionOption->option_title }}</span>
+                                                                    </label>
+                                                                    <span class="ps-1 d-none cont" id="ansCheck{{ $questionOption->id }}">
                                                                     <span class="check-ans" style="cursor: pointer; color: black"><i class="fa-solid fa-check"></i></span>
                                                                     <span class="text-danger cancel-ans" style="cursor: pointer; color: black"><i class="fa-solid fa-xmark"></i></span>
                                                                 </span>
-                                                            </div>
-                                                        @else
-                                                            <div class="form-radio">
-                                                                <input id="asw{{ $questionOption->id }}" type="checkbox" name="question[{{ $question->id }}][answer]" value="{{ $questionOption->id }}">
+                                                                </div>
+                                                            @else
+                                                                <div class="form-radio">
+                                                                    <input id="asw{{ $questionOption->id }}" type="checkbox" name="question[{{ $question->id }}][answer]" value="{{ $questionOption->id }}">
 
-                                                                <label class="" for="asw{{ $questionOption->id }}">
-                                                                    <img src="{{ $questionOption->option_image }}" class="fit-image" alt="">
-                                                                </label>
-                                                            </div>
-                                                        @endif
-                                                    @endforeach
+                                                                    <label class="" for="asw{{ $questionOption->id }}">
+                                                                        <img src="{{ $questionOption->option_image }}" class="fit-image" alt="">
+                                                                    </label>
+                                                                </div>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
                                                 </div>
+
                                             </div>
                                         </div>
                                     @endforeach
@@ -137,7 +148,8 @@
         color: black!important;
     }
 </style>
-
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 @endpush
 @push('script')
 

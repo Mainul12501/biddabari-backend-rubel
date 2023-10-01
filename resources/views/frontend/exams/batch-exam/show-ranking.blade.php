@@ -14,12 +14,15 @@
                             <div class="row ">
 
                                 <div class="card card-body">
-                                    <table class="table ranking-table table-borderless">
+                                    <table class="table ranking-table table-borderless" id="file-datatable">
                                         <thead>
                                             <tr>
                                                 <th>RANK</th>
                                                 <th>NAME</th>
                                                 <th>MARK</th>
+                                                <th>Provided Ans</th>
+                                                <th>Right Ans</th>
+                                                <th>Wrong Ans</th>
                                                 <th>DURATION</th>
                                             </tr>
                                         </thead>
@@ -30,6 +33,9 @@
                                                         <td>{{ $loop->iteration }}</td>
                                                         <td>{{ $courseExamResult->user->name }}</td>
                                                         <td>{{ $courseExamResult->result_mark ?? 0 }}</td>
+                                                        <td>{{ $courseExamResult->total_provided_ans ?? 0 }}</td>
+                                                        <td>{{ $courseExamResult->total_right_ans ?? 0 }}</td>
+                                                        <td>{{ $courseExamResult->total_wrong_ans ?? 0 }}</td>
                                                         <td>{{ \Carbon\CarbonInterval::seconds($courseExamResult->required_time)->cascade()->forHumans() }}</td>
                                                     </tr>
                                                 @endif
@@ -40,6 +46,9 @@
                                                         <td>{{ $myPosition->position }}</td>
                                                         <td>{{ $myPosition->user->name }}</td>
                                                         <td>{{ $myPosition->result_mark ?? 0 }}</td>
+                                                        <td>{{ $courseExamResult->total_provided_ans ?? 0 }}</td>
+                                                        <td>{{ $courseExamResult->total_right_ans ?? 0 }}</td>
+                                                        <td>{{ $courseExamResult->total_wrong_ans ?? 0 }}</td>
                                                         <td>{{ \Carbon\CarbonInterval::seconds($myPosition->required_time)->cascade()->forHumans() }}</td>
                                                     </tr>
                                                 @endif
@@ -50,6 +59,9 @@
                                                         <td>{{ ++$index }}</td>
                                                         <td>{{ $courseExamResultx->user->name }}</td>
                                                         <td>{{ $courseExamResultx->result_mark ?? 0 }}</td>
+                                                        <td>{{ $courseExamResult->total_provided_ans ?? 0 }}</td>
+                                                        <td>{{ $courseExamResult->total_right_ans ?? 0 }}</td>
+                                                        <td>{{ $courseExamResult->total_wrong_ans ?? 0 }}</td>
                                                         <td>{{ \Carbon\CarbonInterval::seconds($courseExamResultx->required_time)->cascade()->forHumans() }}</td>
                                                     </tr>
                                                 @endif
@@ -73,6 +85,6 @@
     </style>
 @endpush
 
-@section('js')
-
-@endsection
+@push('js')
+    @include('backend.includes.assets.plugin-files.datatable')
+@endpush

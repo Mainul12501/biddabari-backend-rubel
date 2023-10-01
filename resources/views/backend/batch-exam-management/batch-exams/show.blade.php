@@ -15,16 +15,9 @@
                 <div class="col-md-5 mt-2 select2-div">
                     <label for="">Select Batch Exam Categories</label>
                     <select name="batch_exam_categories[]" readonly="" class="form-control select2"  multiple data-placeholder="Select Batch Exam Categories" disabled >
-                        <option></option>
-                        @if(isset($batchExamCategories))
-                            @foreach($batchExamCategories as $batchExamCategory)
-                                <option value="{{ $batchExamCategory->id }}" @if(isset($batchExam->batchExamCategories)) @foreach($batchExam->batchExamCategories as $selectedCourseCategory) @if($batchExamCategory->id == $selectedCourseCategory->id) selected @endif @endforeach @endif>{{ $batchExamCategory->name }}</option>
-                                @if(isset($batchExamCategory->batchExamCategories))
-                                    @include('backend.batch-exam-management.batch-exams.course-category-loop', ['batchExamCategory' => $batchExamCategory, 'child' => 1, 'batchExam' => $batchExam ?? ''])
-                                @endif
-                            @endforeach
-
-                        @endif
+                        @foreach($batchExam->batchExamCategories as $batchExamCategory)
+                            <option selected>{{ $batchExamCategory->name }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-12 mt-2">

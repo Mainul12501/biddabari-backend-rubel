@@ -50,6 +50,9 @@
                 @endif
                     @can('add-question-to-course-section-content')
                         @if($sectionContent->content_type == 'exam' || $sectionContent->content_type == 'written_exam')
+                            <a href="" data-section-content-id="{{ $sectionContent->id }}" data-xm-type="{{ $sectionContent->content_type }}" class="btn btn-sm btn-warning view-participants" title="View Participants">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
                             <a href="" data-section-content-id="{{ $sectionContent->id }}" data-xm-type="{{ $sectionContent->content_type }}" class="btn btn-sm btn-primary add-question-modal-btn" title="Add Exam Questions">
                                 <i class="fa-solid fa-plus"></i>
                             </a>

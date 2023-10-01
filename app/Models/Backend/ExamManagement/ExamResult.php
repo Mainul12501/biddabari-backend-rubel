@@ -34,7 +34,7 @@ class ExamResult extends Model
 
     public static function storeExamResult($arrayData, $examResultId = null)
     {
-        ExamResult::updateOrCreate(['id' => $examResultId], $arrayData);
+        return ExamResult::updateOrCreate(['id' => $examResultId], $arrayData);
     }
 
     public static function updateXmResult($request)

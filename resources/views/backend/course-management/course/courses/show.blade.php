@@ -15,16 +15,9 @@
                 <div class="col-md-5 mt-2 select2-div">
                     <label for="">Select Course Categories</label>
                     <select name="course_categories[]" class="form-control select2"  multiple data-placeholder="Select Course Categories" disabled >
-                        <option></option>
-                        @if(isset($courseCategories))
-                            @foreach($courseCategories as $courseCategory)
-                                <option value="{{ $courseCategory->id }}" @if(isset($course->courseCategories)) @foreach($course->courseCategories as $selectedCourseCategory) @if($courseCategory->id == $selectedCourseCategory->id) selected @endif @endforeach @endif>{{ $courseCategory->name }}</option>
-                                @if(isset($courseCategory->courseCategories))
-                                    @include('backend.course-management.course.courses.course-category-loop', ['courseCategory' => $courseCategory, 'child' => 1, 'course' => $course ?? ''])
-                                @endif
-                            @endforeach
-
-                        @endif
+                        @foreach($course->courseCategories as $courseCategory)
+                            <option selected>{{ $courseCategory->name }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-12 mt-2">
@@ -87,6 +80,11 @@
         </div>
         <div class="card card-body">
             <div class="row">
+                <div class="col-md-4 mt-2">
+                    <label for="">Admission Last Date</label>
+                    <input type="text" name="admission_last_date" disabled value="{{ isset($course) ? $course->admission_last_date : '' }}" class="form-control" placeholder="Admission Last Date" />
+                    <span class="text-danger" id="admission_last_date"></span>
+                </div>
                 <div class="col-md-4 mt-2">
                     <label for="">Price</label>
                     <input type="text" disabled name="price" value="{{ isset($course) ? $course->price : '' }}" class="form-control" placeholder="Price" />

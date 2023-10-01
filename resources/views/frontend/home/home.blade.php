@@ -574,6 +574,7 @@
 @endsection
 @push('style')
     <style>
-        .hero-slider-area { padding: 25px 0!important;}
+        .hero-slider-area { padding: 25px 0!important; /*background-color: rgba(241, 131, 69, .5)*/ background-color: #ebe9f1}
+        .featured-item-two a h3 {font-size: 23px}
     </style>
 @endpush

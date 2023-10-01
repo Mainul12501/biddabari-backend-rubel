@@ -112,6 +112,11 @@
         <div class="card card-body">
             <div class="row">
                 <div class="col-md-4 mt-2">
+                    <label for="">Admission Last Date</label>
+                    <input type="text" name="admission_last_date" id="admissionLastDate" data-dtp="dtp_Nufud" value="{{ isset($course) ? $course->admission_last_date : '' }}" class="form-control" placeholder="Admission Last Date" />
+                    <span class="text-danger" id="admission_last_date"></span>
+                </div>
+                <div class="col-md-4 mt-2">
                     <label for="">Price</label>
                     <input type="text" name="price" value="{{ isset($course) ? $course->price : '' }}" class="form-control" placeholder="Price" />
                     <span class="text-danger" id="price"></span>

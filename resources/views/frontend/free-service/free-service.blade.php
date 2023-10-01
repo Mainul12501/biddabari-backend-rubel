@@ -41,7 +41,7 @@
                     <div class="row mt-3">
                         @forelse($batchExams as $batchExam)
                             <div class="courses-item col-md-4 col-sm-6 px-0 mx-2 open-modal" data-xm-id="{{ $batchExam->id }}" style="cursor: pointer;">
-                                <a href="{{ route('front.batch-exam-details', ['id' => $batchExam->id]) }}">
+                                <a href="" class="w-100">
                                     <img src="{{ isset($batchExam->banner) ? asset($batchExam->banner) : asset('frontend/logo/biddabari-card-logo.jpg') }}" alt="Courses" class="w-100" style="height: 230px"/>
                                     <div class="content">
                                         <h3>{{ $batchExam->title }}</h3>

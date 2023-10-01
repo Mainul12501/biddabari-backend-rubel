@@ -55,6 +55,7 @@ class Course extends Model
         'discount_start_date_timestamp',
         'discount_end_date',
         'discount_end_date_timestamp',
+        'admission_last_date',
     ];
 
     protected $searchableFields = ['*'];
@@ -147,8 +148,10 @@ class Course extends Model
         self::$course->total_zip                = $request->total_zip;
         self::$course->total_file               = $request->total_file;
         self::$course->total_written_exam       = $request->total_written_exam;
+        self::$course->admission_last_date      = $request->admission_last_date;
         self::$course->status                   = $request->status == 'on' ? 1 : 0;
         self::$course->is_paid                  = $request->is_paid == 'on' ? 1 : 0;
+        self::$course->is_featured              = $request->is_featured == 'on' ? 1 : 0;
         self::$course->show_home_slider         = $request->show_home_slider == 'on' ? 1 : 0;
         self::$course->save();
         self::$course->teachers()->sync($request->teachers_id);

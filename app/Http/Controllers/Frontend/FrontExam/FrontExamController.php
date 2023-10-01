@@ -21,6 +21,7 @@ use App\Models\Backend\QuestionManagement\QuestionOption;
 use App\Models\Backend\QuestionManagement\QuestionStore;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Response;
@@ -30,7 +31,7 @@ class FrontExamController extends Controller
 {
     protected $questions = [], $exams = [], $exam, $examCategory, $examCategories = [], $subscriptions = [], $courseExamResults = [];
     protected $xmResult, $data = [], $courseSection, $courseSections = [], $sectionContent, $sectionContents = [];
-    protected $examResult, $resultNumber, $question, $questionOption, $questionJson=[], $fileSessionPaths = [], $filePathString, $pdfFilePath;
+    protected $examResult, $resultNumber, $totalRightAns, $totalWrongAns, $totalProvidedAns, $question, $questionOption, $questionJson=[], $fileSessionPaths = [], $filePathString, $pdfFilePath;
     public function xmTestForDev ()
     {
         $this->questions = QuestionStore::whereQuestionType('mcq')->get();
@@ -39,7 +40,7 @@ class FrontExamController extends Controller
 
     public function startExam ($examId, $slug = null)
     {
-        if (auth()->check())
+        if (ViewHelper::authCheck())
         {
             $this->exam = Exam::find($examId);
 //        if (Carbon::today()->format('Y-m-d') <= $this->exam->xm_date)
@@ -60,9 +61,9 @@ class FrontExamController extends Controller
 
     public function startcourseExam ($contentId)
     {
-        if (auth()->check())
+        if (ViewHelper::authCheck())
         {
-            $existExamResult = CourseExamResult::where(['course_section_content_id' => $contentId, 'user_id' => auth()->id()])->first();
+            $existExamResult = CourseExamResult::where(['course_section_content_id' => $contentId, 'user_id' => ViewHelper::loggedUser()->id])->first();
             if (!empty($existExamResult))
             {
                 return back()->with('error', 'You already participate in this exam.');
@@ -79,10 +80,10 @@ class FrontExamController extends Controller
 
     public function startClassExam($contentId)
     {
-        if (auth()->check())
+        if (ViewHelper::authCheck())
         {
             $this->sectionContent = CourseSectionContent::whereId($contentId)->with(['questionStoresForClassXm'])->first();
-            $existUserClassXm = CourseClassExamResult::where(['course_section_content_id' => $this->sectionContent->id, 'user_id' => auth()->id()])->first();
+            $existUserClassXm = CourseClassExamResult::where(['course_section_content_id' => $this->sectionContent->id, 'user_id' => ViewHelper::loggedUser()->id])->first();
             if (isset($existUserClassXm))
             {
                 return back()->with('error' , 'You already passed the class Exam.');
@@ -98,9 +99,9 @@ class FrontExamController extends Controller
 
     public function startBatchExam ($contentId)
     {
-        if (auth()->check())
+        if (ViewHelper::authCheck())
         {
-            $existExamResult = BatchExamResult::where(['batch_exam_section_content_id' => $contentId, 'user_id' => auth()->id()])->first();
+            $existExamResult = BatchExamResult::where(['batch_exam_section_content_id' => $contentId, 'user_id' => ViewHelper::loggedUser()->id])->first();
             if (!empty($existExamResult))
             {
                 return back()->with('error', 'You already participate in this exam.');
@@ -151,9 +152,9 @@ class FrontExamController extends Controller
                 }
                 $this->examResult = [
                     'exam_id'       => $examId,
-                    'user_id'       => auth()->id(),
+                    'user_id'       => ViewHelper::loggedUser()->id,
                     'xm_type'       => $this->exam->xm_type,
-//                    'written_xm_file'       => fileUpload($request->file('written_xm_file'), 'xm-files/'.$this->exam->id.'/', 'file-'.auth()->id().'-'),
+//                    'written_xm_file'       => fileUpload($request->file('written_xm_file'), 'xm-files/'.$this->exam->id.'/', 'file-'.ViewHelper::loggedUser()->id.'-'),
                     'provided_ans'      => json_encode($this->questionJson),
                     'result_mark'       => $this->resultNumber ?? 0,
                     'is_reviewed'       => 0,
@@ -184,7 +185,7 @@ class FrontExamController extends Controller
 
                 $this->examResult = [
                     'exam_id'       => $examId,
-                    'user_id'       => auth()->id(),
+                    'user_id'       => ViewHelper::loggedUser()->id,
                     'xm_type'       => $this->exam->xm_type,
                     'written_xm_file'       => $this->pdfFilePath,
 //                    'provided_ans'      => json_encode($this->questionJson),
@@ -203,6 +204,9 @@ class FrontExamController extends Controller
     {
         try {
             $this->resultNumber = 0;
+            $this->totalRightAns = 0;
+            $this->totalWrongAns = 0;
+            $this->totalProvidedAns = 0;
             $this->exam = CourseSectionContent::whereId($contentId)->first();
             if ($this->exam)
             {
@@ -220,16 +224,21 @@ class FrontExamController extends Controller
                             $this->question = QuestionStore::whereId($question_id)->select('id', 'question_type', 'question_mark', 'negative_mark', 'has_all_wrong_ans', 'status')->first();
                             if (is_array($answer))
                             {
+                                ++$this->totalProvidedAns;
                                 if ($this->question->has_all_wrong_ans == 1)
                                 {
-                                    $this->resultNumber -= (int)$this->question->negative_mark;
+//                                    $this->resultNumber -= (int)$this->question->negative_mark;
+                                    $this->resultNumber -= (int)$this->exam->exam_negative_mark;
+                                    ++$this->totalWrongAns;
                                 } else {
                                     $this->questionOption = QuestionOption::whereId($answer['answer'])->select('id', 'is_correct')->first();
                                     if ($this->questionOption->is_correct == 1)
                                     {
-                                        $this->resultNumber += (int)$this->exam->exam_per_question_mark;
+                                        $this->resultNumber += (int)$this->exam->exam_per_question_mark ?? 0;
+                                        ++$this->totalRightAns;
                                     } else {
-                                        $this->resultNumber -= (int)$this->exam->exam_negative_mark;
+                                        $this->resultNumber -= (int)$this->exam->exam_negative_mark ?? 0;
+                                        ++$this->totalWrongAns;
                                     }
                                 }
                             }
@@ -237,10 +246,13 @@ class FrontExamController extends Controller
                     }
                     $this->examResult = [
                         'course_section_content_id'       => $contentId,
-                        'user_id'       => auth()->id(),
+                        'user_id'       => ViewHelper::loggedUser()->id,
                         'xm_type'       => $this->exam->content_type,
-//                    'written_xm_file'       => fileUpload($request->file('written_xm_file'), 'xm-files/'.$this->exam->id.'/', 'file-'.auth()->id().'-'),
+//                    'written_xm_file'       => fileUpload($request->file('written_xm_file'), 'xm-files/'.$this->exam->id.'/', 'file-'.ViewHelper::loggedUser()->id.'-'),
                         'provided_ans'      => json_encode($this->questionJson),
+                        'total_right_ans'       => $this->totalRightAns ?? 0,
+                        'total_wrong_ans'       => $this->totalWrongAns ?? 0,
+                        'total_provided_ans'    => $this->totalProvidedAns ?? 0,
                         'result_mark'       => $this->resultNumber ?? 0,
                         'is_reviewed'       => 0,
                         'required_time'       => $request->required_time,
@@ -276,7 +288,7 @@ class FrontExamController extends Controller
 
                     $this->examResult = [
                         'course_section_content_id'       => $contentId,
-                        'user_id'       => auth()->id(),
+                        'user_id'       => ViewHelper::loggedUser()->id,
                         'xm_type'       => $this->exam->content_type,
                         'written_xm_file'       => $this->pdfFilePath,
 //                    'provided_ans'      => json_encode($this->questionJson),
@@ -286,12 +298,12 @@ class FrontExamController extends Controller
                         'status'        =>  'pending',
                     ];
                 }
-                CourseExamResult::storeExamResult($this->examResult);
+                $courseExamId = CourseExamResult::storeExamResult($this->examResult);
                 if (str()->contains(url()->current(), '/api/'))
                 {
                     return response()->json(['status' => 'success', 'message' => 'Exam Data Saved Successfully.', 'exam_id' => $this->exam->id]);
                 } else {
-                    return redirect()->route('front.student.show-course-exam-result', ['xm_id' => $contentId])->with('success', 'You Successfully finished your exam.');
+                    return redirect()->route('front.student.show-course-exam-result', ['xm_id' => $contentId, 'xm_result_id' => $courseExamId->id])->with('success', 'You Successfully finished your exam.');
                 }
             }
             return ViewHelper::returEexceptionError('Exam Not Found.');
@@ -305,6 +317,9 @@ class FrontExamController extends Controller
     {
         try {
             $this->resultNumber = 0;
+            $this->totalRightAns = 0;
+            $this->totalWrongAns = 0;
+            $this->totalProvidedAns = 0;
             $this->exam = CourseSectionContent::whereId($contentId)->first();
             if ($this->exam)
             {
@@ -320,14 +335,19 @@ class FrontExamController extends Controller
                         $this->question = QuestionStore::whereId($question_id)->select('id', 'question_type', 'question_mark', 'negative_mark', 'has_all_wrong_ans', 'status')->first();
                         if (is_array($answer))
                         {
+                            ++$this->totalProvidedAns;
                             if ($this->question->has_all_wrong_ans == 1)
                             {
                                 $this->resultNumber -= 1;
+                                ++$this->totalWrongAns;
                             } else {
                                 $this->questionOption = QuestionOption::whereId($answer['answer'])->select('id', 'is_correct')->first();
                                 if ($this->questionOption->is_correct == 1)
                                 {
                                     $this->resultNumber += 1;
+                                    ++$this->totalRightAns;
+                                } else {
+                                    ++$this->totalWrongAns;
                                 }
                             }
                         }
@@ -335,22 +355,25 @@ class FrontExamController extends Controller
                 }
                 $this->examResult = [
                     'course_section_content_id'       => $contentId,
-                    'user_id'       => auth()->id(),
+                    'user_id'       => ViewHelper::loggedUser()->id,
 //                'xm_type'       => $this->exam->content_type,
-//                    'written_xm_file'       => fileUpload($request->file('written_xm_file'), 'xm-files/'.$this->exam->id.'/', 'file-'.auth()->id().'-'),
+//                    'written_xm_file'       => fileUpload($request->file('written_xm_file'), 'xm-files/'.$this->exam->id.'/', 'file-'.ViewHelper::loggedUser()->id.'-'),
                     'provided_ans'      => json_encode($this->questionJson),
+                    'total_right_ans'       => $this->totalRightAns ?? 0,
+                    'total_wrong_ans'       => $this->totalWrongAns ?? 0,
+                    'total_provided_ans'    => $this->totalProvidedAns ?? 0,
                     'result_mark'       => $this->resultNumber ?? 0,
                     'is_reviewed'       => 0,
                     'required_time'     => $request->required_time,
 //                'status'        => $this->resultNumber >= $this->exam->exam_pass_mark ? 'pass' : 'fail',
                     'status'            => 'pass',
                 ];
-                CourseClassExamResult::storeExamResult($this->examResult);
+                $courseClassExamResult = CourseClassExamResult::storeExamResult($this->examResult);
                 if (str()->contains(url()->current(), '/api/'))
                 {
                     return response()->json(['status' => 'success', 'message' => 'Exam Data Saved Successfully.', 'exam_id' => $this->exam->id]);
                 } else {
-                    return redirect()->route('front.student.show-course-class-exam-result', ['xm_id' => $contentId])->with('success', 'You Successfully finished your exam.');
+                    return redirect()->route('front.student.show-course-class-exam-result', ['xm_id' => $contentId, 'xm_result_id' => $courseClassExamResult->id])->with('success', 'You Successfully finished your exam.');
                 }
             }
             return ViewHelper::returEexceptionError('Exam Not Found.');
@@ -365,6 +388,9 @@ class FrontExamController extends Controller
     {
         try {
             $this->resultNumber = 0;
+            $this->totalRightAns = 0;
+            $this->totalWrongAns = 0;
+            $this->totalProvidedAns = 0;
             $this->exam = BatchExamSectionContent::whereId($contentId)->first();
             if ($this->exam)
             {
@@ -386,13 +412,16 @@ class FrontExamController extends Controller
                                 {
 //                                $this->resultNumber -= (int)$this->question->negative_mark;
                                     $this->resultNumber -= (int)$this->exam->exam_per_question_mark;
+                                    ++$this->totalWrongAns;
                                 } else {
                                     $this->questionOption = QuestionOption::whereId($answer['answer'])->select('id', 'is_correct')->first();
                                     if ($this->questionOption->is_correct == 1)
                                     {
+                                        ++$this->totalRightAns;
                                         $this->resultNumber += (int)$this->exam->exam_per_question_mark;
                                     } else {
                                         $this->resultNumber -= (int)$this->exam->exam_negative_mark;
+                                        ++$this->totalWrongAns;
                                     }
                                 }
                             }
@@ -400,10 +429,13 @@ class FrontExamController extends Controller
                     }
                     $this->examResult = [
                         'batch_exam_section_content_id'       => $contentId,
-                        'user_id'       => auth()->id(),
+                        'user_id'       => ViewHelper::loggedUser()->id,
                         'xm_type'       => $this->exam->content_type,
-//                    'written_xm_file'       => fileUpload($request->file('written_xm_file'), 'xm-files/'.$this->exam->id.'/', 'file-'.auth()->id().'-'),
+//                    'written_xm_file'       => fileUpload($request->file('written_xm_file'), 'xm-files/'.$this->exam->id.'/', 'file-'.ViewHelper::loggedUser()->id.'-'),
                         'provided_ans'      => json_encode($this->questionJson),
+                        'total_right_ans'       => $this->totalRightAns ?? 0,
+                        'total_wrong_ans'       => $this->totalWrongAns ?? 0,
+                        'total_provided_ans'    => $this->totalProvidedAns ?? 0,
                         'result_mark'       => $this->resultNumber ?? 0,
                         'is_reviewed'       => 0,
                         'required_time'       => $request->required_time,
@@ -435,7 +467,7 @@ class FrontExamController extends Controller
 
                     $this->examResult = [
                         'batch_exam_section_content_id'       => $contentId,
-                        'user_id'       => auth()->id(),
+                        'user_id'       => ViewHelper::loggedUser()->id,
                         'xm_type'       => $this->exam->content_type,
                         'written_xm_file'       => $this->pdfFilePath,
 //                    'provided_ans'      => json_encode($this->questionJson),
@@ -445,12 +477,12 @@ class FrontExamController extends Controller
                         'status'        =>  'pending',
                     ];
                 }
-                BatchExamResult::storeExamResult($this->examResult);
+                $batchExamResult = BatchExamResult::storeExamResult($this->examResult);
                 if (str()->contains(url()->current(), '/api/'))
                 {
                     return response()->json(['status' => 'success', 'message' => 'Exam Data Saved Successfully.', 'exam_id' => $this->exam->id]);
                 } else {
-                    return redirect()->route('front.student.show-batch-exam-result', ['xm_id' => $contentId])->with('success', 'You Successfully finished your exam.');
+                    return redirect()->route('front.student.show-batch-exam-result', ['xm_id' => $contentId, 'xm_result_id' => $batchExamResult->id])->with('success', 'You Successfully finished your exam.');
                 }
             }
             return ViewHelper::returEexceptionError('Exam Not Found.');
@@ -460,32 +492,48 @@ class FrontExamController extends Controller
         }
     }
 
-    public function showExamResult ($xmId)
+    public function showExamResult ($xmId, $xmResultId = null)
     {
         $this->exam = Exam::whereId($xmId)->select('id', 'title', 'xm_type', 'total_mark', 'xm_pass_mark', 'xm_duration')->first();
-        $this->xmResult = ExamResult::where('exam_id', $xmId)->latest()->first();
+        if (isset($xmResultId))
+        {
+            $this->xmResult = ExamResult::find($xmResultId);
+        } else {
+            $this->xmResult = ExamResult::where('exam_id', $xmId)->latest()->first();
+        }
+
         return view('frontend.exams.practice.result', [
             'exam'  => $this->exam,
             'examResult'    => $this->xmResult
         ]);
     }
 
-    public function showCourseExamResult ($xmId)
+    public function showCourseExamResult ($xmId, $xmResultId = null)
     {
 //        $this->exam = CourseSectionContent::whereId($xmId)->select('id', 'title', 'content_type', 'total_mark', 'xm_pass_mark', 'xm_duration')->first();
         $this->exam = CourseSectionContent::whereId($xmId)->first();
-        $this->xmResult = CourseExamResult::where('course_section_content_id', $xmId)->latest()->first();
+        if (isset($xmResultId))
+        {
+            $this->xmResult = CourseExamResult::find($xmResultId);
+        } else {
+            $this->xmResult = CourseExamResult::where('course_section_content_id', $xmId)->latest()->first();
+        }
         $this->data = [
             'exam'  => $this->exam,
-            'examResult'    => $this->xmResult
+            'examResult'    => $this->xmResult,
         ];
         return ViewHelper::checkViewForApi($this->data, 'frontend.exams.course.result');
     }
 
-    public function showCourseClassExamResult ($xmId)
+    public function showCourseClassExamResult ($xmId, $xmResultId = null)
     {
         $this->exam = CourseSectionContent::whereId($xmId)->first();
-        $this->xmResult = CourseClassExamResult::where('course_section_content_id', $xmId)->latest()->first();
+        if (isset($xmResultId))
+        {
+            $this->xmResult = CourseClassExamResult::find($xmResultId);
+        } else {
+            $this->xmResult = CourseClassExamResult::where('course_section_content_id', $xmId)->latest()->first();
+        }
         $this->data = [
             'exam'  => $this->exam,
             'examResult'    => $this->xmResult
@@ -493,11 +541,16 @@ class FrontExamController extends Controller
         return ViewHelper::checkViewForApi($this->data, 'frontend.exams.course.class.result');
     }
 
-    public function showBatchExamResult ($xmId)
+    public function showBatchExamResult ($xmId, $xmResultId = null)
     {
 //        $this->exam = CourseSectionContent::whereId($xmId)->select('id', 'title', 'content_type', 'total_mark', 'xm_pass_mark', 'xm_duration')->first();
         $this->exam = BatchExamSectionContent::whereId($xmId)->first();
-        $this->xmResult = BatchExamResult::where('batch_exam_section_content_id', $xmId)->latest()->first();
+        if (isset($xmResultId))
+        {
+            $this->xmResult = BatchExamResult::find($xmResultId);
+        } else {
+            $this->xmResult = BatchExamResult::where('batch_exam_section_content_id', $xmId)->latest()->first();
+        }
         $this->data = [
             'exam'  => $this->exam,
             'examResult'    => $this->xmResult
@@ -513,8 +566,8 @@ class FrontExamController extends Controller
             $masterExam->purchase_status = ViewHelper::checkUserBatchExamIsEnrollment(ViewHelper::loggedUser(), $masterExam);
         }
 
-        $this->examCategories = BatchExamCategory::where(['status' => 1])->has('batchExams')->with(['batchExams' => function($batchExams) {
-            $batchExams->where(['status' => 1, 'is_master_exam' => 0])->select('id', 'title', 'banner', 'slug')->get();
+        $this->examCategories = BatchExamCategory::where(['status' => 1])->whereHas('batchExams')->with(['batchExams' => function($batchExams) {
+            $batchExams->where(['status' => 1, 'is_master_exam' => 0, 'is_paid' => 1])->select('id', 'title', 'banner', 'slug')->get();
         }])->get();
 
         foreach ($this->examCategories as $examCategory)
@@ -527,17 +580,28 @@ class FrontExamController extends Controller
                 }
             }
         }
+
+        $allBatchExams = BatchExam::where(['status' => 1, 'is_master_exam' => 0, 'is_paid' => 1])->select('id', 'title', 'banner', 'slug')->get();
+        foreach ($allBatchExams as $singleBatchExam)
+        {
+            if (isset($singleBatchExam))
+            {
+                $singleBatchExam->purchase_status  = ViewHelper::checkUserBatchExamIsEnrollment(ViewHelper::loggedUser(), $singleBatchExam);
+            }
+        }
+
         $this->data = [
 //            'exams'     => $this->exams,
             'examCategories'     => $this->examCategories,
-            'masterExam'    => $masterExam
+            'masterExam'    => $masterExam,
+            'allExams'      => $allBatchExams
         ];
         return ViewHelper::checkViewForApi($this->data, 'frontend.exams.xm.all-exams');
     }
 
     public function categoryExams ($id, $name = null)
     {
-        $this->exam = BatchExam::whereId($id)->select('id', 'title', 'description', 'banner',  'status')->with(['batchExamSubscriptions' => function ($package) {
+        $this->exam = BatchExam::whereId($id)->select('id', 'title', 'description', 'banner',  'status', 'is_paid')->with(['batchExamSubscriptions' => function ($package) {
             $package->whereStatus(1)->select('id', 'batch_exam_id', 'price', 'package_duration_in_days', 'package_title', 'discount_amount', 'discount_start_date', 'discount_end_date')->get();
         }])->first();
 //        $this->examCategory->validity = Carbon::parse($this->examCategory->valid_from)->format('d-m-Y').' - '. Carbon::parse($this->examCategory->valid_to)->format('d-m-Y');
@@ -564,7 +628,7 @@ class FrontExamController extends Controller
 
     public function orderXm (Request $request, $id)
     {
-        if (auth()->check())
+        if (ViewHelper::authCheck())
         {
             $validator = Validator::make($request->all(), [
                 'paid_to'   => 'required',
@@ -615,7 +679,7 @@ class FrontExamController extends Controller
         $myRank = [];
         foreach ($this->courseExamResults as $index => $courseExamResult)
         {
-            if ($courseExamResult->user_id == auth()->id())
+            if ($courseExamResult->user_id == ViewHelper::loggedUser()->id)
             {
                 $myRank = $courseExamResult;
                 $myRank['position'] = ++$index;
@@ -636,7 +700,7 @@ class FrontExamController extends Controller
         $myRank = [];
         foreach ($this->courseExamResults as $index => $courseExamResult)
         {
-            if ($courseExamResult->user_id == auth()->id())
+            if ($courseExamResult->user_id == ViewHelper::loggedUser()->id)
             {
                 $myRank = $courseExamResult;
                 $myRank['position'] = ++$index;

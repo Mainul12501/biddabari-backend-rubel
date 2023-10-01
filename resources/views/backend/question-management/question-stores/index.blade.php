@@ -85,6 +85,12 @@
                                                 <div class="me-auto">
                                                     <span class="float-start">{{ $loop->iteration }}. &nbsp; </span>
                                                     <span class="float-start">{!! $question->question !!}</span>
+                                                    @if(isset($question->question_image))
+                                                        <br>
+                                                        <div class="float-start">
+                                                            <img src="{{ asset($question->question_image) }}" alt="" class="img-fluid" style="max-height: 60px" />
+                                                        </div>
+                                                    @endif
                                                 </div>
                                                 <div class="ms-auto" style="width: 50px">
                                                     <a href="" class="btn btn-success btn-sm topic-edit-btn" data-topic-id="{{ $question->id }}"><i class="fas fa-edit"></i></a>
@@ -97,6 +103,11 @@
                                             </div>
                                             @if(!empty($question->questionOptions) && count($question->questionOptions) > 0)
                                                     <div class="card-body">
+                                                        @if(isset($question->question_option_image))
+                                                            <div>
+                                                                <img src="{{ asset($question->question_option_image) }}" alt="" class="img-fluid" style="max-height: 60px" />
+                                                            </div>
+                                                        @endif
                                                         <div>
                                                             <ol type="A">
                                                                 @foreach($question->questionOptionsAscOrder as $questionOption)
@@ -148,6 +159,10 @@
                                                     <span class="input-group-text full-form-append-btn" style="cursor: pointer"><i class="fa-solid fa-check"></i></span>
                                                 </div>
                                             </div>
+                                            <div class="col-md-6"></div>
+                                            <div class="col-md-3">
+                                                <a href="https://demo.wiris.com/mathtype/en/developers.php#mathml-latex" class="btn btn-sm btn-primary mt-4" target="_blank">Generate Equation</a>
+                                            </div>
                                         </div>
                                     </div>
 {{--                                    <div class="col-md-3 select2-div">--}}
@@ -177,10 +192,10 @@
                                         <label for="questionImage">Que Image</label>
                                         <input type="file" class="form-control" id="questionImage" name="question[0][question_image]" accept="application/pdf,image/*" />
                                     </div>
-                                    <div class="col-md-6 mt-3">
-                                        <label for="queVidDes">Que Video Description</label>
-                                        <input type="text" class="form-control" id="queVidDes" name="question[0][question_video_link]" placeholder="https://youtu.be/xxxxxxxxx" />
-                                    </div>
+{{--                                    <div class="col-md-6 mt-3">--}}
+{{--                                        <label for="queVidDes">Que Video Description</label>--}}
+{{--                                        <input type="text" class="form-control" id="queVidDes" name="question[0][question_video_link]" placeholder="https://youtu.be/xxxxxxxxx" />--}}
+{{--                                    </div>--}}
 {{--                                    <div class="col-md-6 mt-3">--}}
 {{--                                        <label for="markPerQue">Mark Per Question</label>--}}
 {{--                                        <input type="text" class="form-control" id="markPerQue" name="question[0][question_mark]" value="1" placeholder="Mark Per Question" />--}}
@@ -196,7 +211,16 @@
                                 <button type="button" data-key-id="0" class="btn append-div position-absolute end-0 me-4 btn-outline-success "><i class="fa-solid fa-circle-plus"></i></button>
                             </div>
                             <div class="card-body" >
-                                <div class="row" id="mcqOptionSection0">
+                                <div class="row question-option-img-div">
+                                    <div class="col-md-6">
+                                        <label for="questionOptionsImage">Question Option Image</label>
+                                        <input type="file" class="form-control show-option-image" data-loop="0" id="questionOptionsImage" name="question[0][question_option_image]" accept="image/*" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <img src="" id="showOptionImage0" style="height: 60px;" alt="">
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="mcqOptionSection0">
                                     <div class="col-md-6 mt-1">
                                         <label for="optionTitle">Option Title</label>
                                         <div class="input-group">
@@ -262,15 +286,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-body pt-0 border-top-0">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <label for="summernoteMcq">Answer Description</label>
-                                        <textarea name="question[0][mcq_ans_description]" class="" id="summernoteMcq" cols="30" rows="10"></textarea>
+{{--                            <div class="card-body pt-0 border-top-0">--}}
+{{--                                <div class="row">--}}
+{{--                                    <div class="col-md-12">--}}
+{{--                                        <label for="summernoteMcq">Answer Description</label>--}}
+{{--                                        <textarea name="question[0][mcq_ans_description]" class="" id="summernoteMcq" cols="30" rows="10"></textarea>--}}
 
-                                    </div>
-                                </div>
-                            </div>
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
                         </div>
 {{--                        <div class="card written-ans-sec d-none" data-key-id="0" id="writtenAnsSection">--}}
 {{--                            <div class="card-header">--}}
@@ -366,6 +390,8 @@
             height: 30px!important;
         }
     </style>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 @endpush
 
 @push('script')
@@ -455,7 +481,16 @@
                     '                                    <h3 class="float-start">MCQ Options</h3>\n' +
                     '                                    <button type="button" data-key-id="'+serial+'" class="btn append-div position-absolute end-0 me-4 btn-outline-success "><i class="fa-solid fa-circle-plus"></i></button>\n' +
                     '                                </div>\n' +
-                    '                                <div class="card-body" id="mcqOptionSection'+serial+'">\n' +
+                    '                                <div class="card-body" id="mcqOptionSection'+serial+'">\n';
+                div += '<div class="row question-option-img-div">\n' +
+                    '                                    <div class="col-md-6">\n' +
+                    '                                        <label for="questionOptionsImage">Question Option Image</label>\n' +
+                    '                                        <input type="file" class="form-control show-option-image" data-loop="'+serial+'" id="questionOptionsImage" name="question['+serial+'][question_option_image]" accept="image/*" />\n' +
+                    '                                    </div>\n' +
+                    '                                    <div class="col-md-6">\n' +
+                    '                                        <img src="" id="showOptionImage'+serial+'" style="height: 60px;" alt="">\n' +
+                    '                                    </div>'+
+                    '                                </div>' +
                     '                                    <div class="row">\n';
                     for(var tt = 0; tt < 4; tt++) {
                         div += '                                 <div class="col-md-6 mt-1">\n' +
@@ -487,14 +522,14 @@
                     '                                        </div>\n' +
                     '                                    </div>\n' +
                     '                                </div>\n' +
-                    '<div class="card-body pt-0 border-top-0">\n' +
-                    '                                <div class="row">\n' +
-                    '                                    <div class="col-md-12">\n' +
-                    '                                        <label for="wrongAns">Answer Description</label>\n' +
-                    '                                        <textarea name="question['+serial+'][mcq_ans_description]" class="" id="summernoteMcq'+fifthSummerNote+'" cols="30" rows="10"></textarea>\n' +
-                    '                                    </div>\n' +
-                    '                                </div>\n' +
-                    '                            </div>\n' +
+                    // '<div class="card-body pt-0 border-top-0">\n' +
+                    // '                                <div class="row">\n' +
+                    // '                                    <div class="col-md-12">\n' +
+                    // '                                        <label for="wrongAns">Answer Description</label>\n' +
+                    // '                                        <textarea name="question['+serial+'][mcq_ans_description]" class="" id="summernoteMcq'+fifthSummerNote+'" cols="30" rows="10"></textarea>\n' +
+                    // '                                    </div>\n' +
+                    // '                                </div>\n' +
+                    // '                            </div>\n' +
                     '                            </div>';
                 // if (questionType == 'Written')
                 // {
@@ -677,7 +712,17 @@
             })
         })
     </script>
-
+    <script>
+        $(document).on('change', '.show-option-image', function () {
+            var dataloop = $(this).attr('data-loop');
+            var imgURL = URL.createObjectURL(event.target.files[0]);
+            $('#showOptionImage'+dataloop).attr('src', imgURL).css({
+                height: 60+'px',
+                width: 60+'px',
+                marginTop: '5px'
+            });
+        })
+    </script>
 
 
 @endpush

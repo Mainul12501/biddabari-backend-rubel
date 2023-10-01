@@ -11,60 +11,199 @@
                     <button type="button" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 blog-category-modal-btn"><i class="fa-solid fa-circle-plus"></i></button>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <table class="table table-borderless" id="file-datatable">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>User Info</th>
-                                <th>Message</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @if(isset($contacts))
-                                @foreach($contacts as $contact)
+
+
+
+                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pageComments" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Home</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#otherComments" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pageComments" role="tabpanel" aria-labelledby="pills-home-tab">
+                            <div class="row">
+                                <table class="table table-borderless" id="file-datatable">
+                                    <thead>
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>
-                                            <span>Name: {{ $contact->user->name }}</span> <br>
-                                            <span>Mobile: {{ $contact->user->mobile }}</span> <br>
-                                            @if($contact->type == 'course')
-                                                <span>{{ $contact->course->title }}</span> <br>
-                                            @elseif($contact->type == 'batch_exam')
-                                                <span>{{ $contact->batchExam->title }}</span> <br>
-                                            @endif
-                                            <span>Date: {{ $contact->created_at->format('M d, Y g:i') }}</span>
-                                        </td>
-                                        <td>{!! str()->words(strip_tags($contact->message), 80) !!}</td>
-                                        <td>
-                                            <a href="" class="badge change-seen-status-{{ $contact->id }} badge-sm bg-primary">{{ $contact->is_seen == 1 ? 'Seen' : 'Unseen' }}</a>
-                                        </td>
-                                        <td>
-                                            @if($contact->is_seen == 0)
-                                                @can('show-contact')
-                                                <a data-contact-id="{{ $contact->id }}" class="btn btn-sm btn-warning change-seen-btn change-seen-btn-{{ $contact->id }}" title="Edit Advertisement">
-                                                    <i class="fa-solid fa-eye"></i>
-                                                </a>
-                                                @endcan
-                                            @endif
-                                            @can('delete-contact')
-                                            <form class="d-inline" action="{{ route('contacts.destroy', $contact->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Advertisement">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
-                                                @endcan
-                                        </td>
+                                        <th>#</th>
+                                        <th>User Info</th>
+                                        <th>Message</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
                                     </tr>
-                                @endforeach
-                            @endif
-                            </tbody>
-                        </table>
+                                    </thead>
+                                    <tbody>
+                                    @if(isset($contacts))
+                                        @foreach($contacts as $contact)
+                                            @if($contact->type == 'page')
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>
+                                                        <span>Name: {{ $contact->user->name }}</span> <br>
+                                                        <span>Mobile: {{ $contact->user->mobile }}</span> <br>
+                                                        @if($contact->type == 'course')
+                                                            <span>{{ $contact->course->title }}</span> <br>
+                                                        @elseif($contact->type == 'batch_exam')
+                                                            <span>{{ $contact->batchExam->title }}</span> <br>
+                                                        @endif
+                                                        <span>Date: {{ $contact->created_at->format('M d, Y g:i') }}</span>
+                                                    </td>
+                                                    <td>{!! str()->words(strip_tags($contact->message), 80) !!}</td>
+                                                    <td>
+                                                        <a href="" class="badge change-seen-status-{{ $contact->id }} badge-sm bg-primary">{{ $contact->is_seen == 1 ? 'Seen' : 'Unseen' }}</a>
+                                                    </td>
+                                                    <td>
+                                                        @if($contact->is_seen == 0)
+                                                            @can('show-contact')
+                                                                <a data-contact-id="{{ $contact->id }}" class="btn btn-sm btn-warning change-seen-btn change-seen-btn-{{ $contact->id }}" title="Edit Advertisement">
+                                                                    <i class="fa-solid fa-eye"></i>
+                                                                </a>
+                                                            @endcan
+                                                        @endif
+                                                        @can('delete-contact')
+                                                            <form class="d-inline" action="{{ route('contacts.destroy', $contact->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                                @csrf
+                                                                @method('delete')
+                                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Advertisement">
+                                                                    <i class="fa-solid fa-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endcan
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="otherComments" role="tabpanel" aria-labelledby="pills-profile-tab">
+                            <div class="row">
+                                <table class="table table-borderless" id="file-datatable">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>User Info</th>
+                                        <th>Model Name</th>
+                                        <th>Message</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @if(isset($contacts))
+                                        @foreach($contacts as $contact)
+                                            @if($contact->type != 'page')
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>
+                                                        <span>Name: {{ $contact->user->name }}</span> <br>
+                                                        <span>Mobile: {{ $contact->user->mobile }}</span> <br>
+                                                        @if($contact->type == 'course')
+                                                            <span>{{ $contact->course->title }}</span> <br>
+                                                        @elseif($contact->type == 'batch_exam')
+                                                            <span>{{ $contact->batchExam->title }}</span> <br>
+                                                        @endif
+                                                        <span>Date: {{ $contact->created_at->format('M d, Y g:i') }}</span>
+                                                    </td>
+                                                    <td></td>
+                                                    <td>{!! str()->words(strip_tags($contact->message), 80) !!}</td>
+                                                    <td>
+                                                        <a href="" class="badge change-seen-status-{{ $contact->id }} badge-sm bg-primary">{{ $contact->is_seen == 1 ? 'Seen' : 'Unseen' }}</a>
+                                                    </td>
+                                                    <td>
+                                                        @if($contact->is_seen == 0)
+                                                            @can('show-contact')
+                                                                <a data-contact-id="{{ $contact->id }}" class="btn btn-sm btn-warning change-seen-btn change-seen-btn-{{ $contact->id }}" title="Edit Advertisement">
+                                                                    <i class="fa-solid fa-eye"></i>
+                                                                </a>
+                                                            @endcan
+                                                        @endif
+                                                        @can('delete-contact')
+                                                            <form class="d-inline" action="{{ route('contacts.destroy', $contact->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                                @csrf
+                                                                @method('delete')
+                                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Advertisement">
+                                                                    <i class="fa-solid fa-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endcan
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
+
+
+
+
+
+
+{{--                    <div class="row">--}}
+{{--                        <table class="table table-borderless" id="file-datatable">--}}
+{{--                            <thead>--}}
+{{--                            <tr>--}}
+{{--                                <th>#</th>--}}
+{{--                                <th>User Info</th>--}}
+{{--                                <th>Message</th>--}}
+{{--                                <th>Status</th>--}}
+{{--                                <th>Actions</th>--}}
+{{--                            </tr>--}}
+{{--                            </thead>--}}
+{{--                            <tbody>--}}
+{{--                            @if(isset($contacts))--}}
+{{--                                @foreach($contacts as $contact)--}}
+{{--                                    <tr>--}}
+{{--                                        <td>{{ $loop->iteration }}</td>--}}
+{{--                                        <td>--}}
+{{--                                            <span>Name: {{ $contact->user->name }}</span> <br>--}}
+{{--                                            <span>Mobile: {{ $contact->user->mobile }}</span> <br>--}}
+{{--                                            @if($contact->type == 'course')--}}
+{{--                                                <span>{{ $contact->course->title }}</span> <br>--}}
+{{--                                            @elseif($contact->type == 'batch_exam')--}}
+{{--                                                <span>{{ $contact->batchExam->title }}</span> <br>--}}
+{{--                                            @endif--}}
+{{--                                            <span>Date: {{ $contact->created_at->format('M d, Y g:i') }}</span>--}}
+{{--                                        </td>--}}
+{{--                                        <td>{!! str()->words(strip_tags($contact->message), 80) !!}</td>--}}
+{{--                                        <td>--}}
+{{--                                            <a href="" class="badge change-seen-status-{{ $contact->id }} badge-sm bg-primary">{{ $contact->is_seen == 1 ? 'Seen' : 'Unseen' }}</a>--}}
+{{--                                        </td>--}}
+{{--                                        <td>--}}
+{{--                                            @if($contact->is_seen == 0)--}}
+{{--                                                @can('show-contact')--}}
+{{--                                                <a data-contact-id="{{ $contact->id }}" class="btn btn-sm btn-warning change-seen-btn change-seen-btn-{{ $contact->id }}" title="Edit Advertisement">--}}
+{{--                                                    <i class="fa-solid fa-eye"></i>--}}
+{{--                                                </a>--}}
+{{--                                                @endcan--}}
+{{--                                            @endif--}}
+{{--                                            @can('delete-contact')--}}
+{{--                                            <form class="d-inline" action="{{ route('contacts.destroy', $contact->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">--}}
+{{--                                                @csrf--}}
+{{--                                                @method('delete')--}}
+{{--                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Advertisement">--}}
+{{--                                                    <i class="fa-solid fa-trash"></i>--}}
+{{--                                                </button>--}}
+{{--                                            </form>--}}
+{{--                                                @endcan--}}
+{{--                                        </td>--}}
+{{--                                    </tr>--}}
+{{--                                @endforeach--}}
+{{--                            @endif--}}
+{{--                            </tbody>--}}
+{{--                        </table>--}}
+{{--                    </div>--}}
+
+
                 </div>
             </div>
         </div>

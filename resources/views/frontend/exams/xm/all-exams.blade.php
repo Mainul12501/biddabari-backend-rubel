@@ -72,11 +72,9 @@
                                         @if($key == 0)
                                             <div class="tab-pane px-1 fade show active" id="allCourses">
                                                 <div class="row">
-                                                    @foreach($examCategories as $allIndex => $examCategoryx)
-                                                        @foreach($examCategoryx->batchExams as $batchExam)
+                                                        @foreach($allExams as $batchExam)
                                                             @include('frontend.exams.xm.include-batch-exams', $batchExam)
                                                         @endforeach
-                                                    @endforeach
                                                 </div>
                                             </div>
                                         @endif
@@ -86,7 +84,7 @@
                                                     @include('frontend.exams.xm.include-batch-exams', $batchExam)
                                                 @empty
                                                     <div class="col-md-12">
-                                                        <div class="text-center">
+                                                        <div class="text-center" style="min-height: 300px">
                                                             <h2>কোনো এক্সাম চালু হয়নি। খুব দ্রুত এক্সাম চালু হবে। </h2>
                                                         </div>
                                                     </div>
@@ -229,7 +227,11 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <button type="submit" class="default-btn">Place Order</button>
+                                                    @if(auth()->check())
+                                                        <button type="submit" class="default-btn">Place Order</button>
+                                                    @else
+                                                        <button type="button" onclick="toastr.error('Please Login First To Order this exam.')" class="default-btn">Place Order</button>
+                                                    @endif
                                                 </div>
                                             </form>
                                         </div>

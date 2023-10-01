@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Backend\CourseManagement\Course;
 
 use App\Http\Controllers\Controller;
+use App\Models\Backend\BatchExamManagement\BatchExamResult;
+use App\Models\Backend\Course\CourseClassExamResult;
+use App\Models\Backend\Course\CourseExamResult;
 use App\Models\Backend\Course\CourseSection;
 use App\Models\Backend\Course\CourseSectionContent;
 use App\Models\Backend\PdfManagement\PdfStoreCategory;
@@ -15,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 class CourseSectionContentController extends Controller
 {
     //    permission seed done
-    protected $sectionContent,$sectionContents;
+    protected $sectionContent,$sectionContents, $xmResults;
     protected $questionTopics = [], $questionTopic, $questions;
     /**
      * Display a listing of the resource.
@@ -205,5 +208,23 @@ class CourseSectionContentController extends Controller
         {
             return response()->json(['error' => $exception->getMessage()]);
         }
+    }
+
+    public function getXmParticipants($xmModel, $modelId)
+    {
+        if ($xmModel == 'course')
+        {
+            $this->xmResults = CourseExamResult::where('course_section_content_id', $modelId)->get();
+        } elseif ($xmModel == 'course-class-exam')
+        {
+            $this->xmResults = CourseClassExamResult::where('course_section_content_id', $modelId)->get();
+        } elseif ($xmModel == 'batch-exam')
+        {
+            $this->xmResults = BatchExamResult::where('batch_exam_section_content_id', $modelId)->get();
+        }
+
+        return view('backend.course-management.course.section-contents.course-xm-participants-list', [
+            'xmResults'    => $this->xmResults,
+        ]);
     }
 }

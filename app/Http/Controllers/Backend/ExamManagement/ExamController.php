@@ -3,7 +3,14 @@
 namespace App\Http\Controllers\Backend\ExamManagement;
 
 use App\Http\Controllers\Controller;
+use App\Models\Backend\BatchExamManagement\BatchExam;
 use App\Models\Backend\BatchExamManagement\BatchExamResult;
+use App\Models\Backend\BatchExamManagement\BatchExamSection;
+use App\Models\Backend\BatchExamManagement\BatchExamSectionContent;
+use App\Models\Backend\Course\Course;
+use App\Models\Backend\Course\CourseExamResult;
+use App\Models\Backend\Course\CourseSection;
+use App\Models\Backend\Course\CourseSectionContent;
 use App\Models\Backend\ExamManagement\Exam;
 use App\Models\Backend\ExamManagement\ExamCategory;
 use App\Models\Backend\ExamManagement\ExamResult;
@@ -113,17 +120,55 @@ class ExamController extends Controller
 
     public function showExamSheet (Request $request)
     {
-        if (!empty($request->exam_id))
+        if (!empty($request->section_content_id) && !empty($request->exam_of))
         {
-
-//            $this->examSheets = ExamResult::whereExamId($request->exam_id)->get();
-            $this->examSheets = BatchExamResult::whereExamId($request->exam_id)->get();
+            if ($request->exam_of == 'course')
+            {
+                $this->examSheets = CourseExamResult::where('course_section_content_id', $request->section_content_id)->get();
+            } elseif ($request->exam_of == 'written_exam')
+            {
+                $this->examSheets = BatchExamResult::where('batch_exam_section_content_id', $request->section_content_id)->get();
+            }
         }
         return view('backend.exam-management.xm-sheets.index', [
 //            'exams'   => Exam::whereStatus(1)->where('xm_type', 'Written')->get(),
-            'exams'   => BatchExamResult::whereStatus(1)->where('xm_type', 'Written')->get(),
+//            'exams'   => BatchExamResult::whereStatus(1)->where('xm_type', 'Written')->get(),
             'examSheets'  => !empty($this->examSheets) ? $this->examSheets : '',
+            'examOf'        => isset($request->exam_of) ? $request->exam_of : ''
         ]);
+    }
+
+    public function getCourseOrExamNames($xmOf)
+    {
+        if ($xmOf == 'course')
+        {
+            return response()->json(Course::where('status', 1)->select('id', 'title')->get());
+        } elseif ($xmOf == 'batch_exam')
+        {
+            return response()->json(BatchExam::where('status', 1)->select('id', 'title')->get());
+        }
+    }
+
+    public function getExamNames($xmOf, $typeId)
+    {
+        if ($xmOf == 'course')
+        {
+            return response()->json(CourseSection::where(['status' => 1, 'course_id' => $typeId])->select('id', 'title', 'course_id')->get());
+        } elseif ($xmOf == 'batch_exam')
+        {
+            return response()->json(BatchExamSection::where(['status' => 1, 'batch_exam_id' => $typeId])->select('id', 'title', 'batch_exam_id')->get());
+        }
+    }
+
+    public function getWrittenSectionContents($xmOf, $sectionId)
+    {
+        if ($xmOf == 'course')
+        {
+            return response()->json(CourseSectionContent::where(['status' => 1, 'course_section_id' => $sectionId, 'content_type' => 'written_exam'])->select('id', 'title', 'course_section_id')->get());
+        } elseif ($xmOf == 'batch_exam')
+        {
+            return response()->json(BatchExamSectionContent::where(['status' => 1, 'batch_exam_section_id' => $sectionId, 'content_type' => 'written_exam'])->select('id', 'title', 'batch_exam_section_id')->get());
+        }
     }
 
     public function updateExamResult(Request $request)
@@ -139,16 +184,23 @@ class ExamController extends Controller
     {
         return response()->json(Exam::whereExamCategoryId($id)->whereStatus(1)->select('id', 'title', 'slug')->get());
     }
-    public function checkExamPaper($id)
+    public function checkExamPaper($id, $typeOf)
     {
         return view('backend.exam-management.xm-sheets.check-paper', [
-            'examSheet' => ExamResult::find($id)
+            'examSheet' => $typeOf == 'course' ? CourseExamResult::find($id) : BatchExamResult::find($id),
+            'examOf' => $typeOf
         ]);
     }
-    public function updateWrittenExamResult(Request $request,$id)
+    public function updateWrittenExamResult(Request $request,$id, $examOf = 'course')
     {
         $request['xm_result_id'] = $id;
-        ExamResult::updateXmResult($request);
+        if ($examOf == 'course')
+        {
+            CourseExamResult::updateXmResult($request, $examOf);
+        } elseif ($examOf == 'batch_exam')
+        {
+            BatchExamResult::updateXmResult($request, $examOf);
+        }
         return redirect()->route('show-exam-sheet')->with('success', 'Sheet updated successfully.');
     }
     public function getXmForAddQuestion(Request $request)

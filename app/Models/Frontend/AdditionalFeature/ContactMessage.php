@@ -69,4 +69,14 @@ class ContactMessage extends Model
     {
         return $this->belongsTo(BatchExamSectionContent::class);
     }
+
+    public function contactMessage()
+    {
+        return $this->belongsTo(ContactMessage::class, 'parent_model_id');
+    }
+
+    public function contactMessages()
+    {
+        return $this->hasMany(ContactMessage::class, 'parent_model_id');
+    }
 }

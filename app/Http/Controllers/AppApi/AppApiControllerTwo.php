@@ -17,15 +17,15 @@ class AppApiControllerTwo extends Controller
     protected $sectionContent, $data = [];
     public function startcourseExam ($contentId)
     {
-        if (auth()->check())
+        if (ViewHelper::authCheck())
         {
-            $existExamResult = CourseExamResult::where(['course_section_content_id' => $contentId, 'user_id' => auth()->id()])->first();
+            $existExamResult = CourseExamResult::where(['course_section_content_id' => $contentId, 'user_id' => ViewHelper::loggedUser()->id])->first();
             if (!empty($existExamResult))
             {
                 return response()->json(['error' => 'You already participate in this exam.'], 400);
             }
             $this->exam = CourseSectionContent::whereId($contentId)->select('id', 'course_section_id', 'parent_id', 'content_type', 'title', 'exam_mode', 'exam_duration_in_minutes', 'exam_total_questions', 'exam_per_question_mark', 'exam_negative_mark', 'exam_pass_mark', 'exam_is_strict', 'exam_start_time', 'exam_start_time_timestamp', 'exam_end_time', 'exam_end_time_timestamp', 'exam_result_publish_time', 'exam_result_publish_time_timestamp', 'exam_total_subject', 'written_exam_duration_in_minutes', 'written_total_questions', 'written_description', 'written_is_strict', 'written_start_time', 'written_start_time_timestamp', 'written_end_time', 'written_end_time_timestamp', 'written_publish_time', 'written_publish_time_timestamp', 'written_total_subject', 'is_paid', 'has_class_xm', 'course_section_content_id', 'status')->with(['questionStores' => function ($questionStores) {
-                $questionStores->where(['status' => 1])->select('id', 'question_type', 'question', 'question_image', 'question_video_link', 'has_all_wrong_ans', 'status', 'subject_name')->with('questionOptions')->get();
+                $questionStores->where(['status' => 1])->select('id', 'question_type', 'question', 'question_image', 'has_all_wrong_ans', 'status', 'written_que_file', 'question_option_image', 'subject_name')->with('questionOptions')->get();
             }])->first();
             $this->data = [
                 'exam'   => $this->exam
@@ -38,12 +38,12 @@ class AppApiControllerTwo extends Controller
 
     public function startClassExam($contentId)
     {
-        if (auth()->check())
+        if (ViewHelper::authCheck())
         {
             $this->sectionContent = CourseSectionContent::whereId($contentId)->select('id', 'course_section_id', 'parent_id', 'content_type', 'title', 'exam_mode', 'exam_duration_in_minutes', 'exam_total_questions', 'exam_per_question_mark', 'exam_negative_mark', 'exam_pass_mark', 'exam_is_strict', 'exam_start_time', 'exam_start_time_timestamp', 'exam_end_time', 'exam_end_time_timestamp', 'exam_result_publish_time', 'exam_result_publish_time_timestamp', 'exam_total_subject', 'is_paid', 'has_class_xm', 'course_section_content_id', 'status')->with(['questionStoresForClassXm' => function ($questionStores) {
-                $questionStores->where(['status' => 1])->select('id', 'question_type', 'question', 'question_image', 'question_video_link', 'has_all_wrong_ans', 'status', 'subject_name')->with('questionOptions')->get();
+                $questionStores->where(['status' => 1])->select('id', 'question_type', 'question', 'question_image', 'question_video_link', 'has_all_wrong_ans', 'status', 'written_que_file', 'question_option_image', 'subject_name')->with('questionOptions')->get();
             }])->first();
-            $existUserClassXm = CourseClassExamResult::where(['course_section_content_id' => $this->sectionContent->id, 'user_id' => auth()->id()])->first();
+            $existUserClassXm = CourseClassExamResult::where(['course_section_content_id' => $this->sectionContent->id, 'user_id' => ViewHelper::loggedUser()->id])->first();
             if (isset($existUserClassXm))
             {
                 return response()->json(['error' => 'You already passed the class Exam.']);
@@ -59,15 +59,15 @@ class AppApiControllerTwo extends Controller
 
     public function startBatchExam ($contentId)
     {
-        if (auth()->check())
+        if (ViewHelper::authCheck())
         {
-            $existExamResult = BatchExamResult::where(['batch_exam_section_content_id' => $contentId, 'user_id' => auth()->id()])->first();
+            $existExamResult = BatchExamResult::where(['batch_exam_section_content_id' => $contentId, 'user_id' => ViewHelper::loggedUser()->id])->first();
             if (!empty($existExamResult))
             {
                 return response()->json(['error' => 'You already participate in this exam.'], 400);
             }
             $this->exam = BatchExamSectionContent::whereId($contentId)->select('id', 'batch_exam_section_id', 'parent_id', 'content_type', 'title', 'exam_mode', 'exam_duration_in_minutes', 'exam_total_questions', 'exam_per_question_mark', 'exam_negative_mark', 'exam_pass_mark', 'exam_is_strict', 'exam_start_time', 'exam_start_time_timestamp', 'exam_end_time', 'exam_end_time_timestamp', 'exam_result_publish_time', 'exam_result_publish_time_timestamp', 'exam_total_subject', 'written_exam_duration_in_minutes', 'written_total_questions', 'written_description', 'written_is_strict', 'written_start_time', 'written_start_time_timestamp', 'written_end_time', 'written_end_time_timestamp', 'written_publish_time', 'written_publish_time_timestamp', 'written_total_subject', 'is_paid', 'status')->with(['questionStores' => function ($questionStores) {
-                $questionStores->where(['status' => 1])->select('id', 'question_type', 'question', 'question_image', 'question_video_link', 'has_all_wrong_ans', 'status', 'subject_name')->with('questionOptions')->get();
+                $questionStores->where(['status' => 1])->select('id', 'question_type', 'question', 'question_image', 'question_video_link', 'has_all_wrong_ans', 'status', 'written_que_file', 'question_option_image', 'subject_name')->with('questionOptions')->get();
             }])->first();;
             $this->data = [
                 'exam'   => $this->exam

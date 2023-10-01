@@ -54,6 +54,7 @@ Route::prefix('v1')->name('api.')->group(function (){
 
 
         Route::get('app-get-user-info', [AppApiController::class, 'getUserInfo']);
+        Route::get('get-comments/{model_id}/{type}', [AppApiController::class, 'getComments']);
 
         Route::get('start-course-exam/{content_id}/{slug?}', [AppApiControllerTwo::class, 'startcourseExam']);
         Route::get('start-batch-exam/{content_id}/{slug?}', [AppApiControllerTwo::class, 'startBatchExam']);

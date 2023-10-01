@@ -112,10 +112,10 @@ Route::as('front.')->group(function (){
             Route::post('get-course-exam-result/{content_id}/{slug?}', [FrontExamController::class, 'getCourseExamResult'])->name('get-course-exam-result');
             Route::post('get-course-class-exam-result/{content_id}/{slug?}', [FrontExamController::class, 'getCourseClassExamResult'])->name('get-course-class-exam-result');
             Route::post('get-batch-exam-result/{content_id}/{slug?}', [FrontExamController::class, 'getBatchExamResult'])->name('get-batch-exam-result');
-            Route::get('show-exam-result/{xm_id}', [FrontExamController::class, 'showExamResult'])->name('show-exam-result');
-            Route::get('show-course-exam-result/{xm_id}', [FrontExamController::class, 'showCourseExamResult'])->name('show-course-exam-result');
-            Route::get('show-course-class-exam-result/{xm_id}', [FrontExamController::class, 'showCourseClassExamResult'])->name('show-course-class-exam-result');
-            Route::get('show-batch-exam-result/{xm_id}', [FrontExamController::class, 'showBatchExamResult'])->name('show-batch-exam-result');
+            Route::get('show-exam-result/{xm_id}/{xm_result_id?}', [FrontExamController::class, 'showExamResult'])->name('show-exam-result');
+            Route::get('show-course-exam-result/{xm_id}/{xm_result_id?}', [FrontExamController::class, 'showCourseExamResult'])->name('show-course-exam-result');
+            Route::get('show-course-class-exam-result/{xm_id}/{xm_result_id?}', [FrontExamController::class, 'showCourseClassExamResult'])->name('show-course-class-exam-result');
+            Route::get('show-batch-exam-result/{xm_id}/{xm_result_id?}', [FrontExamController::class, 'showBatchExamResult'])->name('show-batch-exam-result');
             Route::post('order-exam/{xm_cat_id}', [FrontExamController::class, 'orderXm'])->name('order-exam');
             Route::post('order-subscription/{id}', [ExamSubscriptionPackageController::class, 'orderSubscription'])->name('order-subscription');
             Route::get('show-course-exam-answers/{content_id}/{slug?}', [FrontExamController::class, 'showCourseExamAnswers'])->name('show-course-exam-answers');

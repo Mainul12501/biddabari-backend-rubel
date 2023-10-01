@@ -33,6 +33,7 @@ class QuestionStore extends Model
         'slug',
         'subject_name',
         'mcq_ans_description',
+        'question_option_image',
     ];
 
     protected $searchableFields = ['*'];
@@ -75,10 +76,10 @@ class QuestionStore extends Model
         self::$questionStore->created_by                            = auth()->id();
         self::$questionStore->question_type                         = $request->question_type;
         self::$questionStore->question                              = $singleQuestion['question'];
-        self::$questionStore->slug                                  = str_replace(' ', '-', $singleQuestion['question']);
+        self::$questionStore->slug                                  = base64_encode($singleQuestion['question']);
         self::$questionStore->question_description                  = $singleQuestion['question_description'];
-        self::$questionStore->question_image                        = isset($singleQuestion['question_image']) ? fileUpload($singleQuestion['question_image'], 'question-management/question-store', 'question') : null;
-        self::$questionStore->question_video_link                   = $singleQuestion['question_video_link'];
+        self::$questionStore->question_image                        = isset($singleQuestion['question_image']) ? fileUpload($singleQuestion['question_image'], 'question-management/question-store', 'question') : (isset($id) ? static::find($id)->question_image : null);
+//        self::$questionStore->question_video_link                   = $singleQuestion['question_video_link'];
 //        self::$questionStore->question_mark                         = $singleQuestion['question_mark'];
 //        self::$questionStore->negative_mark                         = $singleQuestion['negative_mark'];
 //            self::$questionStore->question_hardness                     = $singleQuestion['question_hardness'];
@@ -92,9 +93,10 @@ class QuestionStore extends Model
         if ($request->question_type == 'MCQ')
         {
             self::$questionStore->has_all_wrong_ans                 = $request['has_all_wrong_ans'] == 'on' ? 1 : 0;
+            self::$questionStore->question_option_image             = isset($singleQuestion['question_option_image']) ? fileUpload($singleQuestion['question_option_image'], 'question-management/question-option-store', 'question-option-') : (isset($id) ? static::find($id)->question_option_image : null);
         }
         self::$questionStore->subject_name                          = $request->subject_name;
-        self::$questionStore->mcq_ans_description                   = $singleQuestion['mcq_ans_description'];
+//        self::$questionStore->mcq_ans_description                   = $singleQuestion['mcq_ans_description'];
         self::$questionStore->save();
         if (!isset($id))
         {

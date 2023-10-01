@@ -59,6 +59,7 @@
                                             <h3>Go Back to :</h3>
                                             <a href="{{ route('front.home') }}" class="btn btn-outline-success">HomePage</a>
                                             <a href="{{ route('front.student.dashboard') }}" class="btn btn-outline-success">Student Dashboard</a>
+                                            <a href="{{ route('front.student.show-course-exam-ranking', ['content_id' => $exam->id, 'slug' => str_replace(' ', '-', $exam->title)]) }}" class="btn btn-outline-success">Show Ranking</a>
                                         </div>
                                     </div>
                                 </div>
@@ -70,6 +71,7 @@
                                         <h3>Go Back to :</h3>
                                         <a href="{{ route('front.home') }}" class="btn btn-outline-success">HomePage</a>
                                         <a href="{{ route('front.student.dashboard') }}" class="btn btn-outline-success">Student Dashboard</a>
+                                        <a href="{{ route('front.student.show-course-exam-ranking', ['content_id' => $exam->id, 'slug' => str_replace(' ', '-', $exam->title)]) }}" class="btn btn-outline-success">Show Ranking</a>
                                     </div>
                                 </div>
                             </div>

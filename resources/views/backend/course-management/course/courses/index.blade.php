@@ -71,7 +71,8 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>
                                             <div class="mt-3">
-                                                <a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}" target="_blank">
+{{--                                                <a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}" target="_blank">--}}
+                                                <a href="{{ route('course-sections.index', ['course_id' => $course->id]) }}" >
                                                     <div class="text-center">
                                                         <img src="{{ asset($course->banner) }}" alt="" style="height: 100px;" />
                                                     </div>
@@ -231,6 +232,7 @@
                     $("#dateTime1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
                     $("#dateTime2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
                     $("#dateTime3").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+                    $("#admissionLastDate").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
 
                     $('.select2').select2({
                         placeholder: $(this).attr('data-placeholder'),
@@ -266,6 +268,7 @@
                     $("#dateTime1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
                     $("#dateTime2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
                     $("#dateTime3").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+                    $("#admissionLastDate").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
 
                     $('.select2').select2({
                         placeholder: $(this).attr('data-placeholder'),

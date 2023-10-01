@@ -79,7 +79,7 @@ class StudentController extends Controller
     public function myCourses ()
     {
 //        $this->courseOrders = CourseOrder::where('user_id', auth()->id())->select('id', 'course_id', 'user_id', 'status')->with('course:id,title,price,banner,discount_type,slug,status,is_approved')->get();
-        $this->courseOrders = ParentOrder::where(['user_id'=> auth()->id(), 'ordered_for' => 'course'])->select('id', 'parent_model_id', 'user_id', 'status')->with('course:id,title,price,banner,discount_type,slug,status,is_approved')->get();
+        $this->courseOrders = ParentOrder::where(['user_id'=> auth()->id(), 'ordered_for' => 'course'])->where('status', '!=', 'canceled')->select('id', 'parent_model_id', 'user_id', 'status')->with('course:id,title,price,banner,discount_type,slug,status,is_approved')->get();
         $this->data = [
             'courseOrders'  => $this->courseOrders
         ];
@@ -140,7 +140,7 @@ class StudentController extends Controller
     public function myExams ()
     {
         $this->loggedUser = ViewHelper::loggedUser();
-        $this->exams   = ParentOrder::where(['ordered_for' => 'batch_exam', 'user_id' => $this->loggedUser->id])->with([
+        $this->exams   = ParentOrder::where(['ordered_for' => 'batch_exam', 'user_id' => $this->loggedUser->id])->where('status', '!=', 'canceled')->with([
             'batchExam' => function($batchExam) {
                 $batchExam->whereStatus(1)->select('id', 'title', 'banner', 'slug', 'sub_title', 'is_paid', 'is_featured', 'is_approved', 'status', 'is_master_exam')->get();
             }
@@ -326,8 +326,10 @@ class StudentController extends Controller
     public function getTextTypeContent (Request $request)
     {
         try {
+            $sectionContent = CourseSectionContent::find($request->content_id);
+//            $sectionContent->course_exam_
             return view('frontend.student.course.contents.show-content-ajax', [
-                'content'   => CourseSectionContent::find($request->content_id),
+                'content'   => $sectionContent,
             ]);
         } catch (\Exception $exception)
         {

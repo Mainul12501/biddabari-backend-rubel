@@ -17,6 +17,9 @@ class CourseClassExamResult extends Model
         'course_section_content_id',
         'user_id',
         'provided_ans',
+        'total_right_ans',
+        'total_wrong_ans',
+        'total_provided_ans',
         'result_mark',
         'is_reviewed',
         'required_time',
@@ -29,7 +32,7 @@ class CourseClassExamResult extends Model
 
     public static function storeExamResult($arrayData, $examResultId = null)
     {
-        CourseClassExamResult::updateOrCreate(['id' => $examResultId], $arrayData);
+        return CourseClassExamResult::updateOrCreate(['id' => $examResultId], $arrayData);
     }
 
     public function courseSectionContent()

@@ -4,7 +4,9 @@
 namespace App\helper;
 
 
+use App\Models\Backend\BatchExamManagement\BatchExamResult;
 use App\Models\Backend\Course\CourseClassExamResult;
+use App\Models\Backend\Course\CourseExamResult;
 use App\Models\Backend\ExamManagement\ExamOrder;
 use App\Models\Backend\ExamManagement\SubscriptionOrder;
 use App\Models\Backend\OrderManagement\ParentOrder;
@@ -262,5 +264,27 @@ class ViewHelper
         } else {
             return '0';
         }
+    }
+
+    public static function checkCourseExamParticipateStatus($contentId)
+    {
+        self::$status = 'false';
+        $existExamResult = CourseExamResult::where(['course_section_content_id' => $contentId, 'user_id' => ViewHelper::loggedUser()->id])->first();
+        if (!empty($existExamResult))
+        {
+            return self::$status = 'true';
+        }
+        return self::$status;
+    }
+
+    public static function checkBatchExamParticipateStatus($contentId)
+    {
+        self::$status = 'false';
+        $existExamResult = BatchExamResult::where(['batch_exam_section_content_id' => $contentId, 'user_id' => ViewHelper::loggedUser()->id])->first();
+        if (!empty($existExamResult))
+        {
+            return self::$status = 'true';
+        }
+        return self::$status;
     }
 }

@@ -47,10 +47,16 @@
                                                     <span class="float-start f-s-26"> {!! $question->question !!}</span>
                                                 </div>
                                                 @if(!empty($question->question_image))
-                                                    <div class="image-container">
-                                                        <img src="{{ $question->question_image }}" class="fit-image" alt="">
+                                                    <div class="{{--image-container--}}">
+                                                        <img src="{{ $question->question_image }}" class="fit-image" alt="" style="max-height: 350px" />
                                                     </div>
-
+                                                @endif
+                                                @if(isset($question->question_option_image))
+                                                    <div class="row py-2">
+                                                        <div class="col-12">
+                                                            <img src="{{ asset($question->question_option_image) }}" class="" alt="" style="max-height: 350px">
+                                                        </div>
+                                                    </div>
                                                 @endif
                                                 <div class="answer-items mt-3" id="queRadio{{ $question->id }}">
                                                     @foreach($question->questionOptions as $optionIndex => $questionOption)
@@ -137,7 +143,8 @@
         color: black!important;
     }
 </style>
-
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 @endpush
 
 @push('script')

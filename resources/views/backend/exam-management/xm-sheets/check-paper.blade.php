@@ -6,7 +6,7 @@
     <div class="row mt-5">
         <div class="col-sm-8 mx-auto">
             <div class="card card-body">
-                <form action="{{ route('update-written-xm-result', ['id' => $examSheet->id]) }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('update-written-xm-result', ['id' => $examSheet->id, 'examOf' => $examOf]) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row" >
                         <div class="col select2-div">

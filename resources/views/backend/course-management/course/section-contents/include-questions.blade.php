@@ -11,11 +11,22 @@
                         <input type="checkbox" id="que{{ $questionStore->id }}" class="que-top-{{ $questionTopic->id }}" name="question_ids[]" value="{{ $questionStore->id }}" style="display: none">
                         <label for="que{{ $questionStore->id }}" class="que-check que-check-id-{{ $questionTopic->id }}" data-topic-id="{{ $questionTopic->id }}" style="cursor: pointer" data-question-id="{{ $questionStore->id }}">
                             <span class="float-start">#{{ $loop->iteration }}&nbsp;</span> <span class="float-start">{!! $questionStore->question !!}</span>
+                            @if(isset($question->question_image))
+                                <br>
+                                <span class="float-start">
+                                    <img src="{{ asset($question->question_image) }}" alt="" class="img-fluid" style="max-height: 60px" />
+                                </span>
+                            @endif
                         </label>
 
 
                         @if(!empty($questionStore->questionOptions) && count($questionStore->questionOptions) > 0)
                             <div class="">
+                                @if(isset($question->question_option_image))
+                                    <div>
+                                        <img src="{{ asset($question->question_option_image) }}" alt="" class="img-fluid" style="max-height: 60px" />
+                                    </div>
+                                @endif
                                 <div>
                                     <ol type="A">
                                         @foreach($questionStore->questionOptions as $questionOption)

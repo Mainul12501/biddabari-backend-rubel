@@ -189,4 +189,15 @@ class AppApiController extends Controller
             return response()->json(['error' => 'Login as a student or teacher to update Profile Info in this page.']);
         }
     }
+
+    public function getComments($modelId, $type = 'course')
+    {
+        $this->comments = ContactMessage::where(['parent_model_id' => $modelId, 'type' => $type, 'is_seen' => 1])->select('id', 'user_id', 'parent_model_id', 'type', 'name', 'message', 'is_seen', 'status', 'created_at')->with(['user' => function($user) {
+            $user->select('id','name','profile_photo_path')->get();
+        },
+            'contactMessages' => function($contactMessages){
+            $contactMessages->select('id', 'user_id', 'parent_model_id', 'type', 'name', 'message', 'is_seen', 'status', 'created_at')->get();
+            }])->get();
+        return response()->json(['comments' => $this->comments]);
+    }
 }

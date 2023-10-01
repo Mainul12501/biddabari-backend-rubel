@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ac0bc1532d39fb0415fe25b8a417c290",
+    "content-hash": "6cb46890e1a7147cdd493dcce227419d",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2955,6 +2955,56 @@
                 "source": "https://github.com/MarkBaker/PHPMatrix/tree/3.0.1"
             },
             "time": "2022-12-02T22:17:43+00:00"
+        },
+        {
+            "name": "mathjax/mathjax",
+            "version": "3.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mathjax/MathJax.git",
+                "reference": "600692ad9d3552cc25f85510d5797bc942ecc9f7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mathjax/MathJax/zipball/600692ad9d3552cc25f85510d5797bc942ecc9f7",
+                "reference": "600692ad9d3552cc25f85510d5797bc942ecc9f7",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "MathJax Consortium",
+                    "homepage": "https://github.com/mathjax"
+                }
+            ],
+            "description": "MathJax is an open-source JavaScript display engine for LaTeX, MathML, and AsciiMath notation that works in all modern browsers.",
+            "homepage": "http://www.mathjax.org/",
+            "keywords": [
+                "AsciiMath",
+                "JS",
+                "MathML",
+                "latex",
+                "math"
+            ],
+            "support": {
+                "issues": "https://github.com/mathjax/MathJax/issues",
+                "source": "https://github.com/mathjax/MathJax/tree/3.2.2"
+            },
+            "funding": [
+                {
+                    "url": "https://numfocus.org/donate-to-mathjax",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/numfocus",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-06-08T17:40:11+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",
@@ -9542,5 +9592,5 @@
         "php": "^8.1"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
