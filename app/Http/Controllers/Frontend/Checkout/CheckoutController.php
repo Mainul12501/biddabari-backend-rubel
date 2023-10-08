@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend\Checkout;
 use App\helper\ViewHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\Order\OrderSubmitRequest;
+use App\Models\Backend\Course\CourseCoupon;
 use App\Models\Backend\OrderManagement\ParentOrder;
 use App\Models\Frontend\CourseOrder\CourseOrder;
 use Illuminate\Http\Request;
@@ -27,6 +28,16 @@ class CheckoutController extends Controller
                     return back()->with('error', 'Sorry. You already enrolled this course.');
                 }
 //                CourseOrder::saveOrUpdateCourseOrder($request);
+
+                if (isset($request->coupon_code))
+                {
+                    $courseCoupon = CourseCoupon::where(['code' => $request->coupon_code, 'course_id' => $request->course_id])->first();
+                    if (!empty($courseCoupon))
+                    {
+
+                        $request['total_amount']  = $request->total_amount - $courseCoupon->discount_amount;
+                    }
+                }
                 ParentOrder::storeXmOrderInfo($request, $request->course_id);
                 if (str()->contains(url()->current(), '/api/'))
                 {
@@ -55,27 +66,28 @@ class CheckoutController extends Controller
 
     public function placeFreeCourseOrder(Request $request, $courseId)
     {
-        ParentOrder::create([
-            'user_id'   => ViewHelper::loggedUser()->id,
-            'parent_model_id'   => $courseId,
-            'ordered_for'   => $request->ordered_for,
-            'paid_amount'   => 0,
-            'total_amount'   => 0,
-            'status'   => 'approved',
-            'payment_status'   => 'complete',
-            'is_free_course'   => 1,
-        ]);
-        if (str_contains(url()->current(), '/api/'))
-        {
-            return ViewHelper::returnSuccessMessage('You ordered this course successfully.');
-        } else {
-            if ($request->ordered_for == 'course')
+        $existOrder = ParentOrder::where(['user_id' => ViewHelper::loggedUser()->id, 'parent_model_id' => $courseId, 'ordered_for' => $request->ordered_for])->first();
+        if (empty($existOrder)) {
+            ParentOrder::create([
+                'user_id' => ViewHelper::loggedUser()->id,
+                'parent_model_id' => $courseId,
+                'ordered_for' => $request->ordered_for,
+                'paid_amount' => 0,
+                'total_amount' => 0,
+                'status' => 'approved',
+                'payment_status' => 'complete',
+                'is_free_course' => 1,
+            ]);
+            if (str_contains(url()->current(), '/api/'))
             {
-                return redirect()->route('front.student.course-contents', ['course_id' => $courseId])->with('success', 'You ordered this course successfully.');
-            } else {
-                return redirect()->route('front.student.batch-exam-contents', ['xm_id' => $courseId])->with('success', 'You ordered this Exam successfully.');
+                return ViewHelper::returnSuccessMessage('You ordered this course successfully.');
             }
-
+        }
+        if ($request->ordered_for == 'course')
+        {
+            return redirect()->route('front.student.course-contents', ['course_id' => $courseId])->with('success', 'You ordered this course successfully.');
+        } else {
+            return redirect()->route('front.student.batch-exam-contents', ['xm_id' => $courseId])->with('success', 'You ordered this Exam successfully.');
         }
     }
 }

@@ -23,7 +23,7 @@
                                 <th>Coupon Value</th>
                                 <th>Expire Date</th>
                                 <th>Usage time start</th>
-                                <th>Usage time end</th>
+{{--                                <th>Usage time end</th>--}}
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -37,7 +37,7 @@
                                         <td>{{ $courseCoupon->type == 'Flat' ? ' ৳ '.$courseCoupon->discount_amount : $courseCoupon->percentage_value.'%' }}</td>
                                         <td>{{ $courseCoupon->expire_date_time }}</td>
                                         <td>{{ $courseCoupon->available_from }}</td>
-                                        <td>{{ $courseCoupon->avaliable_to }}</td>
+{{--                                        <td>{{ $courseCoupon->avaliable_to }}</td>--}}
                                         <td>
                                             @can('edit-course-coupon')
                                                 <a href="" data-course-coupon-id="{{ $courseCoupon->id }}" class="btn btn-sm btn-warning edit-btn" title="Edit Course Coupon">

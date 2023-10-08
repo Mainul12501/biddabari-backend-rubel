@@ -35,7 +35,7 @@ class BasicViewController extends Controller
     {
         $this->batchExams  = BatchExam::where(['status' => 1, 'is_master_exam' => 0, 'is_paid' => 1])->select('id', 'title', 'banner', 'slug')->take(6)->get();
         $this->courseCategories = CourseCategory::whereStatus(1)->where('parent_id', 0)->orderBy('order', 'ASC')->select('id', 'name', 'image', 'slug', 'icon', 'order', 'status')->get();
-        $this->courses = Course::whereStatus(1)->where(['is_paid' => 1, 'is_featured' => 1])->latest()->select('id', 'title', 'sub_title', 'price', 'banner', 'total_video', 'total_audio', 'total_pdf', 'total_exam', 'total_note', 'total_zip', 'total_live', 'total_link','total_file','total_written_exam', 'slug', 'discount_type', 'discount_amount', 'starting_date_time')->take(9)->get();
+        $this->courses = Course::whereStatus(1)->where(['is_featured' => 1])->latest()->select('id', 'title', 'sub_title', 'price', 'banner', 'total_video', 'total_audio', 'total_pdf', 'total_exam', 'total_note', 'total_zip', 'total_live', 'total_link','total_file','total_written_exam', 'slug', 'discount_type', 'discount_amount', 'starting_date_time')->take(9)->get();
         foreach ($this->courses as $course)
         {
             $course->order_status = ViewHelper::checkIfCourseIsEnrolled($course);
@@ -298,27 +298,30 @@ class BasicViewController extends Controller
 //                    return response()->json(Carbon::now()->format('d-m-Y H:i'));
                     if ($courseCoupon->code == $request->coupon_code)
                     {
-                        if (session()->has('valid_used_coupon'))
-                        {
-                            if (session()->get('valid_used_coupon') == $request->coupon_code)
-                            {
-                                return response()->json([
-                                    'status'     => 'false',
-                                    'message'    => 'code already used for this course',
-                                ]);
-                            }
-                        }
-                        if (Carbon::parse($courseCoupon->available_from)->format('Y-m-d H:i') < Carbon::now()->format('Y-m-d H:i') && Carbon::parse($courseCoupon->expire_date_time)->format('d-m-Y H:i') > Carbon::now()->format('d-m-Y H:i'))
+//                        if (session()->has('valid_used_coupon'))
+//                        {
+//                            if (session()->get('valid_used_coupon') == $request->coupon_code)
+//                            {
+//                                return response()->json([
+//                                    'status'     => 'false',
+//                                    'message'    => 'code already used for this course',
+//                                ]);
+//                            }
+//                        }
+//                        if (Carbon::parse($courseCoupon->available_from)->format('Y-m-d H:i') < Carbon::now()->format('Y-m-d H:i') && Carbon::parse($courseCoupon->expire_date_time)->format('d-m-Y H:i') > Carbon::now()->format('d-m-Y H:i'))
+                        if (dateTimeFormatYmdHi($courseCoupon->available_from) < currentDateTimeYmdHi() && dateTimeFormatYmdHi($courseCoupon->expire_date_time) > currentDateTimeYmdHi())
                         {
                             $this->status = 'true';
                             $this->message = 'Thanks for using coupon code.';
+//                            $couponAmount = $courseCoupon->discount_amount;
                             $currentTotal = $request->current_total - $courseCoupon->discount_amount;
-                            session()->put('valid_used_coupon', $courseCoupon->code);
+//                            session()->put('valid_used_coupon', $courseCoupon->code);
                             return response()->json([
                                 'status'    => $this->status,
                                 'message'    => $this->message,
                                 'coupon'    => $courseCoupon,
                                 'currentTotal'  => $currentTotal
+//                            'coupon_amount' => $couponAmount
                             ]);
                         } else {
                             $this->status = 'false';

@@ -110,6 +110,22 @@ class CourseSectionContent extends Model
             {
                 $sectionContent->courseSectionContents->each->delete();
             }
+            if (!empty($sectionContent->courseExamResults))
+            {
+                $sectionContent->courseExamResults->each->delete();
+            }
+            if (!empty($sectionContent->courseSectionContentsSub))
+            {
+                $sectionContent->courseSectionContentsSub->each->delete();
+            }
+            if (!empty($sectionContent->questionStores))
+            {
+                $sectionContent->questionStores()->detach();
+            }
+            if (!empty($sectionContent->questionStoresForClassXm))
+            {
+                $sectionContent->questionStoresForClassXm()->detach();
+            }
         });
     }
 

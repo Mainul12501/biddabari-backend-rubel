@@ -160,6 +160,7 @@ Route::middleware([
         'question-stores' => QuestionStoreController::class,
     ]);
     Route::post('/question-import/{topic_id}/{type}', [QuestionStoreController::class, 'questionImport'])->name('question-import');
+    Route::get('/export-questions/{topic_id}/{type}', [QuestionStoreController::class, 'questionExport'])->name('export-questions');
 
     Route::resources([
         'blog-categories'   => BlogCategoryController::class,

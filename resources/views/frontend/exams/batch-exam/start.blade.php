@@ -95,6 +95,13 @@
                                             <div class="col-md-12">
                                                 <span class="float-start" style="font-size: 22px">{{ $loop->iteration }}. &nbsp;</span>
                                                 <h4 class="float-start fw-bold">{!! $question->question !!}</h4>
+                                                <div class="mt-3">
+                                                    @if($question->question_file_type == 'pdf')
+                                                        <span><a href="{{ asset($question->question_image) }}" download="" class="nav-link text-warning">PDF File</a></span>
+                                                    @else
+                                                        <img src="{{ asset($question->question_image) }}" alt="" style="height: 60px;">
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                     @endforeach

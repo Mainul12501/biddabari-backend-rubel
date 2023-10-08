@@ -33,7 +33,11 @@
             <div class="col-md-6 mt-3">
                 <label for="questionImage">Que Image</label>
                 <input type="file" class="form-control" id="questionImage" name="question[0][question_image]" accept="application/pdf,image/*" />
-                <img src="{{ asset($questionStore->question_image) }}" alt="" style="height: 60px;">
+                @if($questionStore->question_file_type == 'pdf')
+                    <span><a href="{{ asset($questionStore->question_image) }}" download="" class="nav-link text-warning">PDF File</a></span>
+                @else
+                    <img src="{{ asset($questionStore->question_image) }}" alt="" style="height: 60px;">
+                @endif
             </div>
 {{--            <div class="col-md-6 mt-3">--}}
 {{--                <label for="queVidDes">Que Video Description</label>--}}
@@ -65,13 +69,13 @@
         </div>
         @if(!empty($questionStore->questionOptions))
             @php($i=193)
-            <div class="row" id="editmcqOptionSection0">
-                @foreach($questionStore->questionOptions as $key => $questionOption)
+            <div class="row mt-3" id="editmcqOptionSection0">
+                @foreach($questionStore->questionOptionsAscOrder as $key => $questionOption)
                     <div class="col-md-6">
                         <label for="optionTitle">Option Title</label>
                         <div class="input-group">
                             <input type="text" name="question[0][answer][{{ $key }}][option_title]" value="{{ $questionOption->option_title }}" id="optionTitle" class="form-control" placeholder="Option" />
-                            {{--                                        <button type="button" class="btn btn-danger input-group-text delete-option-btn"><i class="fa-solid fa-trash"></i></button>--}}
+                            <button type="button" class="btn btn-danger input-group-text delete-option-btn"><i class="fa-solid fa-trash"></i></button>
                         </div>
                         <label for="" class="mt-2">Is Correct?</label>
                         <div class="material-switch">

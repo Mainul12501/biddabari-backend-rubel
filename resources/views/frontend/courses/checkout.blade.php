@@ -149,8 +149,8 @@
                     if (data.status == 'true')
                     {
                         toastr.success(data.message);
-                        $('input[name="total_amount"]').val(data.currentTotal);
-                        $('input[name="used_coupon"]').val(1);
+                        // $('input[name="total_amount"]').val(data.currentTotal);
+                        // $('input[name="used_coupon"]').val(1);
                         $('input[name="coupon_code"]').val(couponCode);
                         $('input[name="coupon_amount"]').val(data.coupon.discount_amount);
                         $('#finalPrice').text(data.currentTotal);

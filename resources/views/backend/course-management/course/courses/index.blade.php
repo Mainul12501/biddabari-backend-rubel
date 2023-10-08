@@ -178,7 +178,7 @@
             const date = new Date();
             // var currentDateTime = date.getFullYear()+'-'+date.getMonth()+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes();
 
-            $('input[data-dtp="dtp_Nufud"]').val(currentDateTime);
+
             // $('input[data-dtp="dtp_Nufud"]').each(function () {
             //     $(this).val(currentDateTime);
             // });
@@ -201,7 +201,7 @@
             $("#dateTime2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $("#dateTime3").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $('.select2').select2();
-
+            $('input[data-dtp="dtp_Nufud"]').val(currentDateTime);
         })
         $(document).on('click', '.dtp-btn-cancel', function () {
             alert('sdfsdf');

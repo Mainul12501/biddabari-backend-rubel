@@ -367,9 +367,12 @@
 
                                              @if($course->discount_end_date > \Illuminate\Support\Carbon::today()->format('Y-m-d') && $course->discount_amount > 0)
                                                 <p class="f-s-20">Price: <del>{{ $course->is_paid == 1 ? $course->price : 'Free' }}</del> tk</p>
-                                                <p class="f-s-20">Discount Price: {{ $course->price - $course->discount_amount }} tk</p>
+{{--                                                <p class="f-s-20">Discount Price: {{ $course->price - $course->discount_amount }} tk</p>--}}
 {{--                                                <p class="f-s-20">Discount Price: {{ $discountPrice = $course->discount_type == 1 ? $course->discount_amount : ($course->price * $course->discount_amount)/100 }} tk</p>--}}
-{{--                                                <p class="f-s-20">After Discount: {{ $course->price - $discountPrice }} tk</p>--}}
+                                            <?php
+                                                $discountPrice = $course->discount_type == 1 ? $course->discount_amount : ($course->price * $course->discount_amount)/100;
+                                             ?>
+                                                <p class="f-s-20">After Discount: {{ $course->price - $discountPrice }} tk</p>
                                             @else
                                                 <p class="f-s-20">Price: {{ $course->is_paid == 1 ? $course->price.' tk' : 'Free' }} </p>
                                             @endif
@@ -420,7 +423,7 @@
                                             @if(auth()->check())
                                                 <a href="" data-course-id="{{ $course->id }}" onclick="event.preventDefault(); document.getElementById('freeCourseOrderForm').submit()" class="default-btn bg-default-color order-free-course">কোর্সটি করুন</a>
                                             @else
-                                                <a href="javascript:void(0)" data-course-id="{{ $course->id }}" data-bs-toggle="modal" data-bs-target="#authModal" class="default-btn bg-default-color order-free-course">কোর্সটি করুন</a>
+                                                <a href="{{ route('login') }}" data-course-id="{{ $course->id }}"  class="default-btn bg-default-color order-free-course">কোর্সটি করুন</a>
                                             @endif
                                                 <form action="{{ route('front.place-free-course-order', ['course_id' => $course->id]) }}" method="post" id="freeCourseOrderForm">
                                                     @csrf

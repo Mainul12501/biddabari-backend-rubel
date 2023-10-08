@@ -28,7 +28,7 @@ class CourseCouponFormRequest extends FormRequest
             'type'  => 'required',
             'expire_date_time'  => 'required',
             'available_from'    => 'required',
-            'avaliable_to'  => 'required',
+//            'avaliable_to'  => 'required',
         ];
     }
 

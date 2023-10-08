@@ -99,7 +99,7 @@
                 </div>
                 <div class="col-md-4 mt-2">
                     <label for="">Discount Value</label>
-                    <input type="text" disabled id="discountAmount" name="discount_amount" value="{{ isset($course) ? ($course->discount_type == 1 ? $course->discount_amount : (($course->price * $course->discount_amount)/100)) : '' }}" class="form-control" placeholder="Discount Value" />
+                    <input type="text" disabled id="discountAmount" name="discount_amount" value="{{ isset($course) ? $course->discount_amount : '' }}" class="form-control" placeholder="Discount Value" />
                 </div>
                 <div class="col-md-4 mt-2">
                     <label for="">Discount Start Date</label>

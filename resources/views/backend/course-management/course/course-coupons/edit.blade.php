@@ -46,11 +46,11 @@
                     <input type="text" name="available_from" id="dateTime1" required data-dtp="dtp_Nufud" value="{{ isset($courseCoupon) ? $courseCoupon->available_from : '' }}" class="form-control" placeholder="Available Date Time" />
                     <span class="text-danger" id="available_from">{{ $errors->has('available_from') ? $errors->first('available_from') : '' }}</span>
                 </div>
-                <div class="col-md-4 mt-2">
-                    <label for="">Available To</label>
-                    <input type="text" name="avaliable_to" id="dateTime2" required data-dtp="dtp_Nufud" value="{{ isset($courseCoupon) ? $courseCoupon->avaliable_to : '' }}" class="form-control" placeholder="Ending Date Time" />
-                    <span class="text-danger" id="avaliable_to">{{ $errors->has('avaliable_to') ? $errors->first('avaliable_to') : '' }}</span>
-                </div>
+{{--                <div class="col-md-4 mt-2">--}}
+{{--                    <label for="">Available To</label>--}}
+{{--                    <input type="text" name="avaliable_to" id="dateTime2" required data-dtp="dtp_Nufud" value="{{ isset($courseCoupon) ? $courseCoupon->avaliable_to : '' }}" class="form-control" placeholder="Ending Date Time" />--}}
+{{--                    <span class="text-danger" id="avaliable_to">{{ $errors->has('avaliable_to') ? $errors->first('avaliable_to') : '' }}</span>--}}
+{{--                </div>--}}
 {{--                <div class="col-md-4 mt-2">--}}
 {{--                    <label for="">Flat Discount</label>--}}
 {{--                    <input type="number" name="flat_discount" value="{{ isset($courseCoupon) ? $courseCoupon->flat_discount : '' }}" class="form-control" />--}}

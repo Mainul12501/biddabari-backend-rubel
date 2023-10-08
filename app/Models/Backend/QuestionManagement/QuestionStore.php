@@ -21,6 +21,7 @@ class QuestionStore extends Model
         'question',
         'question_description',
         'question_image',
+        'question_file_type',
         'question_video_link',
         'question_mark',
         'negative_mark',
@@ -79,6 +80,7 @@ class QuestionStore extends Model
         self::$questionStore->slug                                  = base64_encode($singleQuestion['question']);
         self::$questionStore->question_description                  = $singleQuestion['question_description'];
         self::$questionStore->question_image                        = isset($singleQuestion['question_image']) ? fileUpload($singleQuestion['question_image'], 'question-management/question-store', 'question') : (isset($id) ? static::find($id)->question_image : null);
+        self::$questionStore->question_file_type                    = isset($singleQuestion['question_image']) ? $singleQuestion['question_image']->getClientOriginalExtension() : (isset($id) ? static::find($id)->question_file_type : null);
 //        self::$questionStore->question_video_link                   = $singleQuestion['question_video_link'];
 //        self::$questionStore->question_mark                         = $singleQuestion['question_mark'];
 //        self::$questionStore->negative_mark                         = $singleQuestion['negative_mark'];

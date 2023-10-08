@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\CourseManagement\Question;
 
+use App\Exports\Backend\QuestionManagement\ExportMcqQuestions;
 use App\Http\Controllers\Controller;
 use App\Imports\Backend\QuestionManagement\McqQuestionImport;
 use App\Imports\Backend\QuestionManagement\WrittenQuestionImport;
@@ -56,7 +57,6 @@ class QuestionStoreController extends Controller
         try {
             foreach ($request->question as $key => $singleQuestion)
             {
-//                return $request;
                 $this->questionStore = QuestionStore::createOrUpdateQuestion($request, $singleQuestion);
                 if ($request->question_type == 'MCQ')
                 {
@@ -108,7 +108,6 @@ class QuestionStoreController extends Controller
         try {
             foreach ($request->question as $key => $singleQuestion)
             {
-
                 $this->questionStore = QuestionStore::createOrUpdateQuestion($request, $singleQuestion, $id);
                 if ($request->question_type == 'MCQ')
                 {
@@ -212,5 +211,10 @@ class QuestionStoreController extends Controller
         {
             return back()->with('error', $exception->getMessage());
         }
+    }
+
+    public function questionExport($topicId = null, $type = null)
+    {
+        return Excel::download(new ExportMcqQuestions($topicId, $type), 'mcqQuestions.xlsx');
     }
 }

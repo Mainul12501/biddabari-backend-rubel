@@ -118,15 +118,18 @@ class CourseController extends Controller
     public function destroy(string $id)
     {
         abort_if(Gate::denies('delete-course'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        return back()->with('error', 'Feature temporary disabled. Please contact your admin to enable it.');
-        $this->course = Course::find($id);
-        if (file_exists($this->course->image))
+//        return back()->with('error', 'Feature temporary disabled. Please contact your admin to enable it.');
+        $user = auth()->user();
+        foreach ($user->roles as $role)
         {
-            unlink($this->course->image);
+            if ($role->id == 1)
+            {
+                $this->course = Course::find($id)->delete();
+                return back()->with('success', 'Course deleted Successfully.');
+            }
         }
-        $this->course->courseCategories()->detach();
-        $this->course->delete();
-        return back()->with('success', 'Course deleted Successfully.');
+
+        return back()->with('error', 'You dont have permission to delete this course.');
     }
 
     public function assignTeacherToCourse ($courseId)
