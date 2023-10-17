@@ -99,10 +99,10 @@
                                                 </div>
                                                 <div class="ms-auto" style="width: 50px">
                                                     <a href="" class="btn btn-success btn-sm topic-edit-btn" data-topic-id="{{ $question->id }}"><i class="fas fa-edit"></i></a>
-                                                    <form action="{{ route('question-stores.destroy', $question->id) }}" method="post" onsubmit="return confirm('Are You Sure to Delete this?')">
+                                                    <form action="{{ route('question-stores.destroy', $question->id) }}" method="post" >
                                                         @csrf
                                                         @method('delete')
-                                                        <button type="submit" class="btn btn-danger m-t-1 btn-sm" data-topic-id="{{ $question->id }}"><i class="fas fa-trash"></i></button>
+                                                        <button type="submit" class="btn btn-danger m-t-1 btn-sm data-delete-form" data-topic-id="{{ $question->id }}"><i class="fas fa-trash"></i></button>
                                                     </form>
                                                 </div>
                                             </div>
@@ -189,10 +189,6 @@
                                         <textarea name="question[0][question]" id="summernote" required class="form-control" placeholder="Question " cols="30" rows="10"></textarea>
                                         <span class="text-danger" id="name">{{ $errors->has('name') ? $errors->first('name') : '' }}</span>
                                     </div>
-                                    <div class="col-md-12 mt-3">
-                                        <label for="summernote1">Question Description</label>
-                                        <textarea name="question[0][question_description]" id="summernote1" placeholder="Question Description" class="form-control" cols="30" rows="10"></textarea>
-                                    </div>
                                     <div class="col-md-6 mt-3">
                                         <label for="questionImage">Que Image</label>
                                         <input type="file" class="form-control" id="questionImage" name="question[0][question_image]" accept="application/pdf,image/*" />
@@ -216,15 +212,6 @@
                                 <button type="button" data-key-id="0" class="btn append-div position-absolute end-0 me-4 btn-outline-success "><i class="fa-solid fa-circle-plus"></i></button>
                             </div>
                             <div class="card-body" >
-                                <div class="row question-option-img-div">
-                                    <div class="col-md-6">
-                                        <label for="questionOptionsImage">Question Option Image</label>
-                                        <input type="file" class="form-control show-option-image" data-loop="0" id="questionOptionsImage" name="question[0][question_option_image]" accept="image/*" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <img src="" id="showOptionImage0" style="height: 60px;" alt="">
-                                    </div>
-                                </div>
                                 <div class="row mt-2" id="mcqOptionSection0">
                                     <div class="col-md-6 mt-1">
                                         <label for="optionTitle">Option Title</label>
@@ -288,6 +275,22 @@
                                             <input id="someSwitchOptionWarning" name="question[0][has_all_wrong_ans]" type="checkbox" >
                                             <label for="someSwitchOptionWarning" class="label-warning"></label>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body pt-0 border-top-0">
+                                <div class="row mt-3 question-option-img-div">
+                                    <div class="col-md-6">
+                                        <label for="questionOptionsImage">Question Option Image</label>
+                                        <input type="file" class="form-control show-option-image" data-loop="0" id="questionOptionsImage" name="question[0][question_option_image]" accept="image/*" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <img src="" id="showOptionImage0" style="height: 60px;" alt="">
+                                    </div>
+                                    <div class="col-md-12 mt-3">
+                                        <label for="summernote1">Answer Description</label>
+                                        <textarea name="question[0][mcq_ans_description]" id="summernote1" placeholder="Answer Description" class="form-control" cols="30" rows="10"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -458,18 +461,18 @@
                     '                                        <label for="summernote">Question</label>\n' +
                     '                                        <textarea name="question['+serial+'][question]" id="summernote'+firstSummernote+'" class="form-control" placeholder="Question " cols="30" rows="10"></textarea>\n' +
                     '                                    </div>\n' +
-                    '                                    <div class="col-md-12 mt-3">\n' +
-                    '                                        <label for="summernote1">Question Description</label>\n' +
-                    '                                        <textarea name="question['+serial+'][question_description]" id="summernote'+secondSummernote+'" placeholder="Question Description" class="form-control" cols="30" rows="10"></textarea>\n' +
-                    '                                    </div>\n' +
+                    // '                                    <div class="col-md-12 mt-3">\n' +
+                    // '                                        <label for="summernote1">Question Description</label>\n' +
+                    // '                                        <textarea name="question['+serial+'][question_description]" id="summernote'+secondSummernote+'" placeholder="Question Description" class="form-control" cols="30" rows="10"></textarea>\n' +
+                    // '                                    </div>\n' +
                     '                                    <div class="col-md-6 mt-3">\n' +
                     '                                        <label for="questionImage">Que Image</label>\n' +
                     '                                        <input type="file" class="form-control" id="questionImage" name="question['+serial+'][question_image]" accept="image/*" />\n' +
                     '                                    </div>\n' +
-                    '                                    <div class="col-md-6 mt-3">\n' +
-                    '                                        <label for="queVidDes">Que Video Description</label>\n' +
-                    '                                        <input type="text" class="form-control" id="queVidDes" name="question['+serial+'][question_video_link]" placeholder="Question Video Description" />\n' +
-                    '                                    </div>\n' +
+                    // '                                    <div class="col-md-6 mt-3">\n' +
+                    // '                                        <label for="queVidDes">Que Video Description</label>\n' +
+                    // '                                        <input type="text" class="form-control" id="queVidDes" name="question['+serial+'][question_video_link]" placeholder="Question Video Description" />\n' +
+                    // '                                    </div>\n' +
                     // '                                    <div class="col-md-6 mt-3">\n' +
                     // '                                        <label for="markPerQue">Mark Per Question</label>\n' +
                     // '                                        <input type="text" class="form-control" id="markPerQue" name="question['+serial+'][question_mark]" value="1" placeholder="Mark Per Question" />\n' +
@@ -487,16 +490,7 @@
                     '                                    <button type="button" data-key-id="'+serial+'" class="btn append-div position-absolute end-0 me-4 btn-outline-success "><i class="fa-solid fa-circle-plus"></i></button>\n' +
                     '                                </div>\n' +
                     '                                <div class="card-body" id="mcqOptionSection'+serial+'">\n';
-                div += '<div class="row question-option-img-div">\n' +
-                    '                                    <div class="col-md-6">\n' +
-                    '                                        <label for="questionOptionsImage">Question Option Image</label>\n' +
-                    '                                        <input type="file" class="form-control show-option-image" data-loop="'+serial+'" id="questionOptionsImage" name="question['+serial+'][question_option_image]" accept="image/*" />\n' +
-                    '                                    </div>\n' +
-                    '                                    <div class="col-md-6">\n' +
-                    '                                        <img src="" id="showOptionImage'+serial+'" style="height: 60px;" alt="">\n' +
-                    '                                    </div>'+
-                    '                                </div>' +
-                    '                                    <div class="row">\n';
+                div += '                                    <div class="row">\n';
                     for(var tt = 0; tt < 4; tt++) {
                         div += '                                 <div class="col-md-6 mt-1">\n' +
                         '                                            <label for="">Option Title</label>\n' +
@@ -527,14 +521,23 @@
                     '                                        </div>\n' +
                     '                                    </div>\n' +
                     '                                </div>\n' +
-                    // '<div class="card-body pt-0 border-top-0">\n' +
+                    '<div class="card-body pt-0 border-top-0">\n' +
+                    '<div class="row question-option-img-div">\n' +
+                    '                                    <div class="col-md-6">\n' +
+                    '                                        <label for="questionOptionsImage">Question Option Image</label>\n' +
+                    '                                        <input type="file" class="form-control show-option-image" data-loop="'+serial+'" id="questionOptionsImage" name="question['+serial+'][question_option_image]" accept="image/*" />\n' +
+                    '                                    </div>\n' +
+                    '                                    <div class="col-md-6">\n' +
+                    '                                        <img src="" id="showOptionImage'+serial+'" style="height: 60px;" alt="">\n' +
+                    '                                    </div>'+
+                    // '                                </div>' +
                     // '                                <div class="row">\n' +
-                    // '                                    <div class="col-md-12">\n' +
-                    // '                                        <label for="wrongAns">Answer Description</label>\n' +
-                    // '                                        <textarea name="question['+serial+'][mcq_ans_description]" class="" id="summernoteMcq'+fifthSummerNote+'" cols="30" rows="10"></textarea>\n' +
-                    // '                                    </div>\n' +
-                    // '                                </div>\n' +
-                    // '                            </div>\n' +
+                    '                                    <div class="col-md-12">\n' +
+                    '                                        <label for="wrongAns">Answer Description</label>\n' +
+                    '                                        <textarea name="question['+serial+'][mcq_ans_description]" placeholder="Answer Description" class="form-control" id="summernoteMcq'+fifthSummerNote+'" cols="30" rows="10"></textarea>\n' +
+                    '                                    </div>\n' +
+                    '                                </div>\n' +
+                    '                            </div>\n' +
                     '                            </div>';
                 // if (questionType == 'Written')
                 // {

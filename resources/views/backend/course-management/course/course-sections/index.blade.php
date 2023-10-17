@@ -50,10 +50,10 @@
                                                             </button>
                                                         @endcan
                                                         @can('delete-course-section')
-                                                            <form class="d-inline" action="{{ route('course-sections.destroy', $courseSection->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                            <form class="d-inline" action="{{ route('course-sections.destroy', $courseSection->id) }}" method="post">
                                                                 @csrf
                                                                 @method('delete')
-                                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Course Sections">
+                                                                <button type="submit" class="btn btn-sm btn-danger data-delete-form" title="Delete Course Sections">
                                                                     <i class="fa-solid fa-trash"></i>
                                                                 </button>
                                                             </form>

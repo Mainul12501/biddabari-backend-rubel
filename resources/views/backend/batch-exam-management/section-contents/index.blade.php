@@ -83,10 +83,10 @@
                                             </a>
                                                 @endcan
                                                 @can('delete-batch-exam-section-content')
-                                            <form class="d-inline" action="{{ route('batch-exam-section-contents.destroy', $sectionContent->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                            <form class="d-inline" action="{{ route('batch-exam-section-contents.destroy', $sectionContent->id) }}" method="post">
                                                 @csrf
                                                 @method('delete')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Batch Exam">
+                                                <button type="submit" class="btn btn-sm btn-danger data-delete-form" title="Delete Batch Exam">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>

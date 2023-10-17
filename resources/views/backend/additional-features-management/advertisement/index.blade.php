@@ -47,10 +47,10 @@
                                         </a>
                                         @endcan
                                         @can('delete-advertisement')
-                                        <form class="d-inline" action="{{ route('advertisements.destroy', $advertisement->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                        <form class="d-inline" action="{{ route('advertisements.destroy', $advertisement->id) }}" method="post" >
                                             @csrf
                                             @method('delete')
-                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete Advertisement">
+                                            <button type="submit" class="btn btn-sm btn-danger data-delete-form" title="Delete Advertisement">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </form>

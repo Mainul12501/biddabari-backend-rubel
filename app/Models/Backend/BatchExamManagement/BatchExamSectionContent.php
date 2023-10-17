@@ -144,6 +144,61 @@ class BatchExamSectionContent extends Model
         self::$batchExamSectionContent->save();
     }
 
+    public static function importBatchExamSectionContentJson($batchExamSectionContents, $batchExamSectionId)
+    {
+        foreach ($batchExamSectionContents as $batchExamSectionContent)
+        {
+            self::$batchExamSectionContent                                             = new BatchExamSectionContent();
+
+            self::$batchExamSectionContent->batch_exam_section_id                          = $batchExamSectionId;
+            self::$batchExamSectionContent->parent_id                                      = $batchExamSectionContent->parent_id;
+            self::$batchExamSectionContent->content_type                                   = $batchExamSectionContent->content_type;
+            self::$batchExamSectionContent->title                                          = $batchExamSectionContent->title;
+            self::$batchExamSectionContent->available_at                                   = $batchExamSectionContent->available_at;
+            self::$batchExamSectionContent->available_at_timestamp                         = $batchExamSectionContent->available_at_timestamp;
+            self::$batchExamSectionContent->is_paid                                        = $batchExamSectionContent->is_paid;
+            self::$batchExamSectionContent->status                                         = $batchExamSectionContent->status;
+
+            self::$batchExamSectionContent->pdf_link                                   = $batchExamSectionContent->pdf_link;
+
+            self::$batchExamSectionContent->pdf_file                               = $batchExamSectionContent->pdf_file;
+
+            self::$batchExamSectionContent->note_content                               = $batchExamSectionContent->note_content;
+
+            self::$batchExamSectionContent->exam_mode                                   = $batchExamSectionContent->exam_mode;
+
+            self::$batchExamSectionContent->exam_duration_in_minutes                   = $batchExamSectionContent->exam_duration_in_minutes;
+            self::$batchExamSectionContent->exam_total_questions                       = $batchExamSectionContent->exam_total_questions;
+            self::$batchExamSectionContent->exam_per_question_mark                     = $batchExamSectionContent->exam_per_question_mark;
+            self::$batchExamSectionContent->exam_negative_mark                         = $batchExamSectionContent->exam_negative_mark;
+            self::$batchExamSectionContent->exam_pass_mark                             = $batchExamSectionContent->exam_pass_mark;
+
+            self::$batchExamSectionContent->exam_is_strict                         = $batchExamSectionContent->exam_is_strict == 'on' ? 1 : 0;
+            self::$batchExamSectionContent->exam_start_time                        = $batchExamSectionContent->exam_start_time;
+            self::$batchExamSectionContent->exam_start_time_timestamp              = $batchExamSectionContent->exam_start_time_timestamp;
+            self::$batchExamSectionContent->exam_end_time                          = $batchExamSectionContent->exam_end_time;
+            self::$batchExamSectionContent->exam_end_time_timestamp                = $batchExamSectionContent->exam_end_time_timestamp;
+            self::$batchExamSectionContent->exam_result_publish_time               = $batchExamSectionContent->exam_result_publish_time;
+            self::$batchExamSectionContent->exam_result_publish_time_timestamp     = $batchExamSectionContent->exam_result_publish_time_timestamp;
+
+            self::$batchExamSectionContent->exam_total_subject                     = $batchExamSectionContent->exam_total_subject;
+
+            self::$batchExamSectionContent->written_exam_duration_in_minutes           = $batchExamSectionContent->written_exam_duration_in_minutes;
+            self::$batchExamSectionContent->written_total_questions                    = $batchExamSectionContent->written_total_questions;
+            self::$batchExamSectionContent->written_description                        = $batchExamSectionContent->written_description;
+            self::$batchExamSectionContent->written_is_strict                          = $batchExamSectionContent->written_is_strict;
+            self::$batchExamSectionContent->written_start_time                         = $batchExamSectionContent->written_start_time;
+            self::$batchExamSectionContent->written_start_time_timestamp               = $batchExamSectionContent->written_start_time_timestamp;
+            self::$batchExamSectionContent->written_end_time                           = $batchExamSectionContent->written_end_time;
+            self::$batchExamSectionContent->written_end_time_timestamp                 = $batchExamSectionContent->written_end_time_timestamp;
+            self::$batchExamSectionContent->written_publish_time                       = $batchExamSectionContent->written_publish_time;
+            self::$batchExamSectionContent->written_publish_time_timestamp             = $batchExamSectionContent->written_publish_time_timestamp;
+            self::$batchExamSectionContent->written_total_subject                      = $batchExamSectionContent->written_total_subject;
+
+            self::$batchExamSectionContent->save();
+        }
+    }
+
     public function batchExamSection()
     {
         return $this->belongsTo(BatchExamSection::class);

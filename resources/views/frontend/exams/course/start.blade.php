@@ -111,14 +111,20 @@
                                         </div>
                                     @endforeach
                                     <div class="row mt-3">
-                                        <div class="col-md-5">
-                                            <label for="uploadFiles" class="float-start">Upload Answer Images</label>
-                                            <input type="file" name="ans_files[]" class="form-control" multiple accept="image/*" />
-                                        </div>
-                                        <div class="col-md-3">
+{{--                                        <div class="col-12 mb-2">--}}
+{{--                                            <div id="image_preview"></div>--}}
+{{--                                        </div>--}}
+{{--                                        <div class="col-md-5">--}}
+{{--                                            <label for="uploadFiles" class="float-start">Upload Answer Images</label>--}}
+{{--                                            <input type="file" name="ans_files[]" id="writtenAnsFiles" class="form-control" multiple accept="image/*" />--}}
+{{--                                        </div>--}}
+{{--                                        <div class="col-md-3">--}}
 
+{{--                                        </div>--}}
+                                        <div class="col-md-12 ">
+                                            <div class="ansFileUpload"></div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-4 mx-auto">
                                             <input type="submit" class="btn btn-danger mt-4 finish-div d-none" value="Finish Test" />
                                         </div>
                                     </div>
@@ -139,6 +145,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <link rel="stylesheet" href="{{ asset('/') }}backend/assets/plugins/clock-counter/flipTimer.css">
+<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link href="https://fonts.googleapis.com/css?family=Lato:300,700|Montserrat:300,400,500,600,700|Source+Code+Pro&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('/') }}backend/assets/plugins/image-uploader-master/dist/image-uploader.min.css">
 <style>
     /*.quiz-form .form-card .form-radio label .answer-title {*/
     /*    padding: 5px!important;*/
@@ -148,6 +157,10 @@
     /*input[type='checkbox'] + label > span {*/
 
     /*}*/
+    .uploaded {
+        text-align: left;
+    }
+
     .now-active {
         /*display: block!important;*/
         /*background: #01a3a4!important;*/
@@ -161,6 +174,7 @@
 @push('script')
 
 <script type="application/javascript" src="{{ asset('/') }}backend/assets/plugins/clock-counter/jquery.flipTimer.js"></script>
+<script type="application/javascript" src="{{ asset('/') }}backend/assets/plugins/image-uploader-master/dist/image-uploader.min.js"></script>
 
 
 {{--    <script> var sliderTimer = 6000;</script>--}}
@@ -190,7 +204,6 @@
                         @endif
                     @endif
 
-{{--                    alert({{ ($exam->content_type == 'written_exam' ? ($exam->written_is_strict == 1 ? /*++$diffTime*/ ($writtenDiffTime < $exam->written_exam_duration_in_minutes ? $writtenDiffTime : $exam->written_exam_duration_in_minutes) :  $exam->written_exam_duration_in_minutes) : $exam->written_exam_duration_in_minutes) }})--}}
                 var currentTime = new Date();
                 currentTime.setMinutes(currentTime.getMinutes() + {!! isset($exam) ? ($exam->content_type == 'exam' ? ($exam->exam_is_strict == 1 ? /*++$diffTime*/ ($diffTime < $exam->exam_duration_in_minutes ? $diffTime : $exam->exam_duration_in_minutes) :  $exam->exam_duration_in_minutes) : (($exam->written_is_strict == 1 ? /*++$diffTime*/ ($writtenDiffTime < $exam->written_exam_duration_in_minutes ? $writtenDiffTime : $exam->written_exam_duration_in_minutes) :  $exam->written_exam_duration_in_minutes))) : 1 !!}); //set custom time instead 60
 
@@ -302,6 +315,23 @@
     $(document).on('click', '.sticky-submit-btn', function () {
         event.preventDefault();
         document.getElementById('quizForm').submit();
+    })
+</script>
+<script>
+    $(document).on('change', '#writtenAnsFiles', function () {
+        var total_file=document.getElementById("writtenAnsFiles").files.length;
+        for(var i=0;i<total_file;i++)
+        {
+            $('#image_preview').append("<img class='m-2' style='height: 100px' src='"+URL.createObjectURL(event.target.files[i])+"' />");
+        }
+    })
+</script>
+<script>
+    $(function (){
+        $('.ansFileUpload').imageUploader({
+            imagesInputName: "ans_files",
+            label: "Drag & Drop Answer Image files here or click to browse"
+        });
     })
 </script>
 @endpush

@@ -26,10 +26,6 @@
                 <label for="summernote">Question</label>
                 <textarea name="question[0][question]" id="summernote111" class="form-control" placeholder="Question " cols="30" rows="10">{{ $questionStore->question }}</textarea>
             </div>
-            <div class="col-md-12 mt-3">
-                <label for="summernote1">Question Description</label>
-                <textarea name="question[0][question_description]" id="summernote222" placeholder="Question Description" class="form-control" cols="30" rows="10">{{ $questionStore->question_description }}</textarea>
-            </div>
             <div class="col-md-6 mt-3">
                 <label for="questionImage">Que Image</label>
                 <input type="file" class="form-control" id="questionImage" name="question[0][question_image]" accept="application/pdf,image/*" />
@@ -58,15 +54,6 @@
         <button type="button" data-key-id="0" class="btn edit-append-div position-absolute end-0 me-4 btn-outline-success "><i class="fa-solid fa-circle-plus"></i></button>
     </div>
     <div class="card-body">
-        <div class="row question-option-img-div">
-            <div class="col-md-6">
-                <label for="questionOptionsImage">Question Option Image</label>
-                <input type="file" class="form-control show-option-image" data-loop="0" id="questionOptionsImage" name="question[0][question_option_image]" accept="image/*" />
-            </div>
-            <div class="col-md-6">
-                <img src="{{ asset($questionStore->question_option_image) }}" id="showOptionImage0" style="height: 60px;" alt="">
-            </div>
-        </div>
         @if(!empty($questionStore->questionOptions))
             @php($i=193)
             <div class="row mt-3" id="editmcqOptionSection0">
@@ -103,14 +90,21 @@
             </div>
         </div>
     </div>
-{{--    <div class="card-body pt-0 border-top-0">--}}
-{{--        <div class="row">--}}
-{{--            <div class="col-md-12">--}}
-{{--                <label for="wrongAns">Answer Description</label>--}}
-{{--                <textarea name="question[0][mcq_ans_description]" class="" id="summernoteMcq555" cols="30" rows="10">{{ $questionStore->mcq_ans_description }}</textarea>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
+    <div class="card-body pt-0 border-top-0">
+        <div class="row question-option-img-div">
+            <div class="col-md-6">
+                <label for="questionOptionsImage">Question Option Image</label>
+                <input type="file" class="form-control show-option-image" data-loop="0" id="questionOptionsImage" name="question[0][question_option_image]" accept="image/*" />
+            </div>
+            <div class="col-md-6">
+                <img src="{{ asset($questionStore->question_option_image) }}" id="showOptionImage0" style="height: 60px;" alt="">
+            </div>
+            <div class="col-md-12">
+                <label for="wrongAns">Answer Description</label>
+                <textarea name="question[0][mcq_ans_description]" class="" id="summernoteMcq555" cols="30" rows="10">{{ $questionStore->mcq_ans_description }}</textarea>
+            </div>
+        </div>
+    </div>
 </div>
 {{--<div class="card written-ans-sec {{ $questionStore->question_type == 'Written' ? '' : 'd-none' }}" data-key-id="0" id="writtenAnsSection">--}}
 {{--    <div class="card-header">--}}

@@ -107,6 +107,9 @@
                             <span class="symbol-input100">
 											<i class="fa-solid fa-lock" aria-hidden="true"></i>
 										</span>
+                            <div class="mt-3">
+                                <a href="{{ route('forgot-user-password') }}" class="float-end" style="color: black; ">Forgot Password?</a>
+                            </div>
                         </div>
 {{--                        <div class="text-end pt-1">--}}
 {{--                            <p class="mb-0"><a href="{{ route('password.request') }}" class="text-primary ms-1">Forgot Password?</a></p>--}}

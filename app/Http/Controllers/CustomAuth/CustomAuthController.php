@@ -167,4 +167,55 @@ class CustomAuthController extends Controller
             return response()->json($exception->getMessage());
         }
     }
+
+    public function forgotPassword ()
+    {
+        return view('backend.auth.forgot-password');
+    }
+
+    public function passResetOtp (Request $request)
+    {
+        $otpNumber = rand(100000, 999999);
+        try {
+            $client = new Client();
+            $body = $client->request('GET', 'http://sms.felnadma.com/api/v1/send?api_key=44516684285595991668428559&contacts=88'.$request->mobile.'&senderid=01844532630&msg=Biddabari+otp+is+'.$otpNumber);
+            $responseCode = explode(':', explode(',', $body->getBody()->getContents())[0])[1];
+
+            if (isset($responseCode) && !empty($responseCode) && $responseCode === "\"445000\"")
+            {
+                session_start();
+                $_SESSION['otp'] = $otpNumber;
+                return redirect(url('/password-reset-otp?mn='.$request->mobile.'&oc='.base64_encode($otpNumber)))->with('success', 'OTP send successfully');
+            } else {
+                return back()->with('error', 'Invalid Mobile Number or Format. Please Try again.');
+            }
+        } catch (\Exception $exception)
+        {
+            return redirect()->back()->with('error', 'Something went wrong. Please try again');
+        }
+    }
+
+    public function passwordResetOtp()
+    {
+        return view('backend.auth.password-reset-otp');
+    }
+
+    public function verifyPassResetOtp(Request $request)
+    {
+        if (isset($request->enc_otp))
+        {
+            if ($request->otp == base64_decode($request->enc_otp))
+            {
+                $user = User::where(['mobile' => $request->mobile])->first();
+                $user->password = bcrypt($request->password);
+                $user->save();
+                return redirect('/login')->with('success', 'Password Changed successfully.');
+            } else {
+                return back()->with('error', 'OTP mismatch. Please try again.');
+            }
+        } else
+        {
+            return back()->with('error', 'Invalid Otp. Please try again.');
+        }
+    }
 }

@@ -129,10 +129,10 @@
 {{--                                                @endcan--}}
 {{--                                            <br>--}}
                                             @can('delete-course-order')
-                                                <form class="d-inline" action="{{ route('course-orders.destroy', $courseOrder->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                <form class="d-inline" action="{{ route('course-orders.destroy', $courseOrder->id) }}" method="post">
                                                     @csrf
                                                     @method('delete')
-                                                    <button type="submit" class="btn btn-sm btn-danger mt-1" title="Delete Blog Category">
+                                                    <button type="submit" class="btn btn-sm btn-danger mt-1 data-delete-form" title="Delete Blog Category">
                                                         <i class="fa-solid fa-trash"></i>
                                                     </button>
                                                 </form>

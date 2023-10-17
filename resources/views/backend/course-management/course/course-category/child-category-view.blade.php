@@ -1,6 +1,6 @@
-@if(!empty($category->courseCategories))
+@if(!empty($category->courseCategoriesByOrderAsc))
     <ol class="dd-list list-group">
-        @foreach($category->courseCategories as $kk => $sub_category)
+        @foreach($category->courseCategoriesByOrderAsc as $kk => $sub_category)
             <li class="dd-item list-group-item" data-id="{{ $sub_category['id'] }}" >
                 <div class="dd-handle" >{{ $sub_category['name'] }}</div>
                 <div class="dd-option-handle">

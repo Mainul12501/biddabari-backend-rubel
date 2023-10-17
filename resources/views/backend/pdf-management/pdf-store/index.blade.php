@@ -48,10 +48,10 @@
                                                 </a>
                                             @endcan
                                             @can('delete-pdf')
-                                                <form class="d-inline" action="{{ route('pdf-stores.destroy', $pdfStore->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                <form class="d-inline" action="{{ route('pdf-stores.destroy', $pdfStore->id) }}" method="post">
                                                     @csrf
                                                     @method('delete')
-                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete Pdf">
+                                                    <button type="submit" class="btn btn-sm btn-danger data-delete-form" title="Delete Pdf">
                                                         <i class="fa-solid fa-trash"></i>
                                                     </button>
                                                 </form>

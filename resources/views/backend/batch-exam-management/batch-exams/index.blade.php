@@ -11,6 +11,7 @@
                     @can('create-batch-exam')
                         <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4 open-modal"><i class="fa-solid fa-circle-plus"></i></button>
                     @endcan
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#jsonImport" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 m-r-50 "><i class="fa-solid fa-arrow-alt-circle-up"></i></button>
                 </div>
                 <div class="card-body">
                     <form action="" method="get">
@@ -71,6 +72,7 @@
                                             </div>
                                         </td>
                                         <td class="nav flex-column course-links">
+
                                             @can('assign-batch-exam-teacher-page')
                                             <a href="{{ route('assign-teacher-to-batch-exam', ['batch_exam_id' => $batchExam->id]) }}" class="nav-link fw-bold" title="Batch Exam Assigned Teachers">Teachers</a>
                                             @endcan
@@ -103,6 +105,9 @@
                                             <a href="javascript:void(0)" class="nav-link">{{ $batchExam->is_paid == 1 ? 'Paid' : 'Free' }}</a>
                                         </td>
                                         <td>
+                                            <a href="{{ route('export-course-json', ['model_id' => $batchExam->id, 'model' => 'batch_exam']) }}" data-course-id="{{ $batchExam->id }}"  class="btn btn-sm mt-1 btn-secondary " title="Export course to JSON">
+                                                <i class="fa-solid fa-arrow-alt-circle-up"></i>
+                                            </a>
                                             @can('show-batch-exam')
                                                 <a href="" data-course-id="{{ $batchExam->id }}" class="btn btn-sm btn-primary show-btn" title="View Batch Exam">
                                                     <i class="fa-solid fa-eye"></i>
@@ -114,10 +119,10 @@
                                                 </a>
                                                 @endcan
                                             @can('delete-batch-exam')
-                                                <form class="d-inline" action="{{ route('batch-exams.destroy', $batchExam->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                <form class="d-inline" action="{{ route('batch-exams.destroy', $batchExam->id) }}" method="post" >
                                                     @csrf
                                                     @method('delete')
-                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete Batch Exam">
+                                                    <button type="submit" class="btn btn-sm btn-danger data-delete-form" title="Delete Batch Exam">
                                                         <i class="fa-solid fa-trash"></i>
                                                     </button>
                                                 </form>
@@ -136,6 +141,30 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content" id="modalForm">
                 @include('backend.batch-exam-management.batch-exams.form')
+            </div>
+        </div>
+    </div>
+    <div class="modal fade modal-div" id="jsonImport" data-bs-backdrop="static" >
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" id="">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Import Courses</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('import-model-json', ['model' => 'batch_exam']) }}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <div>
+                            <label for="">Input Json</label>
+                            <div>
+                                <input type="file" name="json_file" class="" accept="application/JSON" />
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-success">Import</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -299,6 +328,10 @@
                 contentType: false,
                 processData: false,
                 // enctype: 'multipart/form-data',
+                beforeSend: function () {
+
+                    $('.update-btn').attr('disabled', 'disabled');
+                },
                 success: function (message) {
                     console.log(message);
                     toastr.success(message);
@@ -316,6 +349,7 @@
                         {
                             $('#'+key).empty().append(allErrors[key]);
                         }
+                        $('.update-btn').attr('disabled', false);
                     }
                 }
             })
@@ -369,6 +403,10 @@
                 dataType: "JSON",
                 contentType: false,
                 processData: false,
+                beforeSend: function () {
+
+                    $('.submit-btn').attr('disabled', 'disabled');
+                },
                 success: function (data) {
                     console.log(data);
                     // if (result.errors)
@@ -390,6 +428,7 @@
                         {
                                 $('#'+key).empty().append(allErrors[key]);
                         }
+                        $('.submit-btn').attr('disabled', false);
                     }
                 }
             })

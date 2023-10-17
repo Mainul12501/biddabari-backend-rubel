@@ -96,6 +96,12 @@ Route::middleware([
     Route::get('/get-xm-for-add-question', [ExamController::class, 'getXmForAddQuestion'])->name('get-xm-for-add-question');
     Route::post('/assign-question-to-exam', [ExamController::class, 'assignQuestionToExam'])->name('assign-question-to-exam');
 
+    Route::get('/export-course-json/{model}/{model_id}', [CourseController::class, 'exportCourseJson'])->name('export-course-json');
+    Route::post('/import-model-json/{model}', [CourseController::class, 'importModelJson'])->name('import-model-json');
+
+    Route::get('/content-exam-ranking-download-page/{req_from}/{content_id}', [ExamController::class, 'contentExamRankingDownloadPage'])->name('content-exam-ranking-download-page');
+    Route::get('/show-xm-attendance/{req_from}/{content_id}', [ExamController::class, 'showXmAttendance'])->name('show-xm-attendance');
+
     //    Assign Teacher student to course
     Route::get('assign-teacher-to-course/{course_id}', [CourseController::class, 'assignTeacherToCourse'])->name('assign-teacher-to-course');
     Route::post('assign-teacher/{course_id}', [CourseController::class, 'assignTeacher'])->name('assign-teacher');
@@ -103,6 +109,7 @@ Route::middleware([
 //    Assign student to course
     Route::get('assign-student-to-course/{course_id}', [CourseController::class, 'assignStudentToCourse'])->name('assign-student-to-course');
     Route::post('assign-student/{course_id}', [CourseController::class, 'assignStudent'])->name('assign-student');
+    Route::post('assign-new-student/{course_id}', [CourseController::class, 'assignNewStudent'])->name('assign-new-student');
     Route::post('detach-student/{course_id}', [CourseController::class, 'detachStudent'])->name('detach-student');
 
 //    Batch Exam Management
@@ -127,6 +134,7 @@ Route::middleware([
 //    Assign student to Batch Exams
     Route::get('assign-student-to-batch-exam/{batch_exam_id}', [BatchExamController::class, 'assignStudentToBatchExam'])->name('assign-student-to-batch-exam');
     Route::post('assign-batch-exam-student/{batch_exam_id}', [BatchExamController::class, 'assignStudent'])->name('assign-batch-exam-student');
+    Route::post('assign-batch-exam-new-student/{batch_exam_id}', [BatchExamController::class, 'assignNewStudent'])->name('assign-batch-exam-new-student');
     Route::post('detach-batch-exam-student/{batch_exam_id}', [BatchExamController::class, 'detachStudent'])->name('detach-batch-exam-student');
 
 //    PDF Management

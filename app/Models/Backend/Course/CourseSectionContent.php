@@ -244,6 +244,97 @@ class CourseSectionContent extends Model
         }
         self::$courseSectionContent->save();
     }
+    public static function importCourseSectionContents($contents, $courseSectionId)
+    {
+        foreach ($contents as $content)
+        {
+            $courseSectionContent   = new CourseSectionContent();
+            $courseSectionContent->course_section_id                              = $courseSectionId;
+            $courseSectionContent->parent_id                                      = $content->parent_id;
+            $courseSectionContent->content_type                                   = $content->content_type;
+            $courseSectionContent->title                                          = $content->title;
+            $courseSectionContent->available_at                                   = $content->available_at;
+            $courseSectionContent->available_at_timestamp                         = $content->available_at_timestamp;
+
+            $courseSectionContent->is_paid                                        = $content->is_paid;
+            $courseSectionContent->status                                         = $content->status;
+
+            $courseSectionContent->has_class_xm                               = $content->has_class_xm;
+            $courseSectionContent->course_section_content_id                  = $content->course_section_content_id;
+
+
+            $courseSectionContent->pdf_link                                   = $content->pdf_link;
+            $courseSectionContent->pdf_file                               = $content->pdf_file;
+
+            $courseSectionContent->video_vendor                               = $content->video_vendor;
+            $courseSectionContent->video_link                                 = $content->video_link;
+
+            $courseSectionContent->note_content                               = $content->note_content;
+
+            $courseSectionContent->live_source_type                           = $content->live_source_type;
+            $courseSectionContent->live_link                                  = $content->live_link;
+            $courseSectionContent->live_msg                                   = $content->live_msg;
+            $courseSectionContent->live_start_time                            = $content->live_start_time;
+            $courseSectionContent->live_start_time_timestamp                  = $content->live_start_time_timestamp;
+            $courseSectionContent->live_end_time                              = $content->live_end_time;
+            $courseSectionContent->live_end_time_timestamp                    = $content->live_end_time_timestamp;
+
+            $courseSectionContent->regular_link                               = $content->regular_link;
+
+            $courseSectionContent->assignment_question                        = $content->assignment_question;
+            $courseSectionContent->assignment_instruction                     = $content->assignment_instruction;
+            $courseSectionContent->assignment_total_mark                      = $content->assignment_total_mark;
+            $courseSectionContent->assignment_pass_mark                       = $content->assignment_pass_mark;
+            $courseSectionContent->assignment_start_time                      = $content->assignment_start_time;
+            $courseSectionContent->assignment_start_time_timestamp            = $content->assignment_start_time_timestamp;
+            $courseSectionContent->assignment_end_time                        = $content->assignment_end_time;
+            $courseSectionContent->assignment_end_time_timestamp              = $content->assignment_end_time_timestamp;
+            $courseSectionContent->assignment_result_publish_time             = $content->assignment_result_publish_time;
+            $courseSectionContent->assignment_result_publish_time_timestamp   = $content->assignment_result_publish_time_timestamp;
+
+            $courseSectionContent->testmoj_link                               = $content->testmoj_link;
+            $courseSectionContent->testmoj_result_link                        = $content->testmoj_result_link;
+            $courseSectionContent->testmoj_xm_duration_in_minutes             = $content->testmoj_xm_duration_in_minutes;
+            $courseSectionContent->testmoj_total_questions                    = $content->testmoj_total_questions;
+            $courseSectionContent->testmoj_start_time                         = $content->testmoj_start_time;
+            $courseSectionContent->testmoj_start_time_timestamp               = $content->testmoj_start_time_timestamp;
+            $courseSectionContent->testmoj_result_publish_time                = $content->testmoj_result_publish_time;
+            $courseSectionContent->testmoj_result_publish_time_timestamp      = $content->testmoj_result_publish_time_timestamp;
+
+            $courseSectionContent->exam_mode                                  = $content->exam_mode;
+
+            $courseSectionContent->exam_duration_in_minutes                   = $content->exam_duration_in_minutes;
+            $courseSectionContent->exam_total_questions                       = $content->exam_total_questions;
+            $courseSectionContent->exam_per_question_mark                     = $content->exam_per_question_mark;
+            $courseSectionContent->exam_negative_mark                         = $content->exam_negative_mark;
+            $courseSectionContent->exam_pass_mark                             = $content->exam_pass_mark;
+
+
+            $courseSectionContent->exam_is_strict                         = $content->exam_is_strict;
+            $courseSectionContent->exam_start_time                        = $content->exam_start_time;
+            $courseSectionContent->exam_start_time_timestamp              = $content->exam_start_time_timestamp;
+            $courseSectionContent->exam_end_time                          = $content->exam_end_time;
+            $courseSectionContent->exam_end_time_timestamp                = $content->exam_end_time_timestamp;
+            $courseSectionContent->exam_result_publish_time               = $content->exam_result_publish_time;
+            $courseSectionContent->exam_result_publish_time_timestamp     = $content->exam_result_publish_time_timestamp;
+
+            $courseSectionContent->exam_total_subject                     = $content->exam_total_subject;
+
+            $courseSectionContent->written_exam_duration_in_minutes           = $content->written_exam_duration_in_minutes;
+            $courseSectionContent->written_total_questions                    = $content->written_total_questions;
+            $courseSectionContent->written_description                        = $content->written_description;
+            $courseSectionContent->written_is_strict                          = $content->written_is_strict;
+            $courseSectionContent->written_start_time                         = $content->written_start_time;
+            $courseSectionContent->written_start_time_timestamp               = $content->written_start_time_timestamp;
+            $courseSectionContent->written_end_time                           = $content->written_end_time;
+            $courseSectionContent->written_end_time_timestamp                 = $content->written_end_time_timestamp;
+            $courseSectionContent->written_publish_time                       = $content->written_publish_time;
+            $courseSectionContent->written_publish_time_timestamp             = $content->written_publish_time_timestamp;
+            $courseSectionContent->written_total_subject                      = $content->written_total_subject;
+
+            $courseSectionContent->save();
+        }
+    }
 
     public function courseSection()
     {

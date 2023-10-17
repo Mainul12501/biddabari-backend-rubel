@@ -40,6 +40,23 @@ class BatchExamRoutine extends Model
         ]);
     }
 
+    public static function importBatchExamRoutine($batchExamRoutines, $batchExamId)
+    {
+        foreach ($batchExamRoutines as $batchExamRoutine)
+        {
+            BatchExamRoutine::create([
+                'batch_exam_id'         => $batchExamId,
+                'day'                   => $batchExamRoutine->day,
+                'date_time'             => $batchExamRoutine->date_time,
+                'date_time_timestamp'   => $batchExamRoutine->date_time_timestamp,
+                'room'                  => $batchExamRoutine->room,
+                'note'                  => $batchExamRoutine->note,
+                'status'                => $batchExamRoutine->status,
+                'is_fack'                => $batchExamRoutine->is_fack,
+            ]);
+        }
+    }
+
     public function batchExam()
     {
         return $this->belongsTo(BatchExam::class);

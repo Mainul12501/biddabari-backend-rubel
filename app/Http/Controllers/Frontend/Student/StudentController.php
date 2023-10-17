@@ -22,6 +22,7 @@ use App\Models\User;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
@@ -91,11 +92,13 @@ class StudentController extends Controller
 //        $this->courseSections = CourseSection::whereCourseId($courseId)->whereStatus(1)->select('id', 'course_id', 'title', 'available_at', 'is_paid')->with(['courseSectionContents' => function($sectionContent){
 //            $sectionContent->whereStatus(1)->orderBy('order', 'ASC')->whereIsPaid(1)->get();
 //        }])->get();
+
         $this->course = Course::whereId($courseId)->select('id', 'title', 'slug', 'status')->with(['courseSections' => function($courseSections){
-            $courseSections->whereStatus(1)->where('available_at', '<=', Carbon::now()->format('Y-m-d H:i'))->select('id', 'course_id', 'title', 'available_at', 'is_paid')->with(['courseSectionContents' => function($sectionContent){
-                $sectionContent->where('available_at', '<=', Carbon::now()->format('Y-m-d H:i'))->whereStatus(1)->orderBy('order', 'ASC')->whereIsPaid(1)->get();
+            $courseSections->whereStatus(1)->where('available_at', '<=', currentDateTimeYmdHi())->select('id', 'course_id', 'title', 'available_at', 'is_paid')->with(['courseSectionContents' => function($courseSectionContents){
+                $courseSectionContents->select('id', 'course_section_id', 'parent_id', 'content_type', 'title', 'has_class_xm', 'video_link', 'video_vendor')->where('available_at_timestamp', '<=', strtotime(currentDateTimeYmdHi()))->whereStatus(1)->orderBy('order', 'ASC')->get();
             }])->get();
         }])->first();
+
         foreach ($this->course->courseSections as $courseSection)
         {
             foreach ($courseSection->courseSectionContents as $courseSectionContent)

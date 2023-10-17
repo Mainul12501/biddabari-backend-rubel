@@ -162,6 +162,51 @@ class Course extends Model
         return self::$course;
     }
 
+    public static function importCourseModel($data = null)
+    {
+        self::$course = new Course();
+        self::$course->title                    = $data->title;
+        self::$course->slug                     = $data->slug;
+        self::$course->sub_title                = $data->sub_title;
+        self::$course->price                    = $data->price;
+        self::$course->banner                   = $data->banner;
+        self::$course->description              = $data->description;
+        self::$course->duration_in_month        = $data->duration_in_month;
+        self::$course->starting_date_time       = $data->starting_date_time;
+        self::$course->starting_date_time_timestamp       = $data->starting_date_time_timestamp;
+        self::$course->ending_date_time         = $data->ending_date_time;
+        self::$course->ending_date_time_timestamp       = $data->ending_date_time_timestamp;
+        self::$course->discount_type            = $data->discount_type;
+        self::$course->discount_amount          = $data->discount_amount;
+        self::$course->discount_start_date      = $data->discount_start_date;
+        self::$course->discount_start_date_timestamp   = $data->discount_start_date_timestamp;
+        self::$course->discount_end_date        = $data->discount_end_date;
+        self::$course->discount_end_date_timestamp     = $data->discount_end_date_timestamp;
+        self::$course->partial_payment          = $data->partial_payment;
+        self::$course->fack_student_count       = $data->fack_student_count;
+        self::$course->featured_video_url       = $data->featured_video_url;
+        self::$course->featured_video_vendor    = $data->featured_video_vendor;
+        self::$course->total_class              = $data->total_class;
+        self::$course->total_hours               = $data->total_hours;
+        self::$course->total_video              = $data->total_video;
+        self::$course->total_audio              = $data->total_audio;
+        self::$course->total_exam               = $data->total_exam;
+        self::$course->total_pdf                = $data->total_pdf;
+        self::$course->total_note               = $data->total_note;
+        self::$course->total_link               = $data->total_link;
+        self::$course->total_live               = $data->total_live;
+        self::$course->total_zip                = $data->total_zip;
+        self::$course->total_file               = $data->total_file;
+        self::$course->total_written_exam       = $data->total_written_exam;
+        self::$course->admission_last_date      = $data->admission_last_date;
+        self::$course->status                   = $data->status;
+        self::$course->is_paid                  = $data->is_paid;
+        self::$course->is_featured              = $data->is_featured;
+        self::$course->show_home_slider         = $data->show_home_slider;
+        self::$course->save();
+        return self::$course;
+    }
+
     public function courseRoutines()
     {
         return $this->hasMany(CourseRoutine::class);
@@ -200,5 +245,10 @@ class Course extends Model
     public function parentOrders()
     {
         return $this->hasMany(ParentOrder::class, 'parent_model_id');
+    }
+
+    public function courseSectionContents()
+    {
+        return $this->hasManyThrough(CourseSectionContent::class, CourseSection::class);
     }
 }

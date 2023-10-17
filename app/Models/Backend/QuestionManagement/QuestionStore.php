@@ -78,7 +78,7 @@ class QuestionStore extends Model
         self::$questionStore->question_type                         = $request->question_type;
         self::$questionStore->question                              = $singleQuestion['question'];
         self::$questionStore->slug                                  = base64_encode($singleQuestion['question']);
-        self::$questionStore->question_description                  = $singleQuestion['question_description'];
+//        self::$questionStore->question_description                  = $singleQuestion['question_description'];
         self::$questionStore->question_image                        = isset($singleQuestion['question_image']) ? fileUpload($singleQuestion['question_image'], 'question-management/question-store', 'question') : (isset($id) ? static::find($id)->question_image : null);
         self::$questionStore->question_file_type                    = isset($singleQuestion['question_image']) ? $singleQuestion['question_image']->getClientOriginalExtension() : (isset($id) ? static::find($id)->question_file_type : null);
 //        self::$questionStore->question_video_link                   = $singleQuestion['question_video_link'];
@@ -98,7 +98,7 @@ class QuestionStore extends Model
             self::$questionStore->question_option_image             = isset($singleQuestion['question_option_image']) ? fileUpload($singleQuestion['question_option_image'], 'question-management/question-option-store', 'question-option-') : (isset($id) ? static::find($id)->question_option_image : null);
         }
         self::$questionStore->subject_name                          = $request->subject_name;
-//        self::$questionStore->mcq_ans_description                   = $singleQuestion['mcq_ans_description'];
+        self::$questionStore->mcq_ans_description                   = $singleQuestion['mcq_ans_description'];
         self::$questionStore->save();
         if (!isset($id))
         {

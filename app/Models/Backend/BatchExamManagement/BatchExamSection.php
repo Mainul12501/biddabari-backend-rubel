@@ -55,6 +55,25 @@ class BatchExamSection extends Model
         self::$batchExamSection->save();
     }
 
+    public static function importBatchExamSectionJson($batchExamSections, $batchExamId)
+    {
+        foreach ($batchExamSections as $batchExamSection)
+        {
+            self::$batchExamSection = new BatchExamSection();
+            self::$batchExamSection->batch_exam_id      = $batchExamId;
+            self::$batchExamSection->title              = $batchExamSection->title;
+            self::$batchExamSection->available_at       = $batchExamSection->available_at;
+            self::$batchExamSection->note               = $batchExamSection->note;
+            self::$batchExamSection->is_paid            = $batchExamSection->is_paid;
+            self::$batchExamSection->status             = $batchExamSection->status;
+            self::$batchExamSection->save();
+
+            if (isset($batchExamSection->batch_exam_section_contents) && count($batchExamSection->batch_exam_section_contents) > 0)
+            {
+                BatchExamSectionContent::importBatchExamSectionContentJson($batchExamSection->batch_exam_section_contents, self::$batchExamSection->id);
+            }
+        }
+    }
     public function batchExam()
     {
         return $this->belongsTo(BatchExam::class);

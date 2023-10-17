@@ -55,6 +55,25 @@ class CourseSection extends Model
         self::$courseSection->save();
     }
 
+    public static function importCourseSections($course_sections, $courseId)
+    {
+        foreach ($course_sections as $course_section)
+        {
+            $courseSection = new CourseSection();
+            $courseSection->course_id       = $courseId;
+            $courseSection->title           = $course_section->title;
+            $courseSection->available_at    = $course_section->available_at;
+            $courseSection->note            = $course_section->note;
+            $courseSection->is_paid         = $course_section->is_paid;
+            $courseSection->status          = $course_section->status;
+            $courseSection->save();
+            if (isset($course_section->course_section_contents) && !empty($course_section->course_section_contents) && count($course_section->course_section_contents) > 0)
+            {
+                CourseSectionContent::importCourseSectionContents($course_section->course_section_contents, $courseSection->id);
+            }
+        }
+    }
+
     public function course()
     {
         return $this->belongsTo(Course::class);
@@ -62,6 +81,6 @@ class CourseSection extends Model
 
     public function courseSectionContents()
     {
-        return $this->hasMany(CourseSectionContent::class);
+        return $this->hasMany(CourseSectionContent::class)->orderBy('id', 'ASC');
     }
 }

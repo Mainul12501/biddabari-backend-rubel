@@ -7,6 +7,7 @@ use App\Http\Requests\Backend\BatchExam\BatchExamFormRequest;
 use App\Models\Backend\BatchExamManagement\BatchExam;
 use App\Models\Backend\BatchExamManagement\BatchExamCategory;
 use App\Models\Backend\BatchExamManagement\BatchExamSubscription;
+use App\Models\Backend\OrderManagement\ParentOrder;
 use App\Models\Backend\UserManagement\Student;
 use App\Models\Backend\UserManagement\Teacher;
 use Illuminate\Http\Request;
@@ -177,26 +178,69 @@ class BatchExamController extends Controller
         abort_if(Gate::denies('assign-batch-exam-student-page'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.batch-exam-management.batch-exams.assign-student', [
             'batchExam'   => BatchExam::find($batchExamId),
-            'students'  => Student::whereStatus(1)->get()
+            'students'  => Student::whereStatus(1)->get(),
+            'batchExams'    => BatchExam::where('status', 1)->get()
         ]);
     }
-
+    public function assignNewStudent(Request $request, $id)
+    {
+        abort_if(Gate::denies('assign-batch-exam-student'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $validator = $request->validate([
+            'student_id' => 'required',
+            'paid_amount' => 'required',
+        ]);
+        $this->batchExam = BatchExam::find($id);
+        foreach ($this->batchExam->students as $student)
+        {
+            if ($student->id == $request->student_id)
+            {
+                return back()->with('error', 'Student Already assigned this course.');
+            }
+        }
+        ParentOrder::assignNewStudentToModel('batch_exam', $request, $id);
+        $this->batchExam->students()->attach($request->student_id);
+        return back()->with('success', 'Student assigned to course Successfully.');
+    }
     public function assignStudent (Request $request, $id)
     {
         abort_if(Gate::denies('assign-batch-exam-student'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $validator = $request->validate(['students' => 'required']);
+//        $validator = $request->validate(['students' => 'required']);
+//        $this->batchExam = BatchExam::find($id);
+//        foreach ($this->batchExam->students as $student)
+//        {
+//            foreach ($request->students as $inputStudentId)
+//            {
+//                if ($student->id == $inputStudentId)
+//                {
+//                    return back()->with('error', 'Student Already assigned this Exam.');
+//                }
+//            }
+//        }
+//        $this->batchExam->students()->attach($request->students);
+
+        $validator = $request->validate([
+            'students' => 'required',
+            'batch_exam_id' => 'required',
+        ]);
         $this->batchExam = BatchExam::find($id);
+        $oldBatchExam = BatchExam::find($request->course_id);
         foreach ($this->batchExam->students as $student)
         {
             foreach ($request->students as $inputStudentId)
             {
-                if ($student->id == $inputStudentId)
+//                if ($student->id == $inputStudentId)
+                if ($student->id != $inputStudentId)
                 {
-                    return back()->with('error', 'Student Already assigned this Exam.');
+                    $oldBatchExam->students()->detach($inputStudentId);
+                    $stParentOrder = ParentOrder::where(['ordered_for' => 'batch_exam', 'parent_model_id' => $request->batch_exam_id, 'user_id' => Student::find($inputStudentId)->user_id])->first();
+                    $stParentOrder->update([
+                        'parent_model_id' => $id,
+                    ]);
+                    $this->batchExam->students()->attach($inputStudentId);
+//                    return back()->with('error', 'Student Already assigned this course.');
                 }
             }
         }
-        $this->batchExam->students()->attach($request->students);
         return back()->with('success', 'Student assigned to Batch Exam Successfully.');
     }
     public function detachStudent (Request $request, $id)

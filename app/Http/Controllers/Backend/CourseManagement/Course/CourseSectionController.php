@@ -20,7 +20,7 @@ class CourseSectionController extends Controller
     {
         abort_if(Gate::denies('manage-course-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.course-management.course.course-sections.index', [
-            'courseSections'   => CourseSection::whereCourseId(\request()->input('course_id'))->get(),
+            'courseSections'   => CourseSection::whereCourseId(\request()->input('course_id'))->orderBy('id', 'ASC')->get(),
             'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->where('parent_id', 0)->select('id', 'title')->get(),
         ]);
     }

@@ -45,10 +45,10 @@
                                                 </a>
                                             @endcan
                                             @can('delete-course-coupon')
-                                                <form class="d-inline" action="{{ route('course-coupons.destroy', $courseCoupon->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                                <form class="d-inline" action="{{ route('course-coupons.destroy', $courseCoupon->id) }}" method="post">
                                                     @csrf
                                                     @method('delete')
-                                                    <button type="submit" class="btn btn-sm btn-danger" title="Delete Course Coupon">
+                                                    <button type="submit" class="btn btn-sm btn-danger data-delete-form" title="Delete Course Coupon">
                                                         <i class="fa-solid fa-trash"></i>
                                                     </button>
                                                 </form>

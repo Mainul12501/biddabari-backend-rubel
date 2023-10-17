@@ -14,7 +14,7 @@
                             <div class="row ">
 
                                 <div class="card card-body">
-                                    <table class="table ranking-table table-borderless" id="file-datatable">
+                                    <table class="table ranking-table table-borderless" id="">
                                         <thead>
                                             <tr>
                                                 <th>RANK</th>
@@ -83,14 +83,14 @@
         .ranking-table td {font-size: 20px}
         .ranking-table th {font-size: 24px}
 
-        #file-datatable_wrapper .dt-buttons{
-            position: absolute !important;
-            top: 0px !important;
-            left: 136px !important;
-        }
+        /*#file-datatable_wrapper .dt-buttons{*/
+        /*    position: absolute !important;*/
+        /*    top: 0px !important;*/
+        /*    left: 136px !important;*/
+        /*}*/
     </style>
 @endpush
 
 @push('script')
-    @include('backend.includes.assets.plugin-files.datatable')
+{{--    @include('backend.includes.assets.plugin-files.datatable')--}}
 @endpush

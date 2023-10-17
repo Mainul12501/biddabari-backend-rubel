@@ -39,7 +39,7 @@
 {{--                                            <a href="{{ route('course-categories.destroy', ['category_id' => $category['category_id'] ]) }}" class="btn btn-danger btn-sm" >Delete</a>--}}
                                         </div>
 
-                                        @if(!empty($category->courseCategories))
+                                        @if(!empty($category->courseCategoriesByOrderAsc))
                                             @include('backend.course-management.course.course-category.child-category-view', [ 'category' => $category])
                                         @endif
                                     </li>

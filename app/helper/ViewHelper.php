@@ -4,7 +4,9 @@
 namespace App\helper;
 
 
+use App\Models\Backend\BatchExamManagement\BatchExam;
 use App\Models\Backend\BatchExamManagement\BatchExamResult;
+use App\Models\Backend\Course\Course;
 use App\Models\Backend\Course\CourseClassExamResult;
 use App\Models\Backend\Course\CourseExamResult;
 use App\Models\Backend\ExamManagement\ExamOrder;
@@ -286,5 +288,68 @@ class ViewHelper
             return self::$status = 'true';
         }
         return self::$status;
+    }
+
+    public static function checkIfCourseOrBatchExamHasValidDiscount($modelName, $modelId)
+    {
+        if ($modelName == 'course')
+        {
+            $course = Course::find($modelId);
+            if ($course)
+            {
+                if ($course->discount_amount > 0 && $course->discount_start_date_timestamp <= strtotime(currentDateTimeYmdHi()) && $course->discount_end_date_timestamp >= strtotime(currentDateTimeYmdHi()))
+                {
+                    self::$status = 'true';
+                }
+            }
+        } elseif ($modelName = 'batch_exam')
+        {
+            $batchExam = Course::find($modelId);
+            if ($batchExam)
+            {
+                if ($batchExam->discount_amount > 0 && $batchExam->discount_start_date_timestamp <= strtotime(currentDateTimeYmdHi()) && $batchExam->discount_end_date_timestamp >= strtotime(currentDateTimeYmdHi()))
+                {
+                    self::$status = 'true';
+                }
+            }
+        }
+        return self::$status;
+    }
+
+    public static function getModelPriceAfterDiscount ($modelName, $modelId)
+    {
+        if ($modelName == 'course')
+        {
+            $course = Course::find($modelId);
+            $ifModelHasValidDiscount = self::checkIfCourseOrBatchExamHasValidDiscount($modelName, $modelId);
+            if ($ifModelHasValidDiscount == 'true')
+            {
+                if ($course->discount_type == 1)
+                {
+                    return $course->price - $course->discount_amount;
+                } elseif ($course->discount_type == 2)
+                {
+                    return $course->price - ($course->price * $course->discount_amount)/100;
+                }
+            } else{
+                return $course->price;
+            }
+        } elseif ($modelName == 'batch_exam')
+        {
+            $batchExam = BatchExam::find($modelId);
+            $ifModelHasValidDiscount = self::checkIfCourseOrBatchExamHasValidDiscount($modelName, $modelId);
+            if ($ifModelHasValidDiscount == 'true')
+            {
+                if ($batchExam->discount_type == 1)
+                {
+                    return $batchExam->price - $batchExam->discount_amount;
+                } elseif ($batchExam->discount_type == 2)
+                {
+                    return $batchExam->price - ($batchExam->price * $batchExam->discount_amount)/100;
+                }
+            } else{
+                return $batchExam->price;
+            }
+        }
     }
 }

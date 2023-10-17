@@ -128,6 +128,24 @@ class BatchExam extends Model
         return self::$batchExam;
     }
 
+    public static function importBatchExamJson($request)
+    {
+        self::$batchExam                            = new BatchExam();
+        self::$batchExam->title                    = $request->title;
+        self::$batchExam->slug                     = $request->slug;
+        self::$batchExam->sub_title                = $request->sub_title;
+        self::$batchExam->banner                   = $request->banner;
+        self::$batchExam->description              = $request->description;
+        self::$batchExam->featured_video_url       = $request->featured_video_url;
+        self::$batchExam->status                   = $request->status;
+        self::$batchExam->is_paid                  = $request->is_paid;
+        self::$batchExam->is_approved              = $request->is_approved;
+        self::$batchExam->is_featured              = $request->is_featured;
+        self::$batchExam->is_master_exam           = $request->is_master_exam;
+        self::$batchExam->save();
+        return self::$batchExam;
+    }
+
     public function batchExamRoutines()
     {
         return $this->hasMany(BatchExamRoutine::class);

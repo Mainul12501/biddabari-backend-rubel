@@ -95,10 +95,10 @@
 {{--                                            <a href="" data-blog-category-id="{{ $subscriptionOrder->id }}" class="btn btn-sm btn-primary blog-category-edit-btnx" title="Change Order Status">--}}
 {{--                                                <i class="fa-solid fa-edit"></i>--}}
 {{--                                            </a>--}}
-                                            <form class="d-inline" action="{{ route('subscription-orders.destroy', $subscriptionOrder->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                            <form class="d-inline" action="{{ route('subscription-orders.destroy', $subscriptionOrder->id) }}" method="post">
                                                 @csrf
                                                 @method('delete')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Blog Category">
+                                                <button type="submit" class="btn btn-sm btn-danger data-delete-form" title="Delete Blog Category">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>

@@ -54,6 +54,29 @@ class CourseCoupon extends Model
         ]);
     }
 
+    public static function importCourseCoupon($course_coupons, $courseId)
+    {
+        foreach ($course_coupons as $course_coupon)
+        {
+            $coupon = new CourseCoupon();
+            $coupon->course_id                         = $courseId;
+            $coupon->code                              = $course_coupon->code;
+            $coupon->type                              = $course_coupon->type;
+            $coupon->percentage_value                  = $course_coupon->percentage_value;
+            $coupon->discount_amount                   = $course_coupon->discount_amount;
+            $coupon->flat_discount                     = $course_coupon->flat_discount;
+            $coupon->note                              = $course_coupon->note;
+            $coupon->expire_date_time                  = $course_coupon->expire_date_time;
+            $coupon->expire_date_time_timestamp        = $course_coupon->expire_date_time_timestamp;
+            $coupon->available_from                    = $course_coupon->available_from;
+            $coupon->avaliable_from_timestamp          = $course_coupon->avaliable_from_timestamp;
+            $coupon->avaliable_to                      = $course_coupon->avaliable_to;
+            $coupon->avaliable_to_timestamp            = $course_coupon->avaliable_to_timestamp;
+            $coupon->status                            = $course_coupon->status;
+            $coupon->save();
+        }
+    }
+
     public function course()
     {
         return $this->belongsTo(Course::class);

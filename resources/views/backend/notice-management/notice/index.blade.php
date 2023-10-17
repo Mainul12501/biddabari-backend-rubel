@@ -53,10 +53,10 @@
                                             </button>
                                             @endcan
                                         @can('delete-notice')
-                                            <form class="d-inline" action="{{ route('notices.destroy', $notice->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                            <form class="d-inline" action="{{ route('notices.destroy', $notice->id) }}" method="post">
                                                 @csrf
                                                 @method('delete')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Notice">
+                                                <button type="submit" class="btn btn-sm btn-danger data-delete-form" title="Delete Notice">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>

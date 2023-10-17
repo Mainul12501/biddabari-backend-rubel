@@ -101,8 +101,15 @@
 {{--                @if(dateTimeFormatYmdHi($content->exam_result_publish_time) < currentDateTimeYmdHi())--}}
                <div class="mt-2">
                    @if($participateStatus == 'true')
+                       <a href="{{ route('front.student.show-batch-exam-answers', ['content_id' => $content->id, 'slug' => str_replace(' ', '-', $content->title)]) }}" class="btn btn-primary">See Ranking</a>
+{{--                       <a href="{{ route('front.student.show-batch-exam-ranking', ['content_id' => $content->id, 'slug' => str_replace(' ', '-', $content->title)]) }}" class="btn btn-primary">See Ranking</a>--}}
+                   @endif
+
+                   @if($content->exam_result_publish_time_timestamp <= strtotime(currentDateTimeYmdHi()))
+{{--                       <a href="{{ route('front.student.show-batch-exam-answers', ['content_id' => $content->id, 'slug' => str_replace(' ', '-', $content->title)]) }}" class="btn btn-primary">See Ranking</a>--}}
                        <a href="{{ route('front.student.show-batch-exam-ranking', ['content_id' => $content->id, 'slug' => str_replace(' ', '-', $content->title)]) }}" class="btn btn-primary">See Ranking</a>
                    @endif
+
                </div>
             </div>
         </div>

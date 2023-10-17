@@ -6,6 +6,7 @@ use App\Models\Backend\BatchExamManagement\BatchExam;
 use App\Models\Backend\BatchExamManagement\BatchExamSubscription;
 use App\Models\Backend\Course\Course;
 use App\Models\Backend\ProductManagement\Product;
+use App\Models\Backend\UserManagement\Student;
 use App\Models\Scopes\Searchable;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -60,6 +61,27 @@ class ParentOrder extends Model
             'coupon_code'               => $request->coupon_code,
             'coupon_amount'             => $request->coupon_amount,
             'batch_exam_subscription_id' => isset($request->batch_exam_subscription_id) ?? null,
+        ]);
+    }
+    public static function assignNewStudentToModel($orderedForm, $request, $id = null)
+    {
+        ParentOrder::create([
+            'parent_model_id'           => $id,
+            'user_id'                   => Student::find($request->student_id)->user_id,
+            'order_invoice_number'      => self::generateOrderNumber(),
+            'ordered_for'               => $orderedForm,
+            'payment_method'            => 'cod',
+            'vendor'                    => $request->vendor,
+            'paid_to'                   => $request->paid_to,
+            'paid_from'                 => $request->paid_from,
+            'txt_id'                    => $request->txt_id,
+            'paid_amount'               => $request->paid_amount,
+            'total_amount'              => $request->total_amount,
+            'payment_status'            => $request->payment_status,
+            'status'                    => 'approved',
+//            'coupon_code'               => $request->coupon_code,
+//            'coupon_amount'             => $request->coupon_amount,
+//            'batch_exam_subscription_id' => isset($request->batch_exam_subscription_id) ?? null,
         ]);
     }
 

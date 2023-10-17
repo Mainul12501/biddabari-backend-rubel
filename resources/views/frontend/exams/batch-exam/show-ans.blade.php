@@ -19,7 +19,7 @@
                                             <div class="mt-2">
                                                 <ul class="nav flex-column">
                                                     @foreach($questionStore->questionOptions as $questionOption)
-                                                        <li class="f-s-20 border px-2 {{ $questionOption->is_correct == 1 ? 'correct-ans-bg' : '' }}"><p class="{{ $questionOption->is_correct == 1 ? 'text-white' : '' }}"> {{ $loop->iteration }}. {{ $questionOption->option_title }}</p></li>
+                                                        <li class="f-s-20 border px-2 {{ $questionOption->is_correct == 1 ? 'correct-ans-bg' : '' }} {{ $questionOption->my_ans == 1 ? 'correct-ans-bg' : '' }} {{ $questionOption->my_ans == 0 ? 'bg-danger' : '' }}"><p class="{{ $questionOption->is_correct == 1 ? 'text-white' : '' }}"> {{ $loop->iteration }}. {{ $questionOption->option_title }}</p></li>
                                                     @endforeach
                                                 </ul>
                                                 @if($questionStore->has_all_wrong_ans == 1)

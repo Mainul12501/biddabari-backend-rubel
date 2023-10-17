@@ -65,6 +65,7 @@
                                             <a href="javascript:void(0)" class="badge badge-sm bg-primary">{{ $sectionContent->status == 1 ? 'Published' : 'Unpublished' }}</a>
                                         </td>
                                         <td class="float-end">
+
                                             @can('add-question-to-course-section-content')
                                                 @if($sectionContent->content_type == 'exam' || $sectionContent->content_type == 'written_exam')
                                                     <a href="" data-section-content-id="{{ $sectionContent->id }}" data-xm-type="{{ $sectionContent->content_type }}" class="btn btn-sm btn-primary add-question-modal-btn" title="Add Exam Questions">
@@ -90,10 +91,10 @@
                                             </a>
                                                 @endcan
                                                 @can('delete-course-section-content')
-                                            <form class="d-inline" action="{{ route('course-section-contents.destroy', $sectionContent->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                            <form class="d-inline" action="{{ route('course-section-contents.destroy', $sectionContent->id) }}" method="post">
                                                 @csrf
                                                 @method('delete')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Course">
+                                                <button type="submit" class="btn btn-sm btn-danger data-delete-form" title="Delete Course">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>

@@ -68,9 +68,17 @@ class CourseCategory extends Model
     {
         return $this->hasMany(CourseCategory::class, 'parent_id');
     }
+    public function courseCategoriesByOrderAsc()
+    {
+        return $this->hasMany(CourseCategory::class, 'parent_id')->orderBy('order', 'ASC');
+    }
 
     public function courses()
     {
         return $this->belongsToMany(Course::class);
+    }
+    public function coursesDescOrder()
+    {
+        return $this->belongsToMany(Course::class)->orderBy('id', 'DESC');
     }
 }

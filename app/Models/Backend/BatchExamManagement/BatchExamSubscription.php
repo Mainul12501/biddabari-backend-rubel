@@ -49,6 +49,25 @@ class BatchExamSubscription extends Model
             ]);
         }
     }
+    public static function importBatchExamSubcriptionsJson($batchExamSubcriptions, $batchExamId)
+    {
+        foreach ($batchExamSubcriptions as $key => $batchExamSubcription)
+        {
+            static::create([
+                'batch_exam_id' => $batchExamId,
+                'price' => $batchExamSubcription->price,
+                'package_title'  => $batchExamSubcription->package_title,
+                'package_duration_in_days'  => $batchExamSubcription->package_duration_in_days,
+                'discount_type' => $batchExamSubcription->discount_type,
+                'discount_amount' => $batchExamSubcription->discount_amount,
+                'discount_start_date'   => $batchExamSubcription->discount_start_date,
+                'discount_start_date_timestamp' => $batchExamSubcription->discount_start_date_timestamp,
+                'discount_end_date_timestamp'   => $batchExamSubcription->discount_end_date_timestamp,
+                'discount_end_date' => $batchExamSubcription->discount_end_date,
+                'status'    => $batchExamSubcription->status,
+            ]);
+        }
+    }
 
     public function batchExam()
     {

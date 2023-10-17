@@ -43,6 +43,15 @@
 {{--                        <i class="fa-solid fa-plus-square"></i>--}}
 {{--                    </button>--}}
 {{--                @endcan--}}
+
+                @if($sectionContent->content_type == 'exam' || $sectionContent->content_type == 'written_exam')
+                    <a href="{{ route('content-exam-ranking-download-page',['req_from' => 'course', 'content_id' => $sectionContent->id]) }}" data-section-content-id="{{ $sectionContent->id }}" data-xm-type="{{ $sectionContent->content_type }}" class="btn btn-sm btn-primary" title="Download Rankings">
+                        <i class="fe fe-printer"></i>
+                    </a>
+                    <a href="{{ route('show-xm-attendance',['req_from' => 'course', 'content_id' => $sectionContent->id]) }}" data-section-content-id="{{ $sectionContent->id }}" data-xm-type="{{ $sectionContent->content_type }}" class="btn btn-sm btn-primary" title="Student Attendance">
+                        <i class="fe fe-users"></i>
+                    </a>
+                @endif
                 @if($sectionContent->content_type == 'pdf' || $sectionContent->content_type == 'video')
                     <a href="" data-course-id="{{ $sectionContent->id }}" data-content-type="{{ $sectionContent->content_type }}" @if($sectionContent->content_type == 'pdf') data-pdf-url="{{ isset($sectionContent->pdf_link) ? $sectionContent->pdf_link : (isset($sectionContent->pdf_file) ? $sectionContent->pdf_file : '') }}" @endif @if($sectionContent->content_type == 'video') data-video-vendor="{{ $sectionContent->video_vendor }}" data-video-url="{{ $sectionContent->video_link }}" @endif class="btn btn-sm mt-1 btn-warning show-pdf-video-btn" title="View Pdf Or Video" >
                         <i class="fa-solid fa-eye"></i>
@@ -76,10 +85,10 @@
                     </button>
                     @endcan
                 @can('delete-course-section-content')
-                    <form class="d-inline" action="{{ route('course-section-contents.destroy', $sectionContent->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                    <form class="d-inline" action="{{ route('course-section-contents.destroy', $sectionContent->id) }}" method="post" >
                         @csrf
                         @method('delete')
-                        <button type="submit" class="btn btn-sm btn-danger" title="Delete Course Section Content">
+                        <button type="submit" class="btn btn-sm btn-danger data-delete-form" title="Delete Course Section Content">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </form>

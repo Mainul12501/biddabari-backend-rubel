@@ -145,7 +145,7 @@ class FrontExamController extends Controller
                             {
                                 $this->resultNumber += (int)$this->exam->exam_per_question_mark;
                             } else {
-                                $this->resultNumber -= (int)$this->exam->exam_negative_mark;
+                                $this->resultNumber -= $this->exam->exam_negative_mark;
                             }
                         }
                     }
@@ -228,16 +228,16 @@ class FrontExamController extends Controller
                                 if ($this->question->has_all_wrong_ans == 1)
                                 {
 //                                    $this->resultNumber -= (int)$this->question->negative_mark;
-                                    $this->resultNumber -= (int)$this->exam->exam_negative_mark;
+                                    $this->resultNumber -= $this->exam->exam_negative_mark;
                                     ++$this->totalWrongAns;
                                 } else {
                                     $this->questionOption = QuestionOption::whereId($answer['answer'])->select('id', 'is_correct')->first();
                                     if ($this->questionOption->is_correct == 1)
                                     {
-                                        $this->resultNumber += (int)$this->exam->exam_per_question_mark ?? 0;
+                                        $this->resultNumber += (int)$this->exam->exam_per_question_mark;
                                         ++$this->totalRightAns;
                                     } else {
-                                        $this->resultNumber -= (int)$this->exam->exam_negative_mark ?? 0;
+                                        $this->resultNumber -= $this->exam->exam_negative_mark;
                                         ++$this->totalWrongAns;
                                     }
                                 }
@@ -420,7 +420,7 @@ class FrontExamController extends Controller
                                         ++$this->totalRightAns;
                                         $this->resultNumber += (int)$this->exam->exam_per_question_mark;
                                     } else {
-                                        $this->resultNumber -= (int)$this->exam->exam_negative_mark;
+                                        $this->resultNumber -= $this->exam->exam_negative_mark;
                                         ++$this->totalWrongAns;
                                     }
                                 }
@@ -655,8 +655,30 @@ class FrontExamController extends Controller
         $this->sectionContent = CourseSectionContent::whereId($contentId)->select('id', 'course_section_id', 'parent_id', 'content_type', 'title', 'status')->with(['questionStores' => function($questionStores){
             $questionStores->select('id', 'question_type', 'question', 'question_description', 'question_image', 'question_video_link', 'written_que_ans', 'written_que_ans_description', 'has_all_wrong_ans', 'status')->with('questionOptions')->get();
         }])->first();
+        $providedAnswers = (array) json_decode(CourseExamResult::where(['course_section_content_id' => $contentId, 'user_id' => ViewHelper::loggedUser()->id])->first()->provided_ans);
+        $this->ansLoop($this->sectionContent, $providedAnswers);
+//        foreach ($this->sectionContent->questionStores as $questionStore)
+//        {
+//            foreach ($questionStore->questionOptions as $questionOption)
+//            {
+//                foreach ($providedAnswers as $questionId => $providedAnswer)
+//                {
+//                    if ($questionId == $questionStore->id && $questionOption->is_correct == 1 && $questionOption->id == $providedAnswer->answer)
+//                    {
+//                        $questionOption->my_ans = 1;
+//                        break;
+//                    } elseif ($questionId == $questionStore->id && $questionOption->is_correct == 0 && $questionOption->id == $providedAnswer->answer)
+//                    {
+//                        $questionOption->my_ans = 0;
+//                        break;
+//                    } else {
+//                        $questionOption->my_ans = 'x';
+//                    }
+//                }
+//            }
+//        }
         $this->data = [
-            'content'   => $this->sectionContent
+            'content'   => $this->sectionContent,
         ];
         return ViewHelper::checkViewForApi($this->data, 'frontend.exams.course.show-ans');
     }
@@ -665,10 +687,36 @@ class FrontExamController extends Controller
         $this->sectionContent = BatchExamSectionContent::whereId($contentId)->select('id', 'batch_exam_section_id', 'parent_id', 'content_type', 'title', 'status')->with(['questionStores' => function($questionStores){
             $questionStores->select('id', 'question_type', 'question', 'question_description', 'question_image', 'question_video_link', 'written_que_ans', 'written_que_ans_description', 'has_all_wrong_ans', 'status')->with('questionOptions')->get();
         }])->first();
+        $providedAnswers = (array) json_decode(BatchExamResult::where(['batch_exam_section_content_id' => $contentId, 'user_id' => ViewHelper::loggedUser()->id])->first()->provided_ans);
+        $this->ansLoop($this->sectionContent, $providedAnswers);
         $this->data = [
             'content'   => $this->sectionContent
         ];
         return ViewHelper::checkViewForApi($this->data, 'frontend.exams.batch-exam.show-ans');
+    }
+
+    public function ansLoop($sectionContent, $providedAnswers)
+    {
+        foreach ($sectionContent->questionStores as $questionStore)
+        {
+            foreach ($questionStore->questionOptions as $questionOption)
+            {
+                foreach ($providedAnswers as $questionId => $providedAnswer)
+                {
+                    if ($questionId == $questionStore->id && $questionOption->is_correct == 1 && $questionOption->id == $providedAnswer->answer)
+                    {
+                        $questionOption->my_ans = 1;
+                        break;
+                    } elseif ($questionId == $questionStore->id && $questionOption->is_correct == 0 && $questionOption->id == $providedAnswer->answer)
+                    {
+                        $questionOption->my_ans = 0;
+                        break;
+                    } else {
+                        $questionOption->my_ans = 'x';
+                    }
+                }
+            }
+        }
     }
     public function showCourseExamRanking($contentId)
     {

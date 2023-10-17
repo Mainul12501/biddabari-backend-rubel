@@ -49,6 +49,24 @@ class CourseRoutine extends Model
         ]);
     }
 
+    public static function importCourseRoutine($course_routines, $courseId)
+    {
+        foreach ($course_routines as $course_routine)
+        {
+            $courseRoutine = new CourseRoutine();
+            $courseRoutine->course_id             = $courseId;
+            $courseRoutine->content_name          = $course_routine->content_name;
+            $courseRoutine->day                   = $course_routine->day;
+            $courseRoutine->date_time             = $course_routine->date_time;
+            $courseRoutine->date_time_timestamp   = $course_routine->date_time;
+            $courseRoutine->room                  = $course_routine->room;
+            $courseRoutine->note                  = $course_routine->note;
+            $courseRoutine->status                = $course_routine->status;
+            $courseRoutine->is_fack               = $course_routine->is_fack;
+            $courseRoutine->save();
+        }
+    }
+
     public function course()
     {
         return $this->belongsTo(Course::class);

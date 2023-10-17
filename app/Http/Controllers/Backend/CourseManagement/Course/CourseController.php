@@ -4,11 +4,21 @@ namespace App\Http\Controllers\Backend\CourseManagement\Course;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\CourseManagement\CourseCreateFormRequest;
+use App\Models\Backend\BatchExamManagement\BatchExam;
+use App\Models\Backend\BatchExamManagement\BatchExamRoutine;
+use App\Models\Backend\BatchExamManagement\BatchExamSection;
+use App\Models\Backend\BatchExamManagement\BatchExamSubscription;
 use App\Models\Backend\Course\Course;
 use App\Models\Backend\Course\CourseCategory;
+use App\Models\Backend\Course\CourseCoupon;
+use App\Models\Backend\Course\CourseRoutine;
+use App\Models\Backend\Course\CourseSection;
+use App\Models\Backend\Course\CourseSectionContent;
+use App\Models\Backend\OrderManagement\ParentOrder;
 use App\Models\Backend\UserManagement\Student;
 use App\Models\Backend\UserManagement\Teacher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
@@ -27,9 +37,9 @@ class CourseController extends Controller
         abort_if(Gate::denies('manage-course'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (!empty($request->category_id))
         {
-            $this->courses = CourseCategory::find($request->category_id)->courses;
+            $this->courses = CourseCategory::find($request->category_id)->coursesDescOrder;
         } else {
-            $this->courses = Course::all();
+            $this->courses = Course::latest()->get();
         }
         return view('backend.course-management.course.courses.index', [
             'courses'   => $this->courses,
@@ -166,26 +176,58 @@ class CourseController extends Controller
         abort_if(Gate::denies('assign-course-student-page'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.course-management.course.courses.assign-student', [
             'course'   => Course::find($courseId),
-            'students'  => Student::whereStatus(1)->get()
+            'students'  => Student::whereStatus(1)->get(),
+            'courses'   => Course::whereStatus(1)->get(['id', 'title'])
         ]);
     }
 
     public function assignStudent (Request $request, $id)
     {
         abort_if(Gate::denies('assign-course-student'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $validator = $request->validate(['students' => 'required']);
+        $validator = $request->validate([
+            'students' => 'required',
+            'course_id' => 'required',
+        ]);
         $this->course = Course::find($id);
+        $oldCourse = Course::find($request->course_id);
         foreach ($this->course->students as $student)
         {
             foreach ($request->students as $inputStudentId)
             {
-                if ($student->id == $inputStudentId)
+//                if ($student->id == $inputStudentId)
+                if ($student->id != $inputStudentId)
                 {
-                    return back()->with('error', 'Student Already assigned this course.');
+                    $oldCourse->students()->detach($inputStudentId);
+                    $stParentOrder = ParentOrder::where(['ordered_for' => 'course', 'parent_model_id' => $request->course_id, 'user_id' => Student::find($inputStudentId)->user_id])->first();
+                    $stParentOrder->update([
+                        'parent_model_id' => $id,
+                    ]);
+                    $this->course->students()->attach($inputStudentId);
+//                    return back()->with('error', 'Student Already assigned this course.');
                 }
             }
         }
-        $this->course->students()->attach($request->students);
+//        $this->course->students()->attach($request->students);
+        return back()->with('success', 'Student assigned to course Successfully.');
+    }
+
+    public function assignNewStudent(Request $request, $id)
+    {
+        abort_if(Gate::denies('assign-course-student'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $validator = $request->validate([
+            'student_id' => 'required',
+            'paid_amount' => 'required',
+        ]);
+        $this->course = Course::find($id);
+        foreach ($this->course->students as $student)
+        {
+            if ($student->id == $request->student_id)
+            {
+                return back()->with('error', 'Student Already assigned this course.');
+            }
+        }
+        ParentOrder::assignNewStudentToModel('course', $request, $id);
+        $this->course->students()->attach($request->student_id);
         return back()->with('success', 'Student assigned to course Successfully.');
     }
     public function detachStudent (Request $request, $id)
@@ -199,5 +241,83 @@ class CourseController extends Controller
     public function getCoursesByCategory($id)
     {
         return response()->json(CourseCategory::find($id)->courses);
+    }
+
+    protected $courseArray ;
+    public function exportCourseJson($modelName, $modelId)
+    {
+
+
+        $tempDir = public_path('backend/json-tmp-dir/');
+        if (!File::isDirectory($tempDir))
+        {
+            File::makeDirectory($tempDir, 0777, true, true);
+        }
+        if ($modelName == 'course')
+        {
+            $modelData = Course::whereId($modelId)->with(['courseRoutines', 'courseCoupons', 'courseSections.courseSectionContents'])->first();
+        } elseif ($modelName == 'batch_exam')
+        {
+            $modelData = BatchExam::whereId($modelId)->with(['batchExamRoutines', 'batchExamSubscriptions', 'batchExamSections.batchExamSectionContents'])->first();
+        }
+        File::put($tempDir.time().'-'.$modelName.'-export.json', $modelData);
+        return \response()->download($tempDir.time().'-'.$modelName.'-export.json');
+    }
+
+    public function importModelJson(Request $request, $model)
+    {
+        try {
+            $data = json_decode(File::get($request->file('json_file')->getRealPath()));
+            if ($model == 'course')
+            {
+//            return $data->course_sections[0]->course_section_contents;
+                $this->course = Course::importCourseModel($data);
+
+//            course routines
+                if (isset($data->course_routines) && count($data->course_routines) > 0)
+                {
+                    CourseRoutine::importCourseRoutine($data->course_routines, $this->course->id);
+                }
+
+//                course coupons
+                if (isset($data->course_coupons) && count($data->course_coupons) > 0)
+                {
+                    CourseCoupon::importCourseCoupon($data->course_coupons, $this->course->id);
+                }
+
+//                course sections
+                if (isset($data->course_sections) && count($data->course_sections) > 0)
+                {
+                    CourseSection::importCourseSections($data->course_sections, $this->course->id);
+                }
+            } elseif ($model == 'batch_exam')
+            {
+//                batch exam
+                $batchExam = BatchExam::importBatchExamJson($data);
+
+//                batch exam routines
+                if (isset($data->batch_exam_routines) && count($data->batch_exam_routines) > 0)
+                {
+                    BatchExamRoutine::importBatchExamRoutine($data->batch_exam_routines, $batchExam->id);
+                }
+
+//                batch_exam_subscriptions
+                if (isset($data->batch_exam_subscriptions) && count($data->batch_exam_subscriptions) > 0)
+                {
+                    BatchExamSubscription::importBatchExamSubcriptionsJson($data->batch_exam_subscriptions, $batchExam->id);
+                }
+
+//                batch_exam_sections
+                if (isset($data->batch_exam_sections) && count($data->batch_exam_sections) > 0)
+                {
+                    BatchExamSection::importBatchExamSectionJson($data->batch_exam_sections, $batchExam->id);
+                }
+            }
+            return back()->with('success', $model.' imported successfully.');
+        } catch (\Exception $exception)
+        {
+            return back()->with('error', $exception->getMessage());
+        }
+
     }
 }

@@ -8,9 +8,10 @@
             <div class="card">
                 <div class="card-header bg-warning">
                     <h4 class="float-start text-white">{{ $course->title }} Students</h4>
-                    <a href="{{ route('courses.index') }}" title="Back to Courses" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 m-r-50"><i class="fa-solid fa-arrow-left"></i></a>
+                    <a href="{{ route('courses.index') }}" title="Back to Courses" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 m-r-80"><i class="fa-solid fa-arrow-left"></i></a>
                     @can('assign-course-student')
                         <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
+{{--                        <button type="button" data-bs-toggle="modal" data-bs-target="#transferCourseStudentsModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 m-r-50"><i class="fe fe-users"></i></button>--}}
                     @endcan
                 </div>
                 <div class="card-body">
@@ -56,21 +57,21 @@
         </div>
     </div>
     <div class="modal fade modal-div" id="coursesModal" data-modal-parent="coursesModal" >
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content" id="modalForm">
-                <form action="{{ route('assign-student', ['course_id' => $course->id]) }}" method="post" enctype="multipart/form-data" id="coursesForm">
+                <form action="{{ route('assign-new-student', ['course_id' => $course->id]) }}" method="post" enctype="multipart/form-data" id="coursesForm">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Assign Students</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
                     </div>
                     {{--                    <input type="hidden" name="category_id" >--}}
                     <div class="modal-body">
                         <div class="card card-body">
                             <div class="row">
-                                <div class="col-md-12 select2-div">
+                                <div class="col-md-6 mt-2 select2-div">
                                     <label for="">Assign Students</label>
-                                    <select name="students[]" required class="form-control select2"  multiple data-placeholder="Assign Students" >
+                                    <select name="student_id" required class="form-control select2"  data-placeholder="Assign Student" >
                                         <option label="Assign Students"></option>
                                         @if(isset($students))
                                             @foreach($students as $student)
@@ -78,7 +79,100 @@
                                             @endforeach
                                         @endif
                                     </select>
-                                    <span class="text-danger" id="name">{{ $errors->has('students') ? $errors->first('students') : '' }}</span>
+                                    <span class="text-danger" id="student_id">{{ $errors->has('student_id') ? $errors->first('student_id') : '' }}</span>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <label for="">Payment Amount</label>
+                                    <input type="number" name="paid_amount" class="form-control" placeholder="Payment Amount">
+                                    <span class="text-danger" id="paid_amount">{{ $errors->has('paid_amount') ? $errors->first('paid_amount') : '' }}</span>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <label for="">Total Amount</label>
+                                    <input type="number" name="total_amount" readonly class="form-control" value="{{ \App\helper\ViewHelper::getModelPriceAfterDiscount('course', $course->id) }}" placeholder="Total Amount" />
+                                    <span class="text-danger" id="total_amount">{{ $errors->has('total_amount') ? $errors->first('total_amount') : '' }}</span>
+                                </div>
+                                <div class="col-md-6 mt-2 select2-div">
+                                    <label for="">Vendor</label>
+                                    <select name="vendor" id="" class="form-control select2">
+                                        <option value="bkash">Bkash</option>
+                                        <option value="nagad">Nagad</option>
+                                        <option value="rocket">Rocket</option>
+                                    </select>
+                                    <span class="text-danger" id="vendor">{{ $errors->has('vendor') ? $errors->first('vendor') : '' }}</span>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <label for="">Paid To</label>
+                                    <input type="text" class="form-control" name="paid_to" placeholder="Paid To" />
+                                    <span class="text-danger" id="paid_to">{{ $errors->has('paid_to') ? $errors->first('paid_to') : '' }}</span>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <label for="">Paid From</label>
+                                    <input type="text" class="form-control" name="paid_from" placeholder="Paid From" />
+                                    <span class="text-danger" id="paid_from">{{ $errors->has('paid_from') ? $errors->first('paid_from') : '' }}</span>
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <label for="">Txt Id</label>
+                                    <input type="text" class="form-control" name="txt_id" placeholder="Txt Id" />
+                                    <span class="text-danger" id="txt_id">{{ $errors->has('txt_id') ? $errors->first('txt_id') : '' }}</span>
+                                </div>
+                                <div class="col-sm-6 mt-2 select2-div">
+                                    <label for="paymentStatus">Payment Status</label>
+                                    <select name="payment_status" class="form-control select2" id="paymentStatus" data-placeholder="Set Payment Status">
+                                        <option value=""></option>
+                                        <option value="pending">Pending</option>
+                                        <option value="partial">Partial</option>
+                                        <option value="complete">Complete</option>
+                                    </select>
+                                    <span class="text-danger" id="payment_status">{{ $errors->has('payment_status') ? $errors->first('payment_status') : '' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary submit-btn" value="save">Save</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade modal-div" id="transferCourseStudentsModal" data-modal-parent="coursesModal" >
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" id="modalForm">
+                <form action="{{ route('assign-student', ['course_id' => $course->id]) }}" method="post" enctype="multipart/form-data" id="coursesForm">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Transfer Students</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                    </div>
+                    {{--                    <input type="hidden" name="category_id" >--}}
+                    <div class="modal-body">
+                        <div class="card card-body">
+                            <div class="row">
+                                <div class="col-md-6 mt-2 select2-div">
+                                    <label for="">Transfer From</label>
+                                    <select name="course_id" required class="form-control select2"  data-placeholder="Select Course" >
+                                        <option label="Select Course"></option>
+                                        @if(isset($students))
+                                            @foreach($courses as $publishedCourse)
+                                                <option value="{{ $publishedCourse->id }}" >{{ $publishedCourse->title }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                    <span class="text-danger" id="course_id">{{ $errors->has('course_id') ? $errors->first('course_id') : '' }}</span>
+                                </div>
+                                <div class="col-md-6 mt-2 select2-div">
+                                    <label for="">Assign Students</label>
+                                    <select name="students[]" required multiple class="form-control select2"  data-placeholder="Assign Student" >
+                                        <option label="Assign Students"></option>
+                                        @if(isset($students))
+                                            @foreach($students as $student)
+                                                <option value="{{ $student->id }}" {{--@foreach($course->students as $selectedStudent) @if($student->id == $selectedStudent->id) selected @endif @endforeach--}} >{{ $student->user->mobile }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                    <span class="text-danger" id="students">{{ $errors->has('students') ? $errors->first('students') : '' }}</span>
                                 </div>
                             </div>
                         </div>

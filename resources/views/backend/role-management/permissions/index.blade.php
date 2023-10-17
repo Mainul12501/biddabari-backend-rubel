@@ -41,10 +41,10 @@
                                         </a>
                                     @endcan
                                     @can('delete-permission')
-                                        <form class="d-inline" action="{{ route('permissions.destroy', $permission->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">
+                                        <form class="d-inline" action="{{ route('permissions.destroy', $permission->id) }}" method="post" >
                                             @csrf
                                             @method('delete')
-                                            <button type="submit" class="btn btn-sm btn-danger">
+                                            <button type="submit" class="btn btn-sm btn-danger data-delete-form">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </form>
