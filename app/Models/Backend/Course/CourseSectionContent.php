@@ -84,6 +84,10 @@ class CourseSectionContent extends Model
         'course_section_content_id',
         'class_xm_mark',
         'is_class_xm_complete',
+
+        'class_xm_duration_in_minutes',
+        'written_total_marks',
+        'written_pass_mark',
     ];
 
     protected $searchableFields = ['*'];
@@ -133,6 +137,7 @@ class CourseSectionContent extends Model
 
     public static function saveOrUpdateCourseSectionContent ($request, $id = null)
     {
+        $lastRecord = static::where('course_section_id', $request->course_section_id)->latest()->first();
         if (isset($id))
         {
             self::$courseSectionContent                                             = CourseSectionContent::find($id);
@@ -148,11 +153,7 @@ class CourseSectionContent extends Model
 
         self::$courseSectionContent->is_paid                                        = $request->is_paid == 'on' ? 1 : 0;
         self::$courseSectionContent->status                                         = $request->status == 'on' ? 1 : 0;
-//        if ($request->has_class_xm == 'on')
-//        {
-            self::$courseSectionContent->has_class_xm                               = $request->has_class_xm == 'on' ? 1 : 0;
-            self::$courseSectionContent->course_section_content_id                  = $request->has_class_xm == 'on' ? $request->course_section_content_id : null;
-//        }
+
         if ($request->content_type == 'pdf')
         {
             self::$courseSectionContent->pdf_link                                   = $request->pdf_link;
@@ -167,6 +168,12 @@ class CourseSectionContent extends Model
         {
             self::$courseSectionContent->video_vendor                               = $request->video_vendor;
             self::$courseSectionContent->video_link                                 = $request->video_link;
+            if ($request->has_class_xm == 'on')
+            {
+                self::$courseSectionContent->has_class_xm                               = $request->has_class_xm == 'on' ? 1 : 0;
+                self::$courseSectionContent->course_section_content_id                  = $request->has_class_xm == 'on' ? $request->course_section_content_id : null;
+                self::$courseSectionContent->class_xm_duration_in_minutes                  = $request->has_class_xm == 'on' ? $request->class_xm_duration_in_minutes : null;
+            }
         } elseif ($request->content_type == 'note')
         {
             self::$courseSectionContent->note_content                               = $request->note_content;
@@ -232,6 +239,8 @@ class CourseSectionContent extends Model
         {
             self::$courseSectionContent->written_exam_duration_in_minutes           = $request->written_exam_duration_in_minutes;
             self::$courseSectionContent->written_total_questions                    = $request->written_total_questions;
+            self::$courseSectionContent->written_total_marks                    = $request->written_total_marks;
+            self::$courseSectionContent->written_pass_mark                    = $request->written_pass_mark;
             self::$courseSectionContent->written_description                        = $request->written_description;
             self::$courseSectionContent->written_is_strict                          = $request->written_is_strict == 'on' ? 1 : 0;
             self::$courseSectionContent->written_start_time                         = $request->written_start_time;
@@ -242,6 +251,7 @@ class CourseSectionContent extends Model
             self::$courseSectionContent->written_publish_time_timestamp             = strtotime($request->written_publish_time);
             self::$courseSectionContent->written_total_subject                      = $request->written_total_subject;
         }
+        self::$courseSectionContent->order                                          = isset($id) ? static::find($id)->order : (isset($lastRecord) ? $lastRecord->order+1 : 1);
         self::$courseSectionContent->save();
     }
     public static function importCourseSectionContents($contents, $courseSectionId)
@@ -322,6 +332,8 @@ class CourseSectionContent extends Model
 
             $courseSectionContent->written_exam_duration_in_minutes           = $content->written_exam_duration_in_minutes;
             $courseSectionContent->written_total_questions                    = $content->written_total_questions;
+            $courseSectionContent->written_total_marks                    = $content->written_total_marks;
+            $courseSectionContent->written_pass_mark                    = $content->written_pass_mark;
             $courseSectionContent->written_description                        = $content->written_description;
             $courseSectionContent->written_is_strict                          = $content->written_is_strict;
             $courseSectionContent->written_start_time                         = $content->written_start_time;
@@ -331,7 +343,7 @@ class CourseSectionContent extends Model
             $courseSectionContent->written_publish_time                       = $content->written_publish_time;
             $courseSectionContent->written_publish_time_timestamp             = $content->written_publish_time_timestamp;
             $courseSectionContent->written_total_subject                      = $content->written_total_subject;
-
+            $courseSectionContent->order                                      = $content->order;
             $courseSectionContent->save();
         }
     }
@@ -352,7 +364,7 @@ class CourseSectionContent extends Model
     }
     public function questionStores()
     {
-        return $this->belongsToMany(QuestionStore::class);
+        return $this->belongsToMany(QuestionStore::class)->orderBy('id', 'ASC');
     }
 
     public function courseExamResults()

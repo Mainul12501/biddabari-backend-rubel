@@ -23,7 +23,7 @@
                                         <tr>
                                             <td class="courses-thumbnail">
                                                 <a href="javascript:void(0)">
-                                                    <img src="{{ asset($cartContent->attributes->image) }}" alt="Image" style="height: 100px;">
+                                                    <img src="{{ asset($cartContent->attributes->image ?? 'frontend/logo/biddabari-card-logo.jpg') }}" alt="Image" style="height: 100px;">
                                                 </a>
                                             </td>
                                             <td class="courses-name">

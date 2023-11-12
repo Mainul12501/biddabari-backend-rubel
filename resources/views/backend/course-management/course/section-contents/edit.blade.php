@@ -130,6 +130,31 @@
                         <input type="text" class="form-control" name="video_link" value="{{ $sectionContent->video_link }}" placeholder="Video Link" />
                     </div>
                 </div>
+                <div class="row mt-2">
+                    <div class="col-sm-3 mt-2">
+                        <label for="">Has Class Xm</label>
+                        <div class="material-switch">
+                            <input id="classXm" name="has_class_xm" type="checkbox" {{ $sectionContent->has_class_xm == 1 ? 'checked' : '' }} />
+                            <label for="classXm" id="xx" class="label-info"></label>
+                        </div>
+                        <span class="text-danger" id="has_class_xm">{{ $errors->has('has_class_xm') ? $errors->first('has_class_xm') : '' }}</span>
+                    </div>
+                    <div class="col-sm-6 select2-div {{ $sectionContent->has_class_xm == 0 ? 'd-none' : '' }} mt-2" id="classContentOf">
+                        <label for="">Class Xm of?</label>
+                        <select name="course_section_content_id"  id="classXmOf" class="form-control select2" data-placeholder="Select a class">
+                            <option value=""></option>
+                            @foreach($sectionContents as $sectionContentSelect)
+                                <option value="{{ $sectionContentSelect->id }}" {{ $sectionContent->course_section_content_id == $sectionContentSelect->id ? 'selected' : '' }}>{{ $sectionContentSelect->title }}</option>
+                            @endforeach
+                        </select>
+                        <span class="text-danger" id="course_section_content_id">{{ $errors->has('course_section_content_id') ? $errors->first('course_section_content_id') : '' }}</span>
+                    </div>
+                    <div class="col-sm-3  mt-2" id="">
+                        <label for="">Xm Duration</label>
+                        <input type="number" name="class_xm_duration_in_minutes" value="{{ $sectionContent->class_xm_duration_in_minutes }}" class="form-control" />
+                        <span class="text-danger" id="class_xm_duration_in_minutes">{{ $errors->has('class_xm_duration_in_minutes') ? $errors->first('class_xm_duration_in_minutes') : '' }}</span>
+                    </div>
+                </div>
             </div>
 
             <div class="{{ $sectionContent->content_type == 'note' ? '' : 'd-none' }}" id="typeNote">
@@ -245,26 +270,7 @@
             </div>
 
             <div class="{{ $sectionContent->content_type == 'exam' ? '' : 'd-none' }}" id="typeExam">
-                <div class="row mt-2">
-                    <div class="col-sm-3 mt-2">
-                        <label for="">Has Class Xm</label>
-                        <div class="material-switch">
-                            <input id="classXm" name="has_class_xm" type="checkbox" {{ $sectionContent->has_class_xm == 1 ? 'checked' : '' }} />
-                            <label for="classXm" id="xx" class="label-info"></label>
-                        </div>
-                        <span class="text-danger" id="has_class_xm">{{ $errors->has('has_class_xm') ? $errors->first('has_class_xm') : '' }}</span>
-                    </div>
-                    <div class="col-sm-7 select2-div {{ $sectionContent->has_class_xm == 0 ? 'd-none' : '' }} mt-2" id="classContentOf">
-                        <label for="">Class Xm of?</label>
-                        <select name="course_section_content_id"  id="classXmOf" class="form-control select2" data-placeholder="Select a class">
-                            <option value=""></option>
-                            @foreach($sectionContents as $sectionContentSelect)
-                                <option value="{{ $sectionContentSelect->id }}" {{ $sectionContent->course_section_content_id == $sectionContentSelect->id ? 'selected' : '' }}>{{ $sectionContentSelect->title }}</option>
-                            @endforeach
-                        </select>
-                        <span class="text-danger" id="course_section_content_id">{{ $errors->has('course_section_content_id') ? $errors->first('course_section_content_id') : '' }}</span>
-                    </div>
-                </div>
+
                 <div class="row mt-2">
                     <div class="col-sm-6 mt-2 select2-div">
                         <label for="">Exam Mode</label>
@@ -330,6 +336,14 @@
                     <div class="col-sm-6 mt-2">
                         <label for="">Total Questions</label>
                         <input type="text" placeholder="Total Questions" name="written_total_questions" value="{{ $sectionContent->written_total_questions }}" class="form-control" />
+                    </div>
+                    <div class="col-sm-6 mt-2">
+                        <label for="">Total Marks</label>
+                        <input type="text" placeholder="Total Marks" name="written_total_marks" value="{{ $sectionContent->written_total_marks }}" class="form-control" />
+                    </div>
+                    <div class="col-sm-6 mt-2">
+                        <label for="">Pass Mark</label>
+                        <input type="text" placeholder="Pass Mark" name="written_pass_mark" value="{{ $sectionContent->written_pass_mark }}" class="form-control" />
                     </div>
                     <div class="col-sm-12 mt-2">
                         <label for="">Exam Description</label>

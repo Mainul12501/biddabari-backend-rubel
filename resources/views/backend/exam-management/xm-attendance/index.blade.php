@@ -23,7 +23,7 @@
                     </div>
                     <div class="tab-content mt-4" id="pills-tabContent">
                         <div class="tab-pane fade show active" id="present" role="tabpanel" aria-labelledby="pills-home-tab">
-                            <table class="table" id="file-datatable">
+                            <table class="table" id="">
                                 <thead>
                                 <tr>
                                     <td>#</td>
@@ -47,7 +47,7 @@
                             </table>
                         </div>
                         <div class="tab-pane fade" id="absent" role="tabpanel" aria-labelledby="pills-profile-tab">
-                            <table class="table" id="file-datatable">
+                            <table class="table" id="file-datatable" style="width: 100%!important;">
                                 <thead>
                                 <tr>
                                     <td>#</td>

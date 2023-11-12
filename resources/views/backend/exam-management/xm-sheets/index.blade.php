@@ -19,22 +19,22 @@
                         </div>
                         <div class="col select2-div " >
                             <label for="">Exam Type Name</label>
-                            <select name="exam_type_id" class="form-control select2" id="xmTypeId" data-placeholder="Select a Exam">
-                                <option value=""></option>
+                            <select name="exam_type_id" class="form-control select2" id="xmTypeId" data-placeholder="Select Exam Type Name">
+                                <option value="" disabled >Select Exam Type Name</option>
 
                             </select>
                         </div>
                         <div class="col select2-div " >
                             <label for="">Select Section Name</label>
-                            <select name="exam_section_id" class="form-control select2" id="sectionId" data-placeholder="Select a Exam">
-                                <option value=""></option>
+                            <select name="exam_section_id" class="form-control select2" id="sectionId" data-placeholder="Select Section Name">
+                                <option value="" disabled>Select Section Name</option>
 
                             </select>
                         </div>
                         <div class="col select2-div " >
                             <label for="">Select Exam</label>
                             <select name="section_content_id" class="form-control select2" id="xmId" data-placeholder="Select a Exam">
-                                <option value=""></option>
+                                <option value="" disabled>Select a Exam</option>
 
                             </select>
                         </div>
@@ -193,8 +193,9 @@
                 method: "GET",
                 dataType: "JSON",
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
                     var option = '';
+                    option += '<option value="" selected disabled>Select Section Name</option>';
                     $.each(data, function (key, xmTypeId) {
                         option += '<option value="'+xmTypeId.id+'">'+xmTypeId.title+'</option>';
                     })
@@ -211,8 +212,9 @@
                 method: "GET",
                 dataType: "JSON",
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
                     var option = '';
+                    option += '<option value="" disabled>Select a Exam</option>';
                     $.each(data, function (key, sectionId) {
                         option += '<option value="'+sectionId.id+'">'+sectionId.title+'</option>';
                     })

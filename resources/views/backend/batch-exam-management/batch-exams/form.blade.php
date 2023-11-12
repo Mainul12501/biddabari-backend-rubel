@@ -56,6 +56,11 @@
 {{--                    <span class="text-danger" id="teachers_id"></span>--}}
 {{--                </div>--}}
                 <div class="col-md-6 mt-2">
+                    <label for="">Affiliate Amount</label>
+                    <input type="text" class="form-control" name="affiliate_amount" placeholder="Affiliate Amount" />
+                    <span class="text-danger" id="affiliate_amount"></span>
+                </div>
+                <div class="col-md-6 mt-2">
                     <label for="">Featured Video</label>
                     <input type="text"  name="featured_video_url" class="form-control" placeholder="Featured Video" />
                     <span class="text-danger" id="featured_video_url"></span>

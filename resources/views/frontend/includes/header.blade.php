@@ -60,8 +60,8 @@
             <div class="mobile-responsive-menu">
                 <div class="logo">
                     <a href="{{ route('front.home') }}">
-                                                <img src="{{ asset('/') }}frontend/assets/images/logos/logo-small.png" class="logo-one" alt="logo">
-                                                <img src="{{ asset('/') }}frontend/assets/images/logos/logo-small-white.png" class="logo-two" alt="logo">
+                                                <img src="{{ asset(isset($siteSettings) ? $siteSettings->logo : 'frontend/assets/images/logos/logo-small.png') }}" class="logo-one" alt="logo">
+                                                <img src="{{ asset(isset($siteSettings) ? $siteSettings->logo : 'frontend/assets/images/logos/logo-small-white.png') }}" class="logo-two" alt="logo">
                     </a>
                 </div>
             </div>
@@ -72,8 +72,8 @@
         <div class="container-fluid">
             <nav class="navbar navbar-expand-md navbar-light ">
                 <a class="navbar-brand" href="{{ route('front.home') }}">
-                                        <img src="{{ asset('/') }}frontend/assets/images/logos/logo.png" class="logo-one" alt="Logo">
-                                        <img src="{{ asset('/') }}frontend/assets/images/logos/logo-2.png" class="logo-two" alt="Logo">
+                                        <img src="{{ asset(isset($siteSettings) ? $siteSettings->logo : 'frontend/assets/images/logos/logo.png') }}" class="logo-one" alt="Logo">
+                                        <img src="{{ asset(isset($siteSettings) ? $siteSettings->logo : 'frontend/assets/images/logos/logo-2.png') }}" class="logo-two" alt="Logo">
                 </a>
                 <div class="nav-widget-form">
                     <form class="search-form search-form-bg">

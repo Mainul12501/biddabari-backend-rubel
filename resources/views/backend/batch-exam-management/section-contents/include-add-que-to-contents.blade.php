@@ -67,6 +67,11 @@
                                     @endforeach
                                 </ol>
                             </div>
+                            @if(isset($questionStore->mcq_ans_description))
+                                <div class="mt-2">
+                                    {!! $questionStore->mcq_ans_description !!}
+                                </div>
+                            @endif
                         </div>
                     @endif
                 </div>

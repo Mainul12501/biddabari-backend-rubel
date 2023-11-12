@@ -71,7 +71,7 @@
                             <div class="row">
                                 <div class="col-md-6 mt-2 select2-div">
                                     <label for="">Assign Students</label>
-                                    <select name="student_id" required class="form-control select2"  data-placeholder="Assign Student" >
+                                    <select name="student_id" required class="form-control js-example-basic-single"  data-placeholder="Assign Student" >
                                         <option label="Assign Students"></option>
                                         @if(isset($students))
                                             @foreach($students as $student)
@@ -207,6 +207,17 @@
         })
     </script>
 @endif
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2({
+            dropdownParent: $('#coursesModal')
+        });
+    });
+</script>
+
     {{--    edit course category--}}
     <script>
         $(document).on('click', '.edit-btn', function () {

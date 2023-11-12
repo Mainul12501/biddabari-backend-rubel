@@ -50,7 +50,7 @@
                             <h3>Checkout Summary</h3>
                             <ul>
                                 <li>Total <span>BDT {{ $course->price ?? 0 }}</span></li>
-{{--                                <li>Coupon <span>$20.00</span></li>--}}
+                                <li id="couponLi" class="d-none">Coupon <span>BDT <b id="couponAmount"></b></span></li>
                                 <li>Discount <span>BDT <b>{{ $discountAmount = $discountStatus == 'valid' ? (($course->discount_type == 1 ? $course->discount_amount : ($course->price * $course->discount_amount)/100)) : 0 }}</b></span></li>
                                 <li>Payable Total <span>BDT <b id="finalPrice">{{ $totalAmount = $course->price - (isset($discountAmount) ? $discountAmount : 0) }}</b></span></li>
                                 <li>
@@ -69,6 +69,7 @@
                             <input type="hidden" name="coupon_code" value="">
                             <input type="hidden" name="coupon_amount" value="">
                             <input type="hidden" name="ordered_for" value="course">
+                            <input type="hidden" name="rc" value="{{ $_GET['rc'] ?? '' }}">
                             <div class="payment-box">
                                 <div class="payment-method">
                                     <h3 class="f-s-26">Payment Method</h3>
@@ -154,6 +155,8 @@
                         $('input[name="coupon_code"]').val(couponCode);
                         $('input[name="coupon_amount"]').val(data.coupon.discount_amount);
                         $('#finalPrice').text(data.currentTotal);
+                        $('#couponAmount').text(data.coupon.discount_amount);
+                        $('#couponLi').removeClass('d-none');
                     } else if (data.status == 'false')
                     {
                         toastr.error(data.message);

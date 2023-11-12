@@ -27,7 +27,7 @@
                         <div class="col-md-4 col-sm-6">
                             <div class="blog-card">
                                 <a href="{{ route('front.blog-details', ['id' => $blog->id, 'slug' => $blog->slug]) }}">
-                                    <img src="{{ asset($blog->image) }}" alt="Blog" class="w-100 img-fluid" style="height: 280px" />
+                                    <img src="{{ asset(isset($blog->image) ? $blog->image : 'frontend/logo/biddabari-card-logo.jpg') }}" alt="Blog" class="w-100 img-fluid" style="height: 280px" />
                                 </a>
                                 <div class="content">
                                     <ul>

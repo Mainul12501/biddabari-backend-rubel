@@ -2,6 +2,7 @@
 
 namespace App\Models\Backend\UserManagement;
 
+use App\Models\Backend\BatchExamManagement\BatchExam;
 use App\Models\Backend\Course\Course;
 use App\Models\Scopes\Searchable;
 use App\Models\User;
@@ -80,5 +81,10 @@ class Student extends Model
     public function courses()
     {
         return $this->belongsToMany(Course::class);
+    }
+
+    public function batchExams()
+    {
+        return $this->belongsToMany(BatchExam::class);
     }
 }

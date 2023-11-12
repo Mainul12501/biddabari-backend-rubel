@@ -43,6 +43,11 @@
 {{--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" integrity="sha512-2L0dEjIN/DAmTV5puHriEIuQU/IL3CoPm/4eyZp3bM8dnaXri6lK8u6DC5L96b+YSs9f3Le81dDRZUSYeX4QcQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />--}}
 
 <style>
+    .img-16 {
+        height: 16px;
+        width: 16px;
+    }
+
     thead tr th {
         text-transform:capitalize!important;
     }

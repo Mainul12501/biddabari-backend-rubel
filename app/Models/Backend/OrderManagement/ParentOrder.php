@@ -2,6 +2,7 @@
 
 namespace App\Models\Backend\OrderManagement;
 
+use App\helper\ViewHelper;
 use App\Models\Backend\BatchExamManagement\BatchExam;
 use App\Models\Backend\BatchExamManagement\BatchExamSubscription;
 use App\Models\Backend\Course\Course;
@@ -44,11 +45,11 @@ class ParentOrder extends Model
 
     protected static $xmOrder;
 
-    public static function storeXmOrderInfo($request, $id = null)
+    public static function storeXmOrderInfo($request, $id = null, $parentOrderId = null)
     {
-        ParentOrder::updateOrCreate(['id' => $id], [
+        return ParentOrder::updateOrCreate(['id' => $parentOrderId], [
             'parent_model_id'           => $id,
-            'user_id'                   => auth()->id(),
+            'user_id'                   => ViewHelper::loggedUser()->id,
             'order_invoice_number'      => self::generateOrderNumber(),
             'ordered_for'               => $request->ordered_for,
             'payment_method'            => $request->payment_method,

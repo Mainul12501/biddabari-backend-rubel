@@ -47,6 +47,8 @@ use App\Http\Controllers\Backend\OrderManagement\ExamSubscriptionPackageOrderCon
 use App\Http\Controllers\Backend\OrderManagement\ProductOrderController;
 use App\Http\Controllers\Backend\ExamManagement\ExamSubscriptionPackageController;
 use App\Http\Controllers\Backend\OrderManagement\DeliveryOptionController;
+use App\Http\Controllers\Backend\AdditionalFeatureManagement\SiteSettings\SiteSettingsController;
+use App\Http\Controllers\Backend\AdditionalFeatureManagement\Affiliation\AffiliationController;
 
 
 Route::get('/test', function (){
@@ -187,6 +189,7 @@ Route::middleware([
     Route::resources([
         'popup-notifications'   => PopupNotificationsController::class,
         'advertisements'   => AdvertisementController::class,
+        'site-settings'   => SiteSettingsController::class,
     ]);
 
     //    Notice Management -- done By Riad --need check
@@ -242,4 +245,8 @@ Route::middleware([
     Route::post('/gallery-add-images', [GalleryController::class, 'addImages'])->name('galleries.add-images');
     Route::get('/galleries/get-images/{id}', [GalleryController::class, 'getImages'])->name('galleries.get-images');
     Route::get('/galleries/delete-image/{id}', [GalleryController::class, 'deleteImage'])->name('galleries.delete-image');
+    Route::get('/change-order-number/{model_name?}/{model_id?}/{order?}', [BatchExamSectionController::class, 'changeOrderNumber'])->name('change-order-number');
+
+    Route::get('/show-affiliate-users', [AffiliationController::class, 'showAffiliationHistory'])->name('show-affiliation-registrations');
+    Route::get('/show-affiliate-history/{id}', [AffiliationController::class, 'showAffiliateHistory'])->name('show-affiliate-history');
 });

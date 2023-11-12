@@ -11,22 +11,24 @@
                         <div>
                             <h2 class="quiz-name">Exam - {{ $exam->title }}</h2>
                             <span class="course-name d-block">{{ count($exam->questionStoresForClassXm) }} Questions</span>
+
                         </div>
                     </div>
                     <div class="mx-auto">
                         <a href="" class="btn sticky-submit-btn btn-outline-warning d-none">Submit</a>
                     </div>
                     <div class="ms-auto">
-                        <a href="" class="btn btn-lg start-btn btn-success">Start</a>
+                        <a href="javascript:void(0)" class="btn btn-lg start-btn btn-success">Start</a>
                     </div>
                     <div class="quiz-time d-none" id="quizDiv">
-{{--                            <div class="flipTimer">--}}
-{{--                                @if(isset($exam) && $exam->content_type == 'exam' ? $exam->exam_duration_in_minutes : $exam->written_exam_duration_in_minutes > 60)--}}
-{{--                                    <div class="hours"><span class="time-title">Hours</span></div>--}}
-{{--                                @endif--}}
-{{--                                <div class="minutes"><span class="time-title">Minutes</span></div>--}}
-{{--                                <div class="seconds"><span class="time-title">Seconds</span></div>--}}
-{{--                            </div>--}}
+
+                            <div class="flipTimer">
+                                @if(isset($exam) && $exam->content_type == 'exam' ? $exam->exam_duration_in_minutes : $exam->written_exam_duration_in_minutes > 60)
+                                    <div class="hours"><span class="time-title">Hours</span></div>
+                                @endif
+                                <div class="minutes"><span class="time-title">Minutes</span></div>
+                                <div class="seconds"><span class="time-title">Seconds</span></div>
+                            </div>
                     </div>
 
                 </div>
@@ -55,13 +57,13 @@
                                                 @foreach($question->questionOptions as $optionIndex => $questionOption)
                                                     @if(!empty($questionOption->option_title))
                                                         <div class="form-radio" >
-                                                            <input id="asw{{ $questionOption->id }}" type="checkbox" name="question[{{ $question->id }}][answer]" value="{{ $questionOption->id }}">
+                                                            <input class="asw{{ $questionOption->id }}" type="checkbox" name="question[{{ $question->id }}][answer]" value="{{ $questionOption->id }}">
 
                                                             <label class="answer-label" id="ali{{ $questionOption->id }}" data-que-id="{{ $question->id }}" data-ans-id="{{ $questionOption->id }}" for="asw{{ $questionOption->id }}">
                                                                 <span class="answer-title mx-0">{{$loop->iteration .' . '. $questionOption->option_title }}</span>
                                                             </label>
                                                             <span class="ps-1 d-none cont" id="ansCheck{{ $questionOption->id }}">
-                                                                    <span class="check-ans" style="cursor: pointer; color: black"><i class="fa-solid fa-check"></i></span>
+                                                                    <span class="check-ans" data-option-id="{{ $questionOption->id }}" style="cursor: pointer; color: black"><i class="fa-solid fa-check"></i></span>
                                                                     <span class="text-danger cancel-ans" style="cursor: pointer; color: black"><i class="fa-solid fa-xmark"></i></span>
                                                                 </span>
                                                         </div>
@@ -127,39 +129,56 @@
     <script>
         $(document).on('click', '.start-btn', function () {
             event.preventDefault()
-            if (confirm('Are you sure to start the exam?'))
-            {
-                $(this).addClass('d-none');
-                $('#quizDiv').removeClass('d-none');
-                $('#questionsCard').removeClass('d-none');
-                $('.finish-div').removeClass('d-none');
-                $('.sticky-submit-btn').removeClass('d-none');
+            Swal.fire({
+                title: 'Are you sure to start the exam?',
+                html:
+                    '<ol type="i" align="left">' +
+                    '<li>Make sure you have a stable internet connection.</li>'+
+                    '<li>Do not Close or refresh tab before submitting the Exam.</li>'+
+                    '<li>Do not Click the Back button on the ok browser while giving.</li>'+
+                    '</ol>',
+                text: "You won't be able to participate again!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Confirm!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Swal.fire(
+                    //     'Deleted!',
+                    //     'Your file has been deleted.',
+                    //     'success'
+                    // )
+                    $(this).addClass('d-none');
+                    $('#quizDiv').removeClass('d-none');
+                    $('#questionsCard').removeClass('d-none');
+                    $('.finish-div').removeClass('d-none');
+                    $('.sticky-submit-btn').removeClass('d-none');
 // timmer calling start
-{{--                    @if($exam->exam_is_strict == 1)--}}
-{{--                        @if(currentDateTimeYmdHi() < dateTimeFormatYmdHi($exam->exam_end_time))--}}
-{{--                            {{ $diffTime  = \Illuminate\Support\Carbon::now()->diffInMinutes($exam->exam_end_time) }}--}}
-{{--                        @else--}}
-{{--                            {{ $diffTime = 0 }}--}}
-{{--                        @endif--}}
-{{--                    @endif--}}
-{{--                var currentTime = new Date();--}}
-{{--                currentTime.setMinutes(currentTime.getMinutes() + {!! isset($exam) ? ($exam->content_type == 'exam' ? ($exam->exam_is_strict == 1 ? ++$diffTime :  $exam->exam_duration_in_minutes) : $exam->written_exam_duration_in_minutes) : 1 !!}); //set custom time instead 60--}}
 
-{{--                $('.flipTimer').flipTimer({--}}
-{{--                    direction: 'down',--}}
-{{--                    date: currentTime,--}}
-{{--                    callback: function () {--}}
-{{--                        $('body .action-button.finish').remove();--}}
-{{--                        $('#quizForm').submit();--}}
-{{--                    },--}}
-{{--                });--}}
-                // timmer calling end
-                var seconds = 1;
-                setInterval(function () {
-                    $('input[name="required_time"]').val(seconds++);
-                }, 1000)
-            }
+
+                    var currentTime = new Date();
+                    currentTime.setMinutes(currentTime.getMinutes() + {!! isset($exam) ? $exam->class_xm_duration_in_minutes : 1 !!}); //set custom time instead 60
+
+                    $('.flipTimer').flipTimer({
+                        direction: 'down',
+                        date: currentTime,
+                        callback: function () {
+                            $('body .action-button.finish').remove();
+                            $('#quizForm').submit();
+                        },
+                    });
+                    // timmer calling end
+                    var seconds = 1;
+                    setInterval(function () {
+                        $('input[name="required_time"]').val(seconds++);
+                    }, 1000)
+                }
+
+            })
         })
+
     </script>
 {{--    <script>--}}
 {{--        "use strict";--}}
@@ -230,6 +249,7 @@
                 backgroundColor : '#8efaa4',
                 // color           : 'white',
             });
+            $('.asw'+$(this).attr('data-option-id')).prop( "checked", true );
         })
         $(document).on('click', '.cancel-ans', function () {
             if($($(this).parent().parent()).hasClass('disabled-it'))

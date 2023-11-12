@@ -34,6 +34,7 @@ class BatchExam extends Model
         'is_featured',
         'is_approved',
         'status',
+        'affiliate_amount',
     ];
 
     protected $searchableFields = ['*'];
@@ -117,6 +118,7 @@ class BatchExam extends Model
         self::$batchExam->is_approved              = $request->is_approved == 'on' ? 1 : 0;
         self::$batchExam->is_featured              = $request->is_featured == 'on' ? 1 : 0;
         self::$batchExam->is_master_exam           = empty(static::first()) || $id == 1 ? 1 : 0;
+        self::$batchExam->affiliate_amount         = $request->affiliate_amount;
         self::$batchExam->save();
 
 //        self::$batchExam->teachers()->sync($request->teachers_id);

@@ -323,7 +323,7 @@
                                         <div class="d-flex flex-column">
                                             <div class="com-img-box">
                                                 @if(isset($comment->user->profile_photo_path))
-                                                    <img src="{{ asset( $comment->user->profile_photo_path ) }}" alt="user-image" class="comment-user-image">
+                                                    <img src="{{ asset( isset($comment->user->profile_photo_path) ? $comment->user->profile_photo_path : '' ) }}" alt="user-image" class="comment-user-image">
                                                 @else
                                                     <img src="https://www.vhv.rs/dpng/d/509-5096993_login-icon-vector-png-clipart-png-download-user.png" alt="user-image" class="comment-user-image">
                                                 @endif
@@ -356,7 +356,7 @@
                                         </div>
                                     </div>
                                 @else
-                                    <img src="{{ asset($course->banner) }}" class="w-100 img-fluid" style="height: 315px" alt="banner">
+                                    <img src="{{ asset(isset($course->banner) ? $course->banner : 'frontend/logo/biddabari-card-logo.jpg') }}" class="w-100 img-fluid" style="height: 315px" alt="banner">
                                 @endif
                                 <div class="content">
                                     <h1>{!! $course->title !!}</h1>
@@ -396,7 +396,7 @@
                                     </div>
                                     @if($course->is_paid == 1)
                                         @if($courseEnrollStatus == 'false')
-                                        <a href="{{ route('front.checkout', ['id' => $course->id, 'slug' => $course->slug]) }}" class="default-btn bg-default-color">কোর্সটি কিনুন</a>
+                                        <a href="{{ route('front.checkout', ['id' => $course->id, 'slug' => $course->slug, 'rc' => ($_GET['rc'] ?? '') ]) }}" class="default-btn bg-default-color">কোর্সটি কিনুন</a>
                                             <ul class="social-link">
     {{--                                            <li class="social-title">Share this course:</li>--}}
     {{--                                            <li>--}}
@@ -427,6 +427,7 @@
                                             @endif
                                                 <form action="{{ route('front.place-free-course-order', ['course_id' => $course->id]) }}" method="post" id="freeCourseOrderForm">
                                                     @csrf
+
                                                     <input type="hidden" name="ordered_for" value="course">
                                                 </form>
                                         @endif

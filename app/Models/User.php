@@ -100,6 +100,14 @@ class User extends Authenticatable
             {
                 $user->subscriptionOrders->each->delete();
             }
+            if (!empty($user->batchExamResults))
+            {
+                $user->batchExamResults->each->delete();
+            }
+            if (!empty($user->parentOrders))
+            {
+                $user->parentOrders->each->delete();
+            }
 //            if (!empty($user->examResults))
 //            {
 //                $user->examResults->each->delete();
@@ -126,11 +134,14 @@ class User extends Authenticatable
         self::$user->name       = $request->name;
         self::$user->email       = $request->email;
         self::$user->mobile       = $request->mobile;
-        if (!isset($id))
+        if (isset($request->password))
         {
             self::$user->password   = Hash::make($request->password);
         } else {
-            self::$user->password   = User::find($id)->password;
+            if (isset($id))
+            {
+                self::$user->password   = User::find($id)->password;
+            }
         }
         self::$user->status     = $request->status == 'on' ? 1 : ($request->request_form == 'student' ? 1 : 0);
         self::$user->save();

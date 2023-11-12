@@ -16,7 +16,7 @@
                                         </p>
                                         <div class="banner-btn">
                                             {{--                                        <a href="{{ route('front.course-details', ['id' => $homeSliderCourse->id, 'slug' => $homeSliderCourse->slug]) }}" class="default-btn border-radius-50">Read More</a>--}}
-                                            <button type="" class="default-btn border-radius-50 text-dark f-s-22" style="background-color: #dedede!important;">ভর্তি হতে এখানে ক্লিক করুন</button>
+                                            <button type="button" class="default-btn border-radius-50 text-dark f-s-22" style="background-color: #dedede!important;">ভর্তি হতে এখানে ক্লিক করুন</button>
                                         </div>
                                     </div>
                                 </div>
@@ -122,7 +122,7 @@
                         <div class="col-md-3">
                             <div class="categories-item" >
                                 <a href="{{ route('front.category-courses', ['id' => $courseCategory->id, 'slug' => $courseCategory->slug]) }}">
-                                    <img src="{{ asset($courseCategory->image) }}" alt="Categories" class="w-100 border-0" style="height: 200px">
+                                    <img src="{{ asset(isset($courseCategory->image) ? $courseCategory->image : 'frontend/logo/biddabari-card-logo.jpg') }}" alt="Categories" class="w-100 border-0" style="height: 200px">
                                 </a>
                                 <div class="content">
                                     <a href="{{ route('front.category-courses', ['id' => $courseCategory->id, 'slug' => $courseCategory->slug]) }}">
@@ -151,7 +151,7 @@
                         <div class="col-lg-4 col-md-6">
                             <div class="courses-item">
                                 <a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}">
-                                    <img src="{{ asset($course->banner) }}" alt="Courses" class="w-100 p-2" style="height: 230px"/>
+                                    <img src="{{ asset($course->banner ?? 'frontend/logo/biddabari-card-logo.jpg') }}" alt="Courses" class="w-100 p-2" style="height: 230px"/>
                                 </a>
                                 <a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}">
                                     <div class="content">
@@ -218,7 +218,7 @@
                                     <a href="javascript:void(0)" class="read-btn btn btn-warning mt-1"> Add To Cart </a>
                                 </div>
                                 <a href="{{ route('front.product-details',['id'=>$product->id, 'slug'=>$product->slug]) }}">
-                                    <img src="{{ asset($product->image) }}" alt="{{ $product->title }}">
+                                    <img src="{{ asset($product->image ?? 'frontend/logo/biddabari-card-logo.jpg') }}" alt="{{ $product->title }}">
                                 </a>
                                 <div class="content">
                                     <h3><a href="{{ route('front.product-details', ['id' => $product->id, 'slug' => $product->slug]) }}">{{ $product->title }}</a></h3>

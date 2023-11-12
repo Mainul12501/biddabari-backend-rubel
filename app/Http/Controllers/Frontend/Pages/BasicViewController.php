@@ -207,7 +207,7 @@ class BasicViewController extends Controller
         {
             $this->course = Course::whereId($id)->first();
 //            $existUser = CourseOrder::where(['user_id' => auth()->id(), 'course_id' => $this->course->id])->first();
-            $existUser = ParentOrder::where(['user_id' => auth()->id(), 'ordered_for' => 'course', 'parent_model_id' => $this->course->id])->first();
+            $existUser = ParentOrder::where(['user_id' => auth()->id(), 'ordered_for' => 'course', 'parent_model_id' => $this->course->id])->where('status', '!=', 'canceled')->first();
             if (!empty($existUser))
             {
                 if (str()->contains(url()->current(), '/api/'))

@@ -50,6 +50,9 @@ class BatchExamSectionContent extends Model
         'status',
         'available_at',
         'available_at_timestamp',
+
+        'written_total_marks',
+        'written_pass_mark',
     ];
 
     protected $searchableFields = ['*'];
@@ -75,6 +78,7 @@ class BatchExamSectionContent extends Model
 
     public static function saveOrUpdateCourseSectionContent ($request, $id = null)
     {
+        $lastRecord = static::where('batch_exam_section_id', $request->batch_exam_section_id)->latest()->first();
         if (isset($id))
         {
             self::$batchExamSectionContent                                             = BatchExamSectionContent::find($id);
@@ -86,6 +90,7 @@ class BatchExamSectionContent extends Model
         self::$batchExamSectionContent->content_type                                   = $request->content_type;
         self::$batchExamSectionContent->title                                          = $request->title;
         self::$batchExamSectionContent->available_at                                   = $request->available_at;
+        self::$batchExamSectionContent->order                                          = isset($id) ? static::find($id)->order : (isset($lastRecord) ? $lastRecord->order+1 : 1);
         self::$batchExamSectionContent->available_at_timestamp                         = strtotime($request->available_at);
 
         self::$batchExamSectionContent->is_paid                                        = $request->is_paid == 'on' ? 1 : 0;
@@ -131,6 +136,8 @@ class BatchExamSectionContent extends Model
         {
             self::$batchExamSectionContent->written_exam_duration_in_minutes           = $request->written_exam_duration_in_minutes;
             self::$batchExamSectionContent->written_total_questions                    = $request->written_total_questions;
+            self::$batchExamSectionContent->written_total_marks                    = $request->written_total_marks;
+            self::$batchExamSectionContent->written_pass_mark                    = $request->written_pass_mark;
             self::$batchExamSectionContent->written_description                        = $request->written_description;
             self::$batchExamSectionContent->written_is_strict                          = $request->written_is_strict == 'on' ? 1 : 0;
             self::$batchExamSectionContent->written_start_time                         = $request->written_start_time;
@@ -185,6 +192,8 @@ class BatchExamSectionContent extends Model
 
             self::$batchExamSectionContent->written_exam_duration_in_minutes           = $batchExamSectionContent->written_exam_duration_in_minutes;
             self::$batchExamSectionContent->written_total_questions                    = $batchExamSectionContent->written_total_questions;
+            self::$batchExamSectionContent->written_total_marks                    = $batchExamSectionContent->written_total_marks;
+            self::$batchExamSectionContent->written_pass_mark                    = $batchExamSectionContent->written_pass_mark;
             self::$batchExamSectionContent->written_description                        = $batchExamSectionContent->written_description;
             self::$batchExamSectionContent->written_is_strict                          = $batchExamSectionContent->written_is_strict;
             self::$batchExamSectionContent->written_start_time                         = $batchExamSectionContent->written_start_time;
@@ -194,6 +203,7 @@ class BatchExamSectionContent extends Model
             self::$batchExamSectionContent->written_publish_time                       = $batchExamSectionContent->written_publish_time;
             self::$batchExamSectionContent->written_publish_time_timestamp             = $batchExamSectionContent->written_publish_time_timestamp;
             self::$batchExamSectionContent->written_total_subject                      = $batchExamSectionContent->written_total_subject;
+            self::$batchExamSectionContent->order                                      = $batchExamSectionContent->order;
 
             self::$batchExamSectionContent->save();
         }

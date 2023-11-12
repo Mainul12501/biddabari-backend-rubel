@@ -135,7 +135,7 @@
                             <p class="text-center text-white f-s-38 mb-0">Latest Blogs</p>
                         </div>
                         @forelse($recentBlogs as $recentBlog)
-                            <div class="card-body py-1">
+                            <div class="card-body py-2 border-bottom">
                                 <a href="{{ route('front.blog-details', ['id' => $recentBlog->id, 'slug' => $recentBlog->slug]) }}">
                                     <div class="row">
                                         <div class="col-md-4 px-0">

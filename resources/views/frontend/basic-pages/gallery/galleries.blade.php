@@ -13,7 +13,7 @@
                             <div class="col-md-4 mt-3">
                                 <a href="{{ route('front.show-gallery-images', ['id' => $gallery->id, 'title' => str_replace(' ', '-', $gallery->title)]) }}" class="w-100">
                                     <div class="card">
-                                        <img src="{{ asset($gallery->banner) }}" alt="gallery-img" class="card-img-top" style="height: 280px" />
+                                        <img src="{{ asset(isset($gallery->banner) ? $gallery->banner : 'frontend/logo/biddabari-card-logo.jpg') }}" alt="gallery-img" class="card-img-top" style="height: 280px" />
                                         <div class="card-body py-0">
                                             <h2 class="mb-0">{{ $gallery->title }}</h2>
                                             <p class="pb-3">{{ $gallery->sub_title }}</p>

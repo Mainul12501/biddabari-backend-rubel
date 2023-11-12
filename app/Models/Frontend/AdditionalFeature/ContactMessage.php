@@ -5,7 +5,10 @@ namespace App\Models\Frontend\AdditionalFeature;
 use App\helper\ViewHelper;
 use App\Models\Backend\BatchExamManagement\BatchExam;
 use App\Models\Backend\BatchExamManagement\BatchExamSectionContent;
+use App\Models\Backend\BlogManagement\Blog;
 use App\Models\Backend\Course\Course;
+use App\Models\Backend\Course\CourseSectionContent;
+use App\Models\Backend\ProductManagement\Product;
 use App\Models\Scopes\Searchable;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -67,7 +70,7 @@ class ContactMessage extends Model
 
     public function batchExamSectionContent()
     {
-        return $this->belongsTo(BatchExamSectionContent::class);
+        return $this->belongsTo(BatchExamSectionContent::class, 'parent_model_id');
     }
 
     public function contactMessage()
@@ -78,5 +81,17 @@ class ContactMessage extends Model
     public function contactMessages()
     {
         return $this->hasMany(ContactMessage::class, 'parent_model_id');
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'parent_model_id');
+    }
+    public function blog()
+    {
+        return $this->belongsTo(Blog::class, 'parent_model_id');
+    }
+    public function courseSectionContent()
+    {
+        return $this->belongsTo(CourseSectionContent::class, 'parent_model_id');
     }
 }

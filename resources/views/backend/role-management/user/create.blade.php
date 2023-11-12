@@ -32,12 +32,12 @@
                             <label for="">Mobile</label>
                             <input type="text" name="mobile" {{ isset($user) ? 'readonly' : '' }} class="form-control" value="{{ isset($user) ? $user->mobile : '' }}" />
                         </div>
-                        @if(!isset($user))
+{{--                        @if(!isset($user))--}}
                         <div class="mt-2">
                             <label for="">Password</label>
-                            <input type="password" name="password" class="form-control" value="{{ isset($user) ? $user->password : '' }}" />
+                            <input type="password" name="password" class="form-control" value="" placeholder="{{ isset($user) ? 'Change' : 'Enter' }} Password" />
                         </div>
-                        @endif
+{{--                        @endif--}}
                         <div class="mt-2 select2-div">
                             <label for="">Roles</label>
                             <select name="roles[]" class="form-control select2" multiple required data-placeholder="Select A Role" id="">

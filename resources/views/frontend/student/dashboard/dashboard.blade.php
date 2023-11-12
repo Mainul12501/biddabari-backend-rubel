@@ -49,6 +49,7 @@
                                                 <th>Type</th>
                                                 <th>Price</th>
                                                 <th>Paid Amount</th>
+                                                <th>Due</th>
                                                 <th>Status</th>
                                             </tr>
                                         </thead>
@@ -66,6 +67,7 @@
                                                         </td>
                                                         <td>{{ $order->total_amount }}</td>
                                                         <td>{{ $order->paid_amount }}</td>
+                                                        <td>{{ $order->total_amount - $order->paid_amount }}</td>
                                                         <td>{{ $order->status }}</td>
                                                     </tr>
                                                 @endif

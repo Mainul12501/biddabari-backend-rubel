@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\CourseManagement\Course;
 
+use App\helper\ViewHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\Course\Course;
 use App\Models\Backend\Course\CourseSection;
@@ -20,7 +21,7 @@ class CourseSectionController extends Controller
     {
         abort_if(Gate::denies('manage-course-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         return view('backend.course-management.course.course-sections.index', [
-            'courseSections'   => CourseSection::whereCourseId(\request()->input('course_id'))->orderBy('id', 'ASC')->get(),
+            'courseSections'   => CourseSection::whereCourseId(\request()->input('course_id'))->orderBy('order', 'ASC')->get(),
             'pdfStoreCategories'   => PdfStoreCategory::whereStatus(1)->where('parent_id', 0)->select('id', 'title')->get(),
         ]);
     }
@@ -80,7 +81,10 @@ class CourseSectionController extends Controller
     public function destroy(string $id)
     {
         abort_if(Gate::denies('delete-course-section'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        CourseSection::find($id)->delete();
+        $courseSection = CourseSection::find($id);
+        $courseId = $courseSection->course_id;
+        $courseSection->delete();
+        ViewHelper::reorderSerials('course_section', $courseId);
         return back()->with('success', 'Course Section deleted Successfully.');
     }
 

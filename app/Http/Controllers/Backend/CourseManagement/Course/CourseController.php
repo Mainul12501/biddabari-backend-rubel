@@ -226,6 +226,7 @@ class CourseController extends Controller
                 return back()->with('error', 'Student Already assigned this course.');
             }
         }
+
         ParentOrder::assignNewStudentToModel('course', $request, $id);
         $this->course->students()->attach($request->student_id);
         return back()->with('success', 'Student assigned to course Successfully.');
@@ -235,6 +236,7 @@ class CourseController extends Controller
         abort_if(Gate::denies('detach-course-student'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $this->course = Course::find($id);
         $this->course->students()->detach($request->student_id);
+        ParentOrder::where(['parent_model_id' => $id, 'user_id' => Student::find($request->student_id)->user_id])->first()->update(['status' => 'canceled']);
         return back()->with('success', 'Student assigned to course Successfully.');
     }
 

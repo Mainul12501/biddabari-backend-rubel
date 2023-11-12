@@ -30,7 +30,11 @@
 
 {{--                                                                            PDF--}}
 {{--                                                                            <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>--}}
-                                                                            <p class="f-s-20"><i class="fa-regular fa-file-pdf"></i> {{ $courseSectionContent->title }}</p>
+                                                                            <p class="f-s-20">
+{{--                                                                                <i class="fa-regular fa-file-pdf"></i>--}}
+                                                                                <img src="{{ asset('/') }}backend/assets/images/icons-bb/pdf.jpg" alt="pdf icon" class="img-16" />
+                                                                                {{ $courseSectionContent->title }}
+                                                                            </p>
                                                                         </div>
                                                                     </div>
                                                                 </a>
@@ -63,7 +67,11 @@
                                                                             <div class="accordion-content-left">
 {{--                                                                                Go Live--}}
 {{--                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>--}}
-                                                                                <p class="f-s-20"><i class="fa-solid fa-tower-broadcast"></i> {{ $courseSectionContent->title }}</p>
+                                                                                <p class="f-s-20">
+{{--                                                                                    <i class="fa-solid fa-tower-broadcast"></i>--}}
+                                                                                    <img src="{{ asset('/') }}backend/assets/images/icons-bb/live-icon.jpg" alt="pdf icon" class="img-16" />
+                                                                                    {{ $courseSectionContent->title }}
+                                                                                </p>
                                                                             </div>
                                                                         </div>
                                                                     </a>
@@ -91,7 +99,11 @@
                                                                             <div class="accordion-content-left">
                                                                                 {{--                                                                        Assignment File--}}
 {{--                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>--}}
-                                                                                <p class="f-s-20"><i class="fa-regular fa-copy"></i> {{ $courseSectionContent->title }}</p>
+                                                                                <p class="f-s-20">
+{{--                                                                                    <i class="fa-regular fa-copy"></i>--}}
+                                                                                    <img src="{{ asset('/') }}backend/assets/images/icons-bb/Assignment.jpg" alt="pdf icon" class="img-16" />
+                                                                                    {{ $courseSectionContent->title }}
+                                                                                </p>
                                                                             </div>
                                                                         </div>
                                                                     </a>
@@ -110,7 +122,11 @@
                                                                     <a href="javascript:void(0)" class="w-100 get-text-data" data-has-class-xm="{{ $courseSectionContent->has_class_xm }}" data-complete-class-xm="{{ $courseSectionContent->classXmStatus }}" data-content-id="{{ $courseSectionContent->id }}">
                                                                         <div class="accordion-content-list pt-2 pb-0">
                                                                             <div class="accordion-content-left">
-                                                                                <p class="f-s-20"><i class="fa-regular fa-note-sticky"></i> {{ $courseSectionContent->title }}</p>
+                                                                                <p class="f-s-20">
+{{--                                                                                    <i class="fa-regular fa-note-sticky"></i>--}}
+                                                                                    <img src="{{ asset('/') }}backend/assets/images/icons-bb/MCQ.jpg" alt="pdf icon" class="img-16" />
+                                                                                    {{ $courseSectionContent->title }}
+                                                                                </p>
                                                                             </div>
                                                                         </div>
                                                                     </a>
@@ -120,7 +136,11 @@
                                                                         <div class="accordion-content-list pt-2 pb-0">
                                                                             <div class="accordion-content-left">
                                                                                 {{--                                                                        Written Exam--}}
-                                                                                <p class="f-s-20"><i class="fa-regular fa-paste"></i> {{ $courseSectionContent->title }}</p>
+                                                                                <p class="f-s-20">
+{{--                                                                                    <i class="fa-regular fa-paste"></i>--}}
+                                                                                    <img src="{{ asset('/') }}backend/assets/images/icons-bb/Written-exam-icon.jpg" alt="pdf icon" class="img-16" />
+                                                                                    {{ $courseSectionContent->title }}
+                                                                                </p>
                                                                             </div>
                                                                         </div>
                                                                     </a>

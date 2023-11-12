@@ -13,11 +13,13 @@ use App\Http\Controllers\Frontend\FrontExam\FrontExamController;
 use App\Http\Controllers\Backend\ExamManagement\ExamSubscriptionPackageController;
 use App\Http\Controllers\Backend\UserManagement\RegularUser\UserController;
 
+use App\Http\Controllers\Backend\AdditionalFeatureManagement\Affiliation\AffiliationController;
+
 Route::get('/te', function (){
 //    return explode('https://www.youtube.com/watch?v=', 'https://www.youtube.com/watch?v=i0QcjNi2c8E')[1];
 //    return \Illuminate\Support\Facades\Hash::make('superadmin');
 //    shell_exec('composer require "darryldecode/cart"');
-    phpinfo();
+//    return phpinfo();
 //    $user = auth()->user();
 //    return \App\Models\User::whereId(auth()->id())->with(['roles' => function($roles){
 //        $roles->with('permissions')->get();
@@ -26,6 +28,47 @@ Route::get('/te', function (){
 //    {
 //        File::makeDirectory(public_path('backend/assets/uploaded-files/course-written-xm-ans-files'));
 //    }
+
+    foreach (\App\Models\Backend\Course\Course::all() as  $course)
+    {
+        if (isset($course->courseSections))
+        {
+            foreach ($course->courseSections as $key => $courseSection)
+            {
+                $courseSection->order   = ++$key;
+                $courseSection->save();
+                if (count($courseSection->courseSectionContents) > 0)
+                {
+                    foreach ($courseSection->courseSectionContents as $index => $courseSectionContent)
+                    {
+                        $courseSectionContent->order    = ++$index;
+                        $courseSectionContent->save();
+                    }
+                }
+            }
+        }
+
+    }
+    foreach (\App\Models\Backend\BatchExamManagement\BatchExam::all() as  $batchExam)
+    {
+        if (isset($batchExam->batchExamSections))
+        {
+            foreach ($batchExam->batchExamSections as $k => $BatchExamSection)
+            {
+                $BatchExamSection->order   = ++$k;
+                $BatchExamSection->save();
+                if (count($BatchExamSection->batchExamSectionContents) > 0)
+                {
+                    foreach ($BatchExamSection->batchExamSectionContents as $i => $batchExamSectionContent)
+                    {
+                        $batchExamSectionContent->order    = ++$i;
+                        $batchExamSectionContent->save();
+                    }
+                }
+            }
+        }
+    }
+
 });
 Route::get('/exam-test', [FrontExamController::class, 'xmTestForDev'])->name('exm-test-for-dev');
 Route::get('/pdf-view-test', [FrontExamController::class, 'pdfViewTest'])->name('pdf-view-test');
@@ -125,6 +168,9 @@ Route::as('front.')->group(function (){
 
             Route::get('today-classes', [FrontViewTwoController::class, 'todayClasses'])->name('today-classes');
             Route::get('today-exams', [FrontViewTwoController::class, 'todayExams'])->name('today-exams');
+//            student affiliation
+            Route::get('my-affiliation', [StudentController::class, 'myAffiliation'])->name('my-affiliation');
+            Route::get('generate-user-affiliate-code', [AffiliationController::class, 'generateAffiliateCode'])->name('generate-user-affiliate-code');
         });
     });
 });

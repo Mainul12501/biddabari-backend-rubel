@@ -175,6 +175,7 @@
                                                 @csrf
                                                 <input type="hidden" name="total_amount" id="totalAmount" />
                                                 <input type="hidden" name="ordered_for" value="batch_exam" />
+                                                <input type="hidden" name="rc" value="{{ $_GET['rc'] ?? '' }}" />
                                                 <div class="payment-box">
                                                     <div class="payment-method">
                                                         <h3>Payment Method</h3>
@@ -273,13 +274,20 @@
     <script>
         $(function () {
             $('.select2').select2();
+            @if(isset($_GET['rc']) && isset($_GET['bxid']) && $_GET['bxid'] != '' && $_GET['rc'] != '')
 
+                batchExamDetailsShowModal({!! $_GET['bxid'] !!})
+            @endif
         })
     </script>
+
     <script>
         $(document).on('click', '.open-modal', function () {
             var xmId = $(this).attr('data-xm-id');
-            {{--            @if(auth()->check())--}}
+            batchExamDetailsShowModal(xmId);
+        })
+        function batchExamDetailsShowModal(xmId)
+        {
             $.ajax({
                 url: base_url+"category-exams/"+xmId,
                 method: "GET",
@@ -350,10 +358,7 @@
                     $('#staticBackdrop').modal('show');
                 }
             })
-            {{--            @else--}}
-            //                 toastr.error('Please login first');
-            {{--            @endif--}}
-        })
+        }
         $(document).on('click', '.select-package', function () {
             var sellPrice = $(this).attr('data-package-sell-price');
             $('#totalAmount').val(sellPrice);

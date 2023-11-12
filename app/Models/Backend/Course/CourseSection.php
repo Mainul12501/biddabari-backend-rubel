@@ -40,6 +40,7 @@ class CourseSection extends Model
 
     public static function createOrUpdateCourseSection ($request, $id = null)
     {
+        $lastRecord = static::where('course_id', $request->course_id)->latest()->first();
         if (isset($id))
         {
             self::$courseSection = CourseSection::find($id);
@@ -52,6 +53,7 @@ class CourseSection extends Model
         self::$courseSection->note = $request->note;
         self::$courseSection->is_paid = $request->is_paid == 'on' ? 1 : 0;
         self::$courseSection->status = $request->status == 'on' ? 1 : 0;
+        self::$courseSection->order = isset($id) ? static::find($id)->order : (isset($lastRecord) ? $lastRecord->order+1 : 1);
         self::$courseSection->save();
     }
 
@@ -66,6 +68,7 @@ class CourseSection extends Model
             $courseSection->note            = $course_section->note;
             $courseSection->is_paid         = $course_section->is_paid;
             $courseSection->status          = $course_section->status;
+            $courseSection->order          = $course_section->order;
             $courseSection->save();
             if (isset($course_section->course_section_contents) && !empty($course_section->course_section_contents) && count($course_section->course_section_contents) > 0)
             {
@@ -80,6 +83,10 @@ class CourseSection extends Model
     }
 
     public function courseSectionContents()
+    {
+        return $this->hasMany(CourseSectionContent::class)->orderBy('order', 'ASC');
+    }
+    public function courseSectionContentsByAsc()
     {
         return $this->hasMany(CourseSectionContent::class)->orderBy('id', 'ASC');
     }

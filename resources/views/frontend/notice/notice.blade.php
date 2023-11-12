@@ -92,7 +92,7 @@
                             <p class="text-center text-white f-s-38 mb-0">Latest Notices</p>
                         </div>
                         @forelse($notices as $notice)
-                            <div class="card-body py-3">
+                            <div class="card-body py-2 border-bottom">
                                 <a href="{{ route('front.notices', ['notice-id' => $notice->id]) }}" class="w-100">
                                     <div class="row">
                                         <div class="col-md-4 px-0">

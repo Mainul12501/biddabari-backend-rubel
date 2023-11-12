@@ -30,7 +30,7 @@ class QuestionStoreController extends Controller
         if (isset($_GET['topic_id']) && isset($_GET['q-type']))
         {
             $this->questionTopic = QuestionTopic::whereId($_GET['topic_id'])->select('id', 'name', 'type', 'status')->with(['questionStores' => function($questionStores){
-                $questionStores->where('question_type', $_GET['q-type'] == 'mcq' ? 'MCQ' : 'Written')->get();
+                $questionStores->where('question_type', $_GET['q-type'] == 'mcq' ? 'MCQ' : 'Written')->orderBy('id', 'ASC')->get();
             }])->first();
 
             return view('backend.question-management.question-stores.index', [
@@ -188,8 +188,8 @@ class QuestionStoreController extends Controller
                         $questionStore->status      = 1;
                         $questionStore->save();
                         array_push($this->questionStoreIds, $questionStore->id);
-                        $optionSingleString = "$this->optionOne,$this->optionTwo,$this->optionThree,$this->optionFour,$this->optionFive";
-                        foreach (explode(',', $optionSingleString) as $option)
+                        $optionSingleString = "$this->optionOne$$$$this->optionTwo$$$$this->optionThree$$$$this->optionFour$$$$this->optionFive";
+                        foreach (explode('$$$', $optionSingleString) as $option)
                         {
                             if ($option) {
                                 $questionOption = new QuestionOption();

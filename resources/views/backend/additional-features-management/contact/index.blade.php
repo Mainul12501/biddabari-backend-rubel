@@ -14,12 +14,12 @@
 
 
 
-                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pageComments" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Home</button>
+                            <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pageComments" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Contact Us Page</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#otherComments" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</button>
+                            <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#otherComments" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Other Sources</button>
                         </li>
                     </ul>
                     <div class="tab-content" id="pills-tabContent">
@@ -89,6 +89,7 @@
                                         <th>#</th>
                                         <th>User Info</th>
                                         <th>Model Name</th>
+                                        <th>Content Name</th>
                                         <th>Message</th>
                                         <th>Status</th>
                                         <th>Actions</th>
@@ -110,7 +111,28 @@
                                                         @endif
                                                         <span>Date: {{ $contact->created_at->format('M d, Y g:i') }}</span>
                                                     </td>
-                                                    <td></td>
+                                                    <td>
+                                                        @if($contact->type =='course')
+                                                            {{ $contact->course->title }}
+                                                        @elseif($contact->type =='batch_exam')
+                                                            {{ $contact->batchExam->title }}
+                                                        @elseif($contact->type =='product')
+                                                            {{ $contact->product->title }}
+                                                        @elseif($contact->type =='blog')
+                                                            {{ $contact->blog->title }}
+                                                        @elseif($contact->type =='course_content')
+                                                            {{ $contact->courseSectionContent->courseSection->course->title }}
+                                                        @elseif($contact->type =='batch_exam_content')
+                                                            {{ $contact->batchExamSectionContent->batchExamSection->batchExam->title }}
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if($contact->type =='course_content')
+                                                            {{ $contact->courseSectionContent->title }}
+                                                        @elseif($contact->type =='batch_exam_content')
+                                                            {{ $contact->batchExamSectionContent->title }}
+                                                        @endif
+                                                    </td>
                                                     <td>{!! str()->words(strip_tags($contact->message), 80) !!}</td>
                                                     <td>
                                                         <a href="" class="badge change-seen-status-{{ $contact->id }} badge-sm bg-primary">{{ $contact->is_seen == 1 ? 'Seen' : 'Unseen' }}</a>

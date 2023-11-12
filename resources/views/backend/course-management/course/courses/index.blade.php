@@ -106,7 +106,11 @@
                                         </td>
                                         <td> ৳ {{ $course->partial_payment }}</td>
                                         <td>
-                                            <a href="javascript:void(0)" class="nav-link">{{ $course->status == 1 ? 'Published' : 'Unpublished' }}</a>
+                                            <a href="javascript:void(0)" class="badge badge-sm badge-orange-light text-dark">{{ $course->status == 1 ? 'Published' : 'Unpublished' }}</a>
+                                            <br>
+                                            <a href="javascript:void(0)" class="badge badge-sm badge-success-light text-dark">{{ $course->is_paid == 1 ? 'Paid' : 'Free' }}</a>
+                                            <br>
+                                            <a href="javascript:void(0)" class="badge badge-sm badge-default text-dark">{{ $course->is_featured == 1 ? 'Featured' : 'Not Featured' }}</a>
                                         </td>
                                         <td class="">
                                             <a href="{{ route('export-course-json', ['model_id' => $course->id, 'model' => 'course']) }}" data-course-id="{{ $course->id }}"  class="btn btn-sm mt-1 btn-secondary " title="Export course to JSON">
@@ -232,6 +236,7 @@
             $("#dateTime1").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $("#dateTime2").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $("#dateTime3").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
+            $("#admissionLastDate").datetimepicker({format: "yyyy-mm-dd hh:ii", autoclose: !0});
             $('.select2').select2();
             $('input[data-dtp="dtp_Nufud"]').val(currentDateTime);
         })

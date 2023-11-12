@@ -30,7 +30,11 @@
                         {!! isset($batchExam) ? $batchExam->description : '' !!}
                     </div>
                 </div>
-
+                <div class="col-md-6 mt-2">
+                    <label for="">Affiliate Amount</label>
+                    <input type="text" class="form-control" disabled name="affiliate_amount" value="{{ isset($batchExam) ? $batchExam->affiliate_amount : '' }}" placeholder="Affiliate Amount" />
+                    <span class="text-danger" id="affiliate_amount"></span>
+                </div>
                 <div class="col-md-6 mt-2">
                     <label for="">Featured Video</label>
                     <input type="text" disabled value="{{ isset($batchExam) ? $batchExam->featured_video_url : '' }}" name="featured_video_url" class="form-control" placeholder="Featured Video" />

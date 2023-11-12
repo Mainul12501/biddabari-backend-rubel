@@ -34,6 +34,11 @@
                                         @endforeach
                                     </ol>
                                 </div>
+                                @if(isset($questionStore->mcq_ans_description))
+                                    <div>
+                                        {!! $questionStore->mcq_ans_description !!}
+                                    </div>
+                                @endif
                             </div>
                         @endif
 

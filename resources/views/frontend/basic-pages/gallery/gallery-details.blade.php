@@ -11,8 +11,8 @@
                     <div class="row mt-4">
                         @forelse($gallery->galleryImages as $galleryImage)
                             <div class="col-md-4 mt-3">
-                                <a href="{{ asset($galleryImage->image_url) }}" class="w-100" style="" data-toggle="lightbox" data-gallery="{{ str_replace(' ', '-', $gallery->title) }}-gallery" data-caption="image-description">
-                                    <img src="{{ asset($galleryImage->image_url) }}" alt="" class="img-fluid w-100" style="height: 350px;">
+                                <a href="{{ asset(isset($galleryImage->image_url) ? $galleryImage->image_url : 'frontend/logo/biddabari-card-logo.jpg') }}" class="w-100" style="" data-toggle="lightbox" data-gallery="{{ str_replace(' ', '-', $gallery->title) }}-gallery" data-caption="image-description">
+                                    <img src="{{ asset(isset($galleryImage->image_url) ? $galleryImage->image_url : 'frontend/logo/biddabari-card-logo.jpg') }}" alt="" class="img-fluid w-100" style="height: 350px;">
                                 </a>
                             </div>
                         @empty

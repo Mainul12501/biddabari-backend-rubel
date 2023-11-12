@@ -81,6 +81,6 @@ class QuestionTopic extends Model
 
     public function questionStores()
     {
-        return $this->belongsToMany(QuestionStore::class);
+        return $this->belongsToMany(QuestionStore::class)->orderBy('id', 'ASC');
     }
 }

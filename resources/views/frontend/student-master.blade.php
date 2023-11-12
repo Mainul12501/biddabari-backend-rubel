@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    {!! isset($siteSettings) ? $siteSettings->default_seo_code_on_header : '' !!}
     <link rel="stylesheet" href="{{ asset('/') }}frontend/assets/css/plugins.css">
 
     <link rel="stylesheet" href="{{ asset('/') }}frontend/assets/css/iconplugins.css">
@@ -37,6 +37,11 @@
         /*body {*/
         /*    font-family: 'Siyam Rupali', sans-serif;*/
         /*}*/
+
+        .img-16 {
+            height: 16px;
+            width: 16px;
+        }
 
         .box-shadow {
             box-shadow: 1px 1px 10px 0px rgba(0,0,0,0.75);
@@ -107,7 +112,7 @@
                             <a class="nav-link {{ request()->is('student/my-courses') ? 'st-menu-active' : '' }}" href="{{ route('front.student.my-courses') }}">My Courses</a>
                         </li>
                         <li class="nav-item border-1">
-                            <a class="nav-link {{ request()->is('student/my-exams') ? 'st-menu-active' : '' }}" href="{{ route('front.student.my-exams') }}">My Exams</a>
+                            <a class="nav-link {{ request()->is('student/my-exams') ? 'st-menu-active' : '' }}" href="{{ route('front.student.my-exams') }}">My Batch Exams</a>
                         </li>
                         <li class="nav-item border-1">
                             <a class="nav-link {{ request()->is('student/my-orders') ? 'st-menu-active' : '' }}" href="{{ route('front.student.my-orders') }}">My Orders</a>
@@ -115,9 +120,9 @@
                         <li class="nav-item border-1">
                             <a class="nav-link {{ request()->is('student/view-profile') ? 'st-menu-active' : '' }}" href="{{ route('front.student.view-profile') }}">My Profile</a>
                         </li>
-                        {{--                            <li class="nav-item border-1">--}}
-                        {{--                                <a class="nav-link" href="#">My Affiliation</a>--}}
-                        {{--                            </li>--}}
+                        <li class="nav-item border-1">
+                            <a class="nav-link" href="{{ route('front.student.my-affiliation') }}">My Affiliation</a>
+                        </li>
                         <li class="nav-item border-1">
                             <a class="nav-link" href="{{ route('front.student.change-password') }}">Change Password</a>
                         </li>
@@ -202,6 +207,7 @@
     let base_url = {!! json_encode(url('/')) !!}+'/';
 </script>
 @stack('script')
+{!! isset($siteSettings) ? $siteSettings->default_seo_code_on_footer : '' !!}
 </body>
 </html>
 

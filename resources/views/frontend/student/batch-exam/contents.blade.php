@@ -54,7 +54,10 @@
                                                                             <div class="accordion-content-left">
 
     {{--                                                                            PDF--}}
-                                                                                <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $batchExamSectionContent->title }}</p>
+                                                                                <p class="f-s-20">
+{{--                                                                                    <i class="ri-file-text-line"></i>--}}
+                                                                                    <img src="{{ asset('/') }}backend/assets/images/icons-bb/pdf.jpg" alt="pdf icon" class="img-16" />
+                                                                                    {{ $batchExamSectionContent->title }}</p>
                                                                             </div>
                                                                         </div>
                                                                     </a>
@@ -73,7 +76,11 @@
                                                                         <a href="javascript:void(0)" class="w-100 get-text-data" data-content-id="{{ $batchExamSectionContent->id }}">
                                                                             <div class="accordion-content-list pt-2 pb-0">
                                                                                 <div class="accordion-content-left">
-                                                                                    <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $batchExamSectionContent->title }}</p>
+                                                                                    <p class="f-s-20">
+{{--                                                                                        <i class="ri-file-text-line"></i> --}}
+                                                                                        <img src="{{ asset('/') }}backend/assets/images/icons-bb/MCQ.jpg" alt="pdf icon" class="img-16" />
+                                                                                        {{ $batchExamSectionContent->title }}
+                                                                                    </p>
                                                                                 </div>
                                                                             </div>
                                                                         </a>
@@ -83,7 +90,11 @@
                                                                             <div class="accordion-content-list pt-2 pb-0">
                                                                                 <div class="accordion-content-left">
                                                                                     {{--                                                                        Written Exam--}}
-                                                                                    <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $batchExamSectionContent->title }}</p>
+                                                                                    <p class="f-s-20">
+{{--                                                                                        <i class="ri-file-text-line"></i> --}}
+                                                                                        <img src="{{ asset('/') }}backend/assets/images/icons-bb/Written-exam-icon.jpg" alt="pdf icon" class="img-16" />
+                                                                                        {{ $batchExamSectionContent->title }}
+                                                                                    </p>
                                                                                 </div>
                                                                             </div>
                                                                         </a>

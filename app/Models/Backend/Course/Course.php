@@ -56,6 +56,7 @@ class Course extends Model
         'discount_end_date',
         'discount_end_date_timestamp',
         'admission_last_date',
+        'affiliate_amount',
     ];
 
     protected $searchableFields = ['*'];
@@ -139,6 +140,7 @@ class Course extends Model
             $vidUrlString = explode('https://youtu.be/', $request->featured_video_url)[1];
         }
         self::$course->featured_video_url       = isset($vidUrlString) ? $vidUrlString : (isset($id) ? self::$course->featured_video_url : null);
+        self::$course->affiliate_amount         = $request->affiliate_amount;
         self::$course->featured_video_vendor    = $request->featured_video_vendor;
         self::$course->total_class              = $request->total_class;
         self::$course->total_hours               = $request->total_hours;
@@ -186,6 +188,7 @@ class Course extends Model
         self::$course->fack_student_count       = $data->fack_student_count;
         self::$course->featured_video_url       = $data->featured_video_url;
         self::$course->featured_video_vendor    = $data->featured_video_vendor;
+        self::$course->affiliate_amount              = $data->affiliate_amount;
         self::$course->total_class              = $data->total_class;
         self::$course->total_hours               = $data->total_hours;
         self::$course->total_video              = $data->total_video;

@@ -34,6 +34,7 @@ class Product extends Model
         'discount_start_date_timestamp',
         'discount_end_date',
         'discount_end_date_timestamp',
+        'affiliate_amount',
     ];
 
     protected $searchableFields = ['*'];
@@ -60,6 +61,7 @@ class Product extends Model
             'specification'         => $request->specification,
             'other_details'         => $request->other_details,
             'stock_amount'          => $request->stock_amount,
+            'affiliate_amount'      => $request->affiliate_amount,
             'is_featured'           => $request->is_featured == 'on' ? 1 : 0,
             'status'                => $request->status == 'on' ? 1 : 0,
         ]);

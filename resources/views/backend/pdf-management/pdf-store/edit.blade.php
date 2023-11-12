@@ -11,21 +11,24 @@
         <div class="modal-body">
             <div class="card card-body">
                 <div class="row mt-2">
-                    <div class="col-md-6 mt-2 select2-div">
-                        <label for="">Category</label>
-                        <select name="pdf_store_category_id" required class="form-control select2" data-placeholder="Select a Category" id="discountType">
-                            <option value=""></option>
-                            @foreach($pdfStoreCategories as $pdfStoreCategory)
-                                <option value="{{ $pdfStoreCategory->id }}" {{ isset($pdfStore) && $pdfStoreCategory->id == $pdfStore->pdf_store_category_id ? 'selected' : '' }} >{{ $pdfStoreCategory->title }}</option>
-                                @if(!empty($pdfStoreCategory))
-                                    @if(count($pdfStoreCategory->pdfStoreCategories) > 0)
-                                        @include('backend.pdf-management.pdf-store.pdf-category-loop', ['pdfStoreCategory' => $pdfStoreCategory, 'child' => 1])
-                                    @endif
-                                @endif
-                            @endforeach
-                        </select>
-                        <span class="text-danger" id="pdf_store_category_id">{{ $errors->has('pdf_store_category_id') ? $errors->first('pdf_store_category_id') : "" }}</span>
-                    </div>
+                    <input type="hidden" name="pdf_store_category_id" value="{{ $pdfStore->pdf_store_category_id }}" />
+
+{{--                        <div class="col-md-6 mt-2 select2-div">--}}
+{{--                            <label for="">Category</label>--}}
+{{--                            <select name="pdf_store_category_id" required class="form-control select2" data-placeholder="Select a Category" id="discountType">--}}
+{{--                                <option value=""></option>--}}
+{{--                                @foreach($pdfStoreCategories as $pdfStoreCategory)--}}
+{{--                                    <option value="{{ $pdfStoreCategory->id }}" {{ isset($pdfStore) && $pdfStoreCategory->id == $pdfStore->pdf_store_category_id ? 'selected' : '' }} >{{ $pdfStoreCategory->title }}</option>--}}
+{{--                                    @if(!empty($pdfStoreCategory))--}}
+{{--                                        @if(count($pdfStoreCategory->pdfStoreCategories) > 0)--}}
+{{--                                            @include('backend.pdf-management.pdf-store.pdf-category-loop', ['pdfStoreCategory' => $pdfStoreCategory, 'child' => 1])--}}
+{{--                                        @endif--}}
+{{--                                    @endif--}}
+{{--                                @endforeach--}}
+{{--                            </select>--}}
+{{--                            <span class="text-danger" id="pdf_store_category_id">{{ $errors->has('pdf_store_category_id') ? $errors->first('pdf_store_category_id') : "" }}</span>--}}
+{{--                        </div>--}}
+
                     <div class="col-md-6 mt-2">
                         <label for="">Title</label>
                         <input type="text" class="form-control" required name="title" value="{{ $pdfStore->title }}" placeholder="Title" />

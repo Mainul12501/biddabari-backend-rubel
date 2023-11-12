@@ -6,9 +6,12 @@ namespace App\helper;
 
 use App\Models\Backend\BatchExamManagement\BatchExam;
 use App\Models\Backend\BatchExamManagement\BatchExamResult;
+use App\Models\Backend\BatchExamManagement\BatchExamSection;
+use App\Models\Backend\BatchExamManagement\BatchExamSectionContent;
 use App\Models\Backend\Course\Course;
 use App\Models\Backend\Course\CourseClassExamResult;
 use App\Models\Backend\Course\CourseExamResult;
+use App\Models\Backend\Course\CourseSection;
 use App\Models\Backend\ExamManagement\ExamOrder;
 use App\Models\Backend\ExamManagement\SubscriptionOrder;
 use App\Models\Backend\OrderManagement\ParentOrder;
@@ -349,6 +352,42 @@ class ViewHelper
                 }
             } else{
                 return $batchExam->price;
+            }
+        }
+    }
+
+    public static function reorderSerials($modelType, $modelParentId)
+    {
+        if ($modelType == 'course_section')
+        {
+            $course = Course::find($modelParentId);
+            foreach ($course->courseSections as $key => $courseSection)
+            {
+                $courseSection->order   = ++$key;
+                $courseSection->save();
+            }
+        } elseif ($modelType == 'course_section_content')
+        {
+            $courseSection = CourseSection::find($modelParentId);
+            foreach ($courseSection->courseSectionContents as $index => $courseSectionContent)
+            {
+                $courseSectionContent->order    = ++$index;
+                $courseSectionContent->save();
+            }
+        }elseif ($modelType == 'batch_exam_section')
+        {
+            $batchExam = BatchExam::find($modelParentId);
+            foreach ($batchExam->batchExamSections as $k => $BatchExamSection) {
+                $BatchExamSection->order = ++$k;
+                $BatchExamSection->save();
+            }
+        } elseif ($modelType == 'batch_exam_section_content')
+        {
+            $BatchExamSection = BatchExamSection::find($modelParentId);
+            foreach ($BatchExamSection->batchExamSectionContents as $i => $batchExamSectionContent)
+            {
+                $batchExamSectionContent->order    = ++$i;
+                $batchExamSectionContent->save();
             }
         }
     }

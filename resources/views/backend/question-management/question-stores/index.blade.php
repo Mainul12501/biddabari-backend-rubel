@@ -120,6 +120,11 @@
                                                                 @endforeach
                                                             </ol>
                                                         </div>
+                                                        @if(isset($question->mcq_ans_description))
+                                                            <div>
+                                                                {!! $question->mcq_ans_description !!}
+                                                            </div>
+                                                        @endif
                                                     </div>
 
                                             @endif

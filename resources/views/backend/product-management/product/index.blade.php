@@ -129,15 +129,20 @@
                                     <span class="text-danger">{{ $errors->has('pdf') ? $errors->first('pdf') : '' }}</span>
                                     <a href="" id="bookPdfPreview" >download</a>
                                 </div>
-                                <div class="col-md-6 mt-2">
+                                <div class="col-md-4 mt-2">
                                     <label for="">Price</label>
                                     <input type="number" required name="price" class="form-control" placeholder="price" />
                                     <span class="text-danger">{{ $errors->has('price') ? $errors->first('price') : '' }}</span>
                                 </div>
-                                <div class="col-md-6 mt-2">
+                                <div class="col-md-4 mt-2">
                                     <label for="">Stock Amount</label>
                                     <input type="text" required name="stock_amount" class="form-control" placeholder="Stock Amount" />
                                     <span class="text-danger">{{ $errors->has('stock_amount') ? $errors->first('stock_amount') : '' }}</span>
+                                </div>
+                                <div class="col-md-4 mt-2">
+                                    <label for="">Affiliate Amount</label>
+                                    <input type="text" class="form-control" name="affiliate_amount" placeholder="Affiliate Amount" />
+                                    <span class="text-danger" id="affiliate_amount"></span>
                                 </div>
                                 <div class="col-md-4 mt-2 d-none">
                                     <label for="">Discount Type</label>
@@ -187,23 +192,23 @@
 
                                 <div class="col-md-4 mt-3">
                                     <label for="">is Featured</label>
-                                    <div class="">
-                                        <label for="featuredChecked"><input type="radio" name="is_featured" id="featuredChecked" value="on" checked>Featured</label>
-                                        <label for="featuredNotChecked"><input type="radio" name="is_featured" id="featuredNotChecked" value="">Not Featured</label>
-{{--                                        <input id="someSwitchOptionInfo1" name="is_featured" type="checkbox" checked />--}}
-                                        {{--                                        <label for="someSwitchOptionInfo1" class="label-info"></label>--}}
-                                        <span class="text-danger">{{ $errors->has('is_featured') ? $errors->first('is_featured') : '' }}</span>
+                                    <div class="material-switch">
+{{--                                        <label for="featuredChecked"><input type="radio" name="is_featured" id="featuredChecked" value="on" checked>Featured</label>--}}
+{{--                                        <label for="featuredNotChecked"><input type="radio" name="is_featured" id="featuredNotChecked" value="">Not Featured</label>--}}
+                                        <input id="someSwitchOptionInfo1" name="is_featured" type="checkbox" checked />
+                                        <label for="someSwitchOptionInfo1" class="label-info"></label>
                                     </div>
+                                    <span class="text-danger">{{ $errors->has('is_featured') ? $errors->first('is_featured') : '' }}</span>
                                 </div>
                                 <div class="col-md-4 mt-3">
                                     <label for="">Status</label>
-                                    <div class="">
-                                        <label for="statusChecked"><input type="radio" name="status" id="statusChecked" value="on" checked>Published</label>
-                                        <label for="statusNotChecked"><input type="radio" name="status" id="statusNotChecked" value="">Not Published</label>
-{{--                                        <input id="someSwitchOptionInfo" name="status" type="checkbox" checked />--}}
-                                        <span class="text-danger">{{ $errors->has('status') ? $errors->first('status') : '' }}</span>
-{{--                                        <label for="someSwitchOptionInfo" class="label-info"></label>--}}
+                                    <div class="material-switch">
+{{--                                        <label for="statusChecked"><input type="radio" name="status" id="statusChecked" value="on" checked>Published</label>--}}
+{{--                                        <label for="statusNotChecked"><input type="radio" name="status" id="statusNotChecked" value="">Not Published</label>--}}
+                                        <input id="someSwitchOptionInfo" name="status" type="checkbox" checked />
+                                        <label for="someSwitchOptionInfo" class="label-info"></label>
                                     </div>
+                                    <span class="text-danger">{{ $errors->has('status') ? $errors->first('status') : '' }}</span>
                                 </div>
 
                             </div>
@@ -310,6 +315,7 @@
                     $('#imagePreview').attr('src', base_url+data.image).css({height: '150px'});
                     $('#pdfPreview').attr('href', base_url+data.featured_pdf);
                     $('#bookPdfPreview').attr('href', base_url+data.pdf);
+                    $('input[name="affiliate_amount"]').val(data.affiliate_amount);
                     $('input[name="price"]').val(data.price);
                     $('input[name="stock_amount"]').val(data.stock_amount);
                     $('input[name="discount_amount"]').val(data.discount_amount);

@@ -1,7 +1,7 @@
 <div class="col-md-4 col-sm-6 px-1">
     <div class="courses-item">
         <a href="{{ route('front.course-details', ['slug' => $course->slug, 'id' => $course->id]) }}">
-            <img src="{{ asset($course->banner) }}" alt="Courses" class="w-100" style="height: 230px"/>
+            <img src="{{ asset(isset($course->banner) ? $course->banner : 'frontend/logo/biddabari-card-logo.jpg') }}" alt="Courses" class="w-100" style="height: 230px"/>
         </a>
         <div class="content">
             <h3><a href="{{ route('front.course-details', ['slug' => $course->slug, 'id' => $course->id]) }}">{{ $course->title }}</a></h3>
@@ -22,7 +22,9 @@
                 </div>
             </ul>
             <div class="bottom-content">
-                <a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}" class="btn btn-warning">বিস্তারিত দেখুন</a>
+                @if($course->order_status != 'true')
+                    <a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}" class="btn btn-warning">বিস্তারিত দেখুন</a>
+                @endif
                 <div class="rating ">
                     @if($course->order_status == 'false')
                     <a href="{{ route('front.checkout', ['id' => $course->id, 'slug' => $course->slug]) }}" class="btn btn-warning">কোর্সটি কিনুন</a>

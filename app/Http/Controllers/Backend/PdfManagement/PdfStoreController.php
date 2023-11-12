@@ -12,16 +12,22 @@ use Symfony\Component\HttpFoundation\Response;
 class PdfStoreController extends Controller
 {
     //    permission seed done
-    protected $pdfStore;
+    protected $pdfStore, $pdfStores = [];
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         abort_if(Gate::denies('manage-pdf'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        if (isset($_GET['cat-id']))
+        {
+            $this->pdfStores = PdfStore::where('pdf_store_category_id', $_GET['cat-id'])->latest()->get();
+        } else {
+            $this->pdfStores = PdfStore::latest()->get();
+        }
         return view('backend.pdf-management.pdf-store.index', [
             'pdfStoreCategories'    => PdfStoreCategory::whereStatus(1)->where('parent_id', 0)->select('id', 'title', 'parent_id')->whereParentId(0)->get(),
-            'pdfStores'             => PdfStore::all(),
+            'pdfStores'             => $this->pdfStores,
         ]);
     }
 

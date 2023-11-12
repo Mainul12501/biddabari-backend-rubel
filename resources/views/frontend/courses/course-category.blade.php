@@ -14,7 +14,7 @@
                         <div class="col-md-3">
                             <div class="categories-item rounded-0" >
                                 <a href="{{ route('front.category-courses', ['id' => $courseCategoryx->id, 'slug' => $courseCategoryx->slug]) }}">
-                                    <img src="{{ asset($courseCategoryx->image) }}" alt="Categories" class="w-100 border-0" style="height: 200px">
+                                    <img src="{{ asset(isset($courseCategoryx->image) ? $courseCategoryx->image : 'frontend/logo/biddabari-card-logo.jpg') }}" alt="Categories" class="w-100 border-0" style="height: 200px">
                                 </a>
                                 <div class="content">
                                     <a href="{{ route('front.category-courses', ['id' => $courseCategoryx->id, 'slug' => $courseCategoryx->slug]) }}">
@@ -42,7 +42,7 @@
                         <div class="col-lg-4 col-md-6">
                             <div class="courses-item">
                                 <a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}">
-                                    <img src="{{ asset($course->banner) }}" alt="Courses" class="w-100" style="height: 230px"/>
+                                    <img src="{{ asset(isset($course->banner) ? $course->banner : 'frontend/logo/biddabari-card-logo.jpg') }}" alt="Courses" class="w-100" style="height: 230px"/>
                                 </a>
                                 <div class="content">
                                     <h3><a href="{{ route('front.course-details', ['id' => $course->id, 'slug' => $course->slug]) }}">{{ $course->title }}</a></h3>

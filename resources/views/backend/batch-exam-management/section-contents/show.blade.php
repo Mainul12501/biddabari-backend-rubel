@@ -133,6 +133,14 @@
                         <label for="">Total Questions</label>
                         <input type="text" placeholder="Total Questions" disabled name="written_total_questions" value="{{ $sectionContent->written_total_questions }}" class="form-control" />
                     </div>
+                    <div class="col-sm-6 mt-2">
+                        <label for="">Total Marks</label>
+                        <input type="text" placeholder="Total Marks" disabled name="written_total_marks" value="{{ $sectionContent->written_total_marks }}" class="form-control" />
+                    </div>
+                    <div class="col-sm-6 mt-2">
+                        <label for="">Pass Mark</label>
+                        <input type="text" placeholder="Pass Mark" disabled name="written_pass_mark" value="{{ $sectionContent->written_pass_mark }}" class="form-control" />
+                    </div>
                     <div class="col-sm-12 mt-2">
                         <label for="">Exam Description</label>
                         <span class="mt-2">

@@ -40,6 +40,7 @@ class BatchExamSection extends Model
 
     public static function createOrUpdateCourseSection ($request, $id = null)
     {
+        $lastRecord = static::where('batch_exam_id', $request->batch_exam_id)->latest()->first();
         if (isset($id))
         {
             self::$batchExamSection = BatchExamSection::find($id);
@@ -50,6 +51,8 @@ class BatchExamSection extends Model
         self::$batchExamSection->title              = $request->title;
         self::$batchExamSection->available_at       = $request->available_at;
         self::$batchExamSection->note               = $request->note;
+//        self::$batchExamSection->order              = isset($lastRecord) ? $lastRecord->order+1 : (isset($id) ? static::find($id)->order : 1);
+        self::$batchExamSection->order              = isset($id) ? static::find($id)->order : (isset($lastRecord) ? $lastRecord->order+1 : 1);
         self::$batchExamSection->is_paid            = $request->is_paid == 'on' ? 1 : 0;
         self::$batchExamSection->status             = $request->status == 'on' ? 1 : 0;
         self::$batchExamSection->save();
@@ -66,6 +69,7 @@ class BatchExamSection extends Model
             self::$batchExamSection->note               = $batchExamSection->note;
             self::$batchExamSection->is_paid            = $batchExamSection->is_paid;
             self::$batchExamSection->status             = $batchExamSection->status;
+            self::$batchExamSection->order              = $batchExamSection->order;
             self::$batchExamSection->save();
 
             if (isset($batchExamSection->batch_exam_section_contents) && count($batchExamSection->batch_exam_section_contents) > 0)
@@ -81,7 +85,7 @@ class BatchExamSection extends Model
 
     public function batchExamSectionContents()
     {
-        return $this->hasMany(BatchExamSectionContent::class);
+        return $this->hasMany(BatchExamSectionContent::class)->orderBy('order', 'ASC');
     }
 
     public function batchExamSectionContentsByAscOrder()

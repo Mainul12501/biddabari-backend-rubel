@@ -65,4 +65,8 @@ class BatchExamCategory extends Model
     {
         return $this->belongsToMany(BatchExam::class);
     }
+    public function batchExamsDescOrder()
+    {
+        return $this->belongsToMany(BatchExam::class)->orderBy('id', 'DESC');
+    }
 }

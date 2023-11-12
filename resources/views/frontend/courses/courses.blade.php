@@ -10,9 +10,9 @@
                     </div>
                     <div>
                         <ul class="nav nav-pills all-course-page-nav-pills text-center">
-                            <li class="nav-item mb-3"><button type="button" class="nav-link active border-danger btn py-0 mx-2 text-dark" style="border: 1px solid #F18C53" data-bs-toggle="pill" data-bs-target="#allCourses" ><span class="f-s-35">All Courses</span></button></li>
+                            <li class="nav-item mb-3"><button type="button" class="nav-link active border-danger btn py-0 mx-2 text-dark " style="border: 1px solid #F18C53" data-bs-toggle="pill" data-bs-target="#allCourses" ><span class="f-s-25">All Courses</span></button></li>
                             @foreach($courseCategories as $index => $courseCategory)
-                                <li class="nav-item mb-3"><button type="button" class="nav-link border-danger btn py-0 mx-2 text-dark" style="border: 1px solid #F18C53" data-bs-toggle="pill" data-bs-target="#{{ 'id'.$index }}"><span class="f-s-35">{{ $courseCategory->name }}</span></button></li>
+                                <li class="nav-item mb-3"><button type="button" class="nav-link border-danger btn py-0 mx-2 text-dark" style="border: 1px solid #F18C53" data-bs-toggle="pill" data-bs-target="#{{ 'id'.$index }}"><span class="f-s-25">{{ $courseCategory->name }}</span></button></li>
                             @endforeach
                         </ul>
                         <div class="tab-content mt-5">

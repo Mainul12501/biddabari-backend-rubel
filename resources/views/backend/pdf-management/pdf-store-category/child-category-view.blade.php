@@ -4,6 +4,7 @@
             <li class="dd-item list-group-item" data-id="{{ $sub_category['id'] }}" >
                 <div class="dd-handle" >{{ $sub_category['title'] }}</div>
                 <div class="dd-option-handle">
+                    <a href="{{ route('pdf-stores.index', ['cat-id' => $sub_category['id']]) }}" class="btn btn-warning btn-sm" >Pdf</a>
                     @can('create-pdf-category')
                         <a href="" data-category-id="{{ $sub_category['id'] }}" class="btn btn-primary btn-sm category-add-btn" >Add</a>
                     @endcan

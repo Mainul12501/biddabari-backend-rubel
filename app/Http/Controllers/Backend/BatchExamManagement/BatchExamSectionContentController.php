@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\BatchExamManagement;
 
+use App\helper\ViewHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\BatchExamManagement\BatchExamSection;
 use App\Models\Backend\BatchExamManagement\BatchExamSectionContent;
@@ -107,7 +108,10 @@ class BatchExamSectionContentController extends Controller
     public function destroy(string $id)
     {
         abort_if(Gate::denies('delete-batch-exam-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        BatchExamSectionContent::find($id)->delete();
+        $batchExamSectionContent = BatchExamSectionContent::find($id);
+        $batchExamSectionId = $batchExamSectionContent->batch_exam_section_id;
+        $batchExamSectionContent->delete();
+        ViewHelper::reorderSerials('batch_exam_section', $batchExamSectionId);
         return  back()->with('success', 'Batch Exam Content deleted successfully.');
     }
 

@@ -27,9 +27,9 @@ class BatchExamController extends Controller
         abort_if(Gate::denies('manage-batch-exam'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (!empty($request->category_id))
         {
-            $this->batchExams = BatchExamCategory::find($request->category_id)->batchExams;
+            $this->batchExams = BatchExamCategory::find($request->category_id)->batchExamsDescOrder;
         } else {
-            $this->batchExams = BatchExam::whereIsMasterExam(0)->get();
+            $this->batchExams = BatchExam::whereIsMasterExam(0)->latest()->get();
         }
         return view('backend.batch-exam-management.batch-exams.index', [
             'batchExams'   => $this->batchExams,

@@ -20,9 +20,11 @@
                                                 <th>RANK</th>
                                                 <th>NAME</th>
                                                 <th>MARK</th>
-                                                <th>Provided Ans</th>
-                                                <th>Right Ans</th>
-                                                <th>Wrong Ans</th>
+                                                @if($courseExamResults[0]->xm_type == 'exam')
+                                                    <th>Provided Ans</th>
+                                                    <th>Right Ans</th>
+                                                    <th>Wrong Ans</th>
+                                                @endif
                                                 <th>DURATION</th>
                                             </tr>
                                         </thead>
@@ -33,9 +35,11 @@
                                                         <td>{{ $loop->iteration }}</td>
                                                         <td>{{ $courseExamResult->user->name }}</td>
                                                         <td>{{ $courseExamResult->result_mark ?? 0 }}</td>
-                                                        <td>{{ $courseExamResult->total_provided_ans ?? 0 }}</td>
-                                                        <td>{{ $courseExamResult->total_right_ans ?? 0 }}</td>
-                                                        <td>{{ $courseExamResult->total_wrong_ans ?? 0 }}</td>
+                                                        @if($courseExamResults[0]->xm_type == 'exam')
+                                                            <td>{{ $courseExamResult->total_provided_ans ?? 0 }}</td>
+                                                            <td>{{ $courseExamResult->total_right_ans ?? 0 }}</td>
+                                                            <td>{{ $courseExamResult->total_wrong_ans ?? 0 }}</td>
+                                                        @endif
                                                         <td>{{ \Carbon\CarbonInterval::seconds($courseExamResult->required_time)->cascade()->forHumans() }}</td>
                                                     </tr>
                                                 @endif

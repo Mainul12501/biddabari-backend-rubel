@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Backend\AdditionalFeatureManagement\SiteSetting;
 use App\Models\Backend\NoticeManagement\Notice;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
@@ -28,5 +29,6 @@ class AppServiceProvider extends ServiceProvider
         View::composer(['frontend.includes.header'], function ($view){
             $view->with('scrollingNotices', Notice::where(['status'=> 1, 'type' => 'scroll'])->take(6)->get());
         });
+        View::share('siteSettings', SiteSetting::first());
     }
 }

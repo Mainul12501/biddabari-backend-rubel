@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\OrderManagement;
 
+use App\helper\ViewHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\Course\Course;
 use App\Models\Backend\Course\CourseCategory;
@@ -77,6 +78,11 @@ class CourseOrderController extends Controller
     {
         abort_if(Gate::denies('update-course-order'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         try {
+            if ($request->status == 'canceled')
+            {
+                ParentOrder::find($id)->delete();
+                return ViewHelper::returnSuccessMessage('Order deleted successfully.');
+            }
             $parentOrder = ParentOrder::updateExamOrderStatus($request, $id);
             if ($request->status == 'approved')
             {

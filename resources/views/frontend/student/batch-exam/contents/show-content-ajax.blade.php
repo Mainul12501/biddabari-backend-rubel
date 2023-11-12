@@ -93,14 +93,13 @@
                     <div class="callout-danger py-2 " style="border-left: 3px solid red">
                         <span class="f-s-22 py-0">Exam Has ended</span>
                     </div>
-                    <div class="mt-3">
-                        <a href="{{ route('front.student.show-batch-exam-answers', ['content_id' => $content->id, 'slug' => str_replace(' ', '-', $content->title)]) }}" class="btn btn-warning border" style="background-color: #f18345!important; border: 1px solid #F18345!important; color: white">See Answers</a>
-
-                    </div>
+{{--                    <div class="mt-3">--}}
+{{--                        <a href="{{ route('front.student.show-batch-exam-answers', ['content_id' => $content->id, 'slug' => str_replace(' ', '-', $content->title)]) }}" class="btn btn-warning border" style="background-color: #f18345!important; border: 1px solid #F18345!important; color: white">See Answers</a>--}}
+{{--                    </div>--}}
                 @endif
 {{--                @if(dateTimeFormatYmdHi($content->exam_result_publish_time) < currentDateTimeYmdHi())--}}
                <div class="mt-2">
-                   @if($participateStatus == 'true')
+                   @if($participateStatus == 'true'|| $content->exam_result_publish_time_timestamp < strtotime(currentDateTimeYmdHi()))
                        <a href="{{ route('front.student.show-batch-exam-answers', ['content_id' => $content->id, 'slug' => str_replace(' ', '-', $content->title)]) }}" class="btn btn-primary">See Ranking</a>
 {{--                       <a href="{{ route('front.student.show-batch-exam-ranking', ['content_id' => $content->id, 'slug' => str_replace(' ', '-', $content->title)]) }}" class="btn btn-primary">See Ranking</a>--}}
                    @endif
@@ -162,7 +161,7 @@
                         <p class="text-white ">Exam Has ended</p>
                     </div>
                     <div class="mt-3">
-                        <a href="" class="btn btn-warning border" style="background-color: #f18345!important; border: 1px solid #F18345!important; color: white">See Answers</a>
+                        <a href="{{ route('front.student.show-batch-exam-answers', ['content_id' => $content->id]) }}" class="btn btn-warning border" style="background-color: #f18345!important; border: 1px solid #F18345!important; color: white">See Answers</a>
                         @if(dateTimeFormatYmdHi($content->written_publish_time) < currentDateTimeYmdHi())
                             <a href="{{ route('front.student.show-batch-exam-ranking', ['content_id' => $content->id, 'slug' => str_replace(' ', '-', $content->title)]) }}" class="btn btn-primary">See Ranking</a>
                         @endif
@@ -172,3 +171,5 @@
         </div>
     @endif
 </div>
+
+

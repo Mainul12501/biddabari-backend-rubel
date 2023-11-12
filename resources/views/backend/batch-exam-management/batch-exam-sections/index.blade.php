@@ -38,6 +38,12 @@
                                                             {{--                                                                <i class="fa-solid fa-plus"></i>--}}
                                                             {{--                                                            </button>--}}
                                                             {{--                                                        @endcan--}}
+                                                            <a href="{{ route('change-order-number', ['model_name' => 'batch_exam_section', 'model_id' => $batchExamSection->id, 'order' => 'up']) }}" class="btn btn-sm btn-secondary " title="Change Order top One level">
+                                                                <i class="fa-solid fa-arrow-up-long"></i>
+                                                            </a>
+                                                            <a href="{{ route('change-order-number', ['model_name' => 'batch_exam_section', 'model_id' => $batchExamSection->id, 'order' => 'down']) }}" class="btn btn-sm btn-secondary " title="Change Order Bottom One level">
+                                                                <i class="fa-solid fa-arrow-down-long"></i>
+                                                            </a>
                                                             @can('create-batch-exam-section')
                                                                 <button type="button" data-bs-toggle="modal" data-bs-target="#courseContentModal" data-section-id="{{ $batchExamSection->id }}" class="btn btn-sm btn-info {{--add-sub-category-btn--}} open-section-content-form-modal" title="Add Section Content">
                                                                     <i class="fa-solid fa-plus"></i>
@@ -63,8 +69,8 @@
                                             </div>
                                             <div id="collapse{{ $key }}" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                                 <div class="accordion-body">
-                                                    @if(isset($batchExamSection->batchExamSectionContentsByAscOrder))
-                                                        @include('backend.batch-exam-management.batch-exam-sections.show-nested-cats', ['sectionContents' => $batchExamSection->batchExamSectionContentsByAscOrder, 'child' => 1])
+                                                    @if(isset($batchExamSection->batchExamSectionContents))
+                                                        @include('backend.batch-exam-management.batch-exam-sections.show-nested-cats', ['sectionContents' => $batchExamSection->batchExamSectionContents, 'child' => 1])
                                                     @endif
                                                 </div>
                                             </div>

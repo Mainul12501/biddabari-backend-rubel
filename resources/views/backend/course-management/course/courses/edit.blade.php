@@ -153,6 +153,11 @@
                     <p>Content Total Items</p>
                 </div>
                 <div class="col-md-4 mt-2">
+                    <label for="">Affiliate Amount</label>
+                    <input type="text" class="form-control" name="affiliate_amount" value="{{ isset($course) ? $course->affiliate_amount : '' }}" placeholder="Affiliate Amount" />
+                    <span class="text-danger" id="affiliate_amount"></span>
+                </div>
+                <div class="col-md-4 mt-2">
                     <label for="">Fack Student Count</label>
                     <input type="text" class="form-control" name="fack_student_count" value="{{ isset($course) ? $course->fack_student_count : '' }}" placeholder="Fack Student Count" />
                     <span class="text-danger" id="fack_student_count"></span>

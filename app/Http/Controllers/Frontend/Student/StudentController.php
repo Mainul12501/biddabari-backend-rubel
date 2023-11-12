@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Frontend\Student;
 
 use App\helper\ViewHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Backend\AdditionalFeatureManagement\Affiliation\AffiliationHistory;
+use App\Models\Backend\AdditionalFeatureManagement\Affiliation\AffiliationRegistration;
 use App\Models\Backend\BatchExamManagement\BatchExam;
 use App\Models\Backend\BatchExamManagement\BatchExamSectionContent;
 use App\Models\Backend\BatchExamManagement\BatchExamSubscription;
@@ -27,7 +29,7 @@ use Illuminate\Support\Facades\DB;
 class StudentController extends Controller
 {
     protected $data = [], $courseOrders = [], $myCourses = [], $myProfile, $myPayments = [], $loggedUser, $course, $courses = [], $courseSections;
-    protected $hasValidSubscription, $exam, $exams = [], $tempExamArray = [], $examOrders = [], $order, $orders = [], $products = [], $product;
+    protected $hasValidSubscription, $exam, $exams = [], $tempExamArray = [], $examOrders = [], $order, $orders = [], $products = [], $product, $affiliateRegister;
     public function dashboard ()
     {
 //        $isStudent = false;
@@ -94,7 +96,7 @@ class StudentController extends Controller
 //        }])->get();
 
         $this->course = Course::whereId($courseId)->select('id', 'title', 'slug', 'status')->with(['courseSections' => function($courseSections){
-            $courseSections->whereStatus(1)->where('available_at', '<=', currentDateTimeYmdHi())->select('id', 'course_id', 'title', 'available_at', 'is_paid')->with(['courseSectionContents' => function($courseSectionContents){
+            $courseSections->whereStatus(1)->orderBy('order', 'ASC')->where('available_at', '<=', currentDateTimeYmdHi())->select('id', 'course_id', 'title', 'available_at', 'is_paid')->with(['courseSectionContents' => function($courseSectionContents){
                 $courseSectionContents->select('id', 'course_section_id', 'parent_id', 'content_type', 'title', 'has_class_xm', 'video_link', 'video_vendor')->where('available_at_timestamp', '<=', strtotime(currentDateTimeYmdHi()))->whereStatus(1)->orderBy('order', 'ASC')->get();
             }])->get();
         }])->first();
@@ -127,8 +129,8 @@ class StudentController extends Controller
             ];
         } else {
             $this->exam = BatchExam::whereId($batchExamId)->select('id', 'title', 'slug', 'status')->with(['batchExamSections' => function($batchExamSections){
-                $batchExamSections->where('available_at', '<=', Carbon::now()->format('Y-m-d H:i'))->whereStatus(1)->select('id', 'batch_exam_id', 'title', 'available_at', 'is_paid')->with(['batchExamSectionContents' => function($batchExamSectionContents){
-                    $batchExamSectionContents->where('available_at', '<=', Carbon::now()->format('Y-m-d H:i') )->whereStatus(1)->orderBy('order', 'ASC')->whereIsPaid(1)->get();
+                $batchExamSections->orderBy('order', 'ASC')->where('available_at', '<=', currentDateTimeYmdHi())->whereStatus(1)->select('id', 'batch_exam_id', 'title', 'available_at', 'is_paid')->with(['batchExamSectionContents' => function($batchExamSectionContents){
+                    $batchExamSectionContents->where('available_at_timestamp', '<=', strtotime(currentDateTimeYmdHi()))->whereStatus(1)->orderBy('order', 'ASC')->whereIsPaid(1)->get();
                 }])->get();
             }])->first();
 
@@ -376,5 +378,16 @@ class StudentController extends Controller
         {
             return response()->json($exception->getMessage());
         }
+    }
+
+    public function myAffiliation()
+    {
+        $this->affiliateRegister = AffiliationRegistration::where(['user_id' => ViewHelper::loggedUser()->id])->first();
+        $this->data = [
+            'affiliateRegister' => $this->affiliateRegister,
+            'courses'           => Course::where(['status' => 1, 'is_paid' => 1])->get(),
+            'batchExams'           => BatchExam::where(['status' => 1, 'is_paid' => 1])->get(),
+        ];
+        return ViewHelper::checkViewForApi($this->data, 'frontend.student.affiliation.index');
     }
 }

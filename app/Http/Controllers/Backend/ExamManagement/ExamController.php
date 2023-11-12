@@ -217,12 +217,12 @@ class ExamController extends Controller
         if ($reqForm == 'course')
         {
             $this->examResults = CourseExamResult::where(['course_section_content_id' => $contentId])->orderBy('result_mark', 'DESC')->orderBy('required_time', 'ASC')->with(['courseSectionContent' => function($courseSectionContent) {
-                $courseSectionContent->select('id',  'course_section_id', 'exam_total_questions','exam_per_question_mark', 'written_total_questions')->first();
+                $courseSectionContent->select('id',  'course_section_id', 'exam_total_questions','exam_per_question_mark', 'written_total_questions', 'exam_negative_mark')->first();
             },
                 'user'])->get();
         } elseif ($reqForm == 'batch_exam') {
             $this->examResults = BatchExamResult::where(['batch_exam_section_content_id' => $contentId])->orderBy('result_mark', 'DESC')->orderBy('required_time', 'ASC')->with(['batchExamSectionContent' => function($batchExamSectionContent) {
-                $batchExamSectionContent->select('id',  'course_section_id', 'exam_total_questions','exam_per_question_mark', 'written_total_questions')->first();
+                $batchExamSectionContent->select('id',  'course_section_id', 'exam_total_questions','exam_per_question_mark', 'written_total_questions', 'exam_negative_mark')->first();
             },
                 'user'])->get();
         }
@@ -259,11 +259,12 @@ class ExamController extends Controller
                 }
             }
         }
-        return view('backend.exam-management.xm-attendance.index', [
+        $data = [
             'presentStudents'   => $this->presentStudents,
             'absentStudents'   => $this->absentStudents,
             'examFrom'      => $baseType,
             'content'       => $content
-        ]);
+        ];
+        return view('backend.exam-management.xm-attendance.index', $data);
     }
 }

@@ -33,6 +33,12 @@
                                                 </h3>
                                                 <div class="col-sm-3">
                                                     <div class="float-end">
+                                                        <a href="{{ route('change-order-number', ['model_name' => 'course_section', 'model_id' => $courseSection->id, 'order' => 'up']) }}"  data-section-id="{{ $courseSection->id }}" class="btn btn-sm btn-secondary " title="Change Order top One level">
+                                                            <i class="fa-solid fa-arrow-up-long"></i>
+                                                        </a>
+                                                        <a href="{{ route('change-order-number', ['model_name' => 'course_section', 'model_id' => $courseSection->id, 'order' => 'down']) }}"  data-section-id="{{ $courseSection->id }}" class="btn btn-sm btn-secondary " title="Change Order Bottom One level">
+                                                            <i class="fa-solid fa-arrow-down-long"></i>
+                                                        </a>
 {{--                                                        @can('add-sub-cat-to-notice-category')--}}
 {{--                                                            <button type="button" data-notice-category-id="{{ $courseSection->id }}" class="btn btn-sm btn-info add-sub-category-btn" title="Add Sub Category">--}}
 {{--                                                                <i class="fa-solid fa-plus"></i>--}}
@@ -331,6 +337,8 @@
     @include('backend.includes.assets.plugin-files.datatable')
 {{--    @include('backend.includes.assets.plugin-files.date-time-picker')--}}
     @include('backend.includes.assets.plugin-files.editor')
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="{{ asset('/') }}backend/assets/plugins/amazeui-datetimepicker/js/amazeui.datetimepicker.min.js"></script>
     <script>
         $(function () {

@@ -141,7 +141,7 @@
                             <div class="col-lg-4 col-md-4 mt-3">
                                 <a href="{{ route('front.blog-details', ['id' => $blog->id,'slug' => $blog->slug]) }}" class="w-100">
                                     <div class="blog-card">
-                                            <img src="{{ asset($blog->image) }}" alt="Blog" class="w-100 img-fluid" style="height: 280px" />
+                                            <img src="{{ asset(isset($blog->image) ? $blog->image : 'frontend/logo/biddabari-card-logo.jpg') }}" alt="Blog" class="w-100 img-fluid" style="height: 280px" />
                                         <div class="content">
                                             <ul>
                                                 <li><i class="ri-calendar-todo-fill"></i> {{ $blog->created_at->format('M d, Y') }} </li>

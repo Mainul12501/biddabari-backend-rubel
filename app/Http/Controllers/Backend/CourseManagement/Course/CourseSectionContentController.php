@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\CourseManagement\Course;
 
+use App\helper\ViewHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\BatchExamManagement\BatchExamResult;
 use App\Models\Backend\Course\CourseClassExamResult;
@@ -130,7 +131,10 @@ class CourseSectionContentController extends Controller
     public function destroy(string $id)
     {
         abort_if(Gate::denies('delete-course-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        CourseSectionContent::find($id)->delete();
+        $courseSectionContent = CourseSectionContent::find($id);
+        $courseSectionId = $courseSectionContent->course_section_id;
+        $courseSectionContent->delete();
+        ViewHelper::reorderSerials('course_section_content', $courseSectionId);
         return  back()->with('success', 'Course Content deleted successfully.');
     }
 
