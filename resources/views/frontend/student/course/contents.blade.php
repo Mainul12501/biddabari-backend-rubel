@@ -27,7 +27,6 @@
                                                                 <a href="javascript:void(0)" data-content-id="{{ $courseSectionContent->id }}" data-has-class-xm="{{ $courseSectionContent->has_class_xm }}" data-complete-class-xm="{{ $courseSectionContent->classXmStatus }}" class="w-100 show-pdf">
                                                                     <div class="accordion-content-list pt-2 pb-0">
                                                                         <div class="accordion-content-left">
-
 {{--                                                                            PDF--}}
 {{--                                                                            <p class="f-s-20"><i class="ri-file-text-line"></i> {{ $courseSectionContent->title }}</p>--}}
                                                                             <p class="f-s-20">

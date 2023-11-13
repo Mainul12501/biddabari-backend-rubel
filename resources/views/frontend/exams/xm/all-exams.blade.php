@@ -202,22 +202,22 @@
                                                             <div class="row">
                                                                 <div class="col-md-6">
                                                                     <label for="paidTo">Paid To</label>
-                                                                    <input type="number" id="paidTo" required name="paid_to" class="form-control" placeholder="Paid To" />
+                                                                    <input type="number" id="paidTo"  name="paid_to" class="form-control" placeholder="Paid To" />
                                                                     <span class="text-danger">{{ $errors->has('paid_to') ? $errors->first('paid_to') : '' }}</span>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <label for="paidForm">Paid Form</label>
-                                                                    <input type="number" id="paidForm" required name="paid_from" class="form-control" placeholder="Paid Form" />
+                                                                    <input type="number" id="paidForm"  name="paid_from" class="form-control" placeholder="Paid Form" />
                                                                     <span class="text-danger">{{ $errors->has('paid_from') ? $errors->first('paid_from') : '' }}</span>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <label for="transactionId">Transaction Id</label>
-                                                                    <input type="text" id="transactionId" required name="txt_id" class="form-control" placeholder="Transaction Id" />
+                                                                    <input type="text" id="transactionId"  name="txt_id" class="form-control" placeholder="Transaction Id" />
                                                                     <span class="text-danger">{{ $errors->has('txt_id') ? $errors->first('txt_id') : '' }}</span>
                                                                 </div>
                                                                 <div class="col-md-6 select2-div">
                                                                     <label for="vendor">Vendor</label>
-                                                                    <select name="vendor" required id="vendor" class="form-control">
+                                                                    <select name="vendor" id="vendor" class="form-control">
                                                                         <option value="" selected disabled>Select a Vendor</option>
                                                                         <option value="bkash">Bkash</option>
                                                                         <option value="nagad">Nagad</option>

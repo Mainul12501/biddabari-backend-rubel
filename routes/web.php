@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\CustomAuth\CustomAuthController;
 use App\Http\Controllers\PaymentController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,10 +25,10 @@ Route::get('/password-reset-otp', [CustomAuthController::class, 'passwordResetOt
 Route::post('/verify-pass-reset-otp', [CustomAuthController::class, 'verifyPassResetOtp'])->name('verify-pass-reset-otp');
 
 
-Route::post('sslcommerz/success',[PaymentController::class, 'success'])->name('payment.success');
-Route::post('sslcommerz/failure',[PaymentController::class, 'failure'])->name('payment.failure');
-Route::post('sslcommerz/cancel',[PaymentController::class, 'cancel'])->name('payment.cancel');
-Route::post('sslcommerz/ipn',[PaymentController::class, 'ipn'])->name('payment.ipn');
+//Route::post('sslcommerz/success',[PaymentController::class, 'success'])->name('payment.success');
+//Route::post('sslcommerz/failure',[PaymentController::class, 'failure'])->name('payment.failure');
+//Route::post('sslcommerz/cancel',[PaymentController::class, 'cancel'])->name('payment.cancel');
+//Route::post('sslcommerz/ipn',[PaymentController::class, 'ipn'])->name('payment.ipn');
 
 Route::get('form',[PaymentController::class, 'form'])->name('form');
 Route::post('form-order',[PaymentController::class, 'order'])->name('form-order');

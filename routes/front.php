@@ -73,7 +73,11 @@ Route::get('/te', function (){
 Route::get('/exam-test', [FrontExamController::class, 'xmTestForDev'])->name('exm-test-for-dev');
 Route::get('/pdf-view-test', [FrontExamController::class, 'pdfViewTest'])->name('pdf-view-test');
 
-
+//payment gateway routes
+Route::post('sslcommerz/success',[CheckoutController::class, 'paymentSuccess'])->name('payment.success');
+Route::post('sslcommerz/failure',[CheckoutController::class, 'paymentFailure'])->name('payment.failure');
+Route::post('sslcommerz/cancel',[CheckoutController::class, 'paymentCancel'])->name('payment.cancel');
+Route::post('sslcommerz/ipn',[CheckoutController::class, 'ipn'])->name('payment.ipn');
 
 Route::as('front.')->group(function (){
     Route::get('/', [BasicViewController::class, 'home'])->name('home');

@@ -49,7 +49,7 @@
                                                         <div class="accordion-content">
                                                             @foreach($batchExamSection->batchExamSectionContents as $batchExamSectionContent)
                                                                 @if($batchExamSectionContent->content_type == 'pdf')
-                                                                    <a href="{{ route('front.student.show-batch-exam-pdf', ['content_id' => $batchExamSectionContent->id]) }}" target="_blank" class="w-100 show-pdf">
+                                                                    <a href="{{ route('front.student.show-batch-exam-pdf', ['content_id' => $batchExamSectionContent->id]) }}" data-content-id="{{ $batchExamSectionContent->id }}" class="w-100 show-pdf">
                                                                         <div class="accordion-content-list pt-2 pb-0">
                                                                             <div class="accordion-content-left">
 
@@ -152,6 +152,23 @@
             </div>
         </div>
     </div>
+    <div class="modal fade show-pdf-modal" id="pdfModal" data-bs-backdrop="static" data-modal-parent="courseContentModal" >
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">View Class Pdf</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="card card-body p-0" id="pdfContentPrintDiv">
+                        <div class="my-box px-3 mx-auto mt-5" style="position: relative!important; height: auto;">
+                            <div id="pdf-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @push('style')
     <style>
@@ -160,12 +177,123 @@
         .written-xm th {font-size: 24px}
         .written-xm td {font-size: 22px}
     </style>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ asset('/') }}backend/assets/plugins/pdf-draw/pdfannotate.css">
+    <link rel="stylesheet" href="{{ asset('/') }}backend/assets/plugins/pdf-draw/styles.css">
+    <style>
+        .canvas-container, canvas { /*width: 100%!important;*/ margin-top: 10px!important;}
+    </style>
 @endpush
 
 @section('js')
 {{--    note--}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.3.0/fabric.min.js"></script>
+<script src="{{ asset('/') }}backend/assets/plugins/pdf-draw/arrow.fabric.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.2.0/jspdf.umd.min.js"></script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+<script src="{{ asset('/') }}backend/assets/plugins/pdf-draw/pdfannotate.js"></script>
 <script>
+    {{--var pdf = new PDFAnnotate("pdf-container", "{{ !empty($sectionContent->pdf_link) ? $sectionContent->pdf_link : asset($sectionContent->pdf_file) }}", {--}}
+    {{--    onPageUpdated(page, oldData, newData) {--}}
+    {{--        console.log(page, oldData, newData);--}}
+    {{--    },--}}
+    {{--    ready() {--}}
+    {{--        console.log("Plugin initialized successfully");--}}
+    {{--    },--}}
+    {{--    scale: 1.5,--}}
+    {{--    pageImageCompression: "MEDIUM", // FAST, MEDIUM, SLOW(Helps to control the new PDF file size)--}}
+    {{--});--}}
+
+    function changeActiveTool(event) {
+        var element = $(event.target).hasClass("tool-button")
+            ? $(event.target)
+            : $(event.target).parents(".tool-button").first();
+        $(".tool-button.active").removeClass("active");
+        $(element).addClass("active");
+    }
+
+    function enableSelector(event) {
+        event.preventDefault();
+        changeActiveTool(event);
+        pdf.enableSelector();
+    }
+
+    function enablePencil(event) {
+        event.preventDefault();
+        changeActiveTool(event);
+        pdf.enablePencil();
+    }
+
+    function enableAddText(event) {
+        event.preventDefault();
+        changeActiveTool(event);
+        pdf.enableAddText();
+    }
+
+    function enableAddArrow(event) {
+        event.preventDefault();
+        changeActiveTool(event);
+        pdf.enableAddArrow();
+    }
+
+    function addImage(event) {
+        event.preventDefault();
+        pdf.addImageToCanvas()
+    }
+
+    function enableRectangle(event) {
+        event.preventDefault();
+        changeActiveTool(event);
+        pdf.setColor('rgba(255, 0, 0, 0.3)');
+        pdf.setBorderColor('blue');
+        pdf.enableRectangle();
+    }
+
+    function deleteSelectedObject(event) {
+        event.preventDefault();
+        pdf.deleteSelectedObject();
+    }
+
+    function savePDF() {
+        // pdf.savePdf();
+        pdf.savePdf("written-ans"); // save with given file name
+    }
+
+    function clearPage() {
+        pdf.clearActivePage();
+    }
+
+    function showPdfData() {
+        var string = pdf.serializePdf();
+        $('#dataModal .modal-body pre').first().text(string);
+        PR.prettyPrint();
+        $('#dataModal').modal('show');
+    }
+
+    $(function () {
+        $('.color-tool').click(function () {
+            $('.color-tool.active').removeClass('active');
+            $(this).addClass('active');
+            color = $(this).get(0).style.backgroundColor;
+            pdf.setColor(color);
+        });
+
+        $('#brush-size').change(function () {
+            var width = $(this).val();
+            pdf.setBrushSize(width);
+        });
+
+        $('#font-size').change(function () {
+            var font_size = $(this).val();
+            pdf.setFontSize(font_size);
+        });
+    });
+
+</script>
+<script>
+
     $(document).on('click', '.get-text-data', function () {
         var contentId = $(this).attr('data-content-id');
         $.ajax({

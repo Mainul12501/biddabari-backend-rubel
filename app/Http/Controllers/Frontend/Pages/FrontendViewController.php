@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Frontend\Pages;
 
 use App\helper\ViewHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Frontend\Checkout\CheckoutController;
 use App\Http\Requests\Frontend\Order\ProductOrderRequest;
+use App\Models\Backend\BatchExamManagement\BatchExam;
 use App\Models\Backend\BlogManagement\Blog;
 use App\Models\Backend\BlogManagement\BlogCategory;
 use App\Models\Backend\CircularManagement\Circular;
@@ -86,38 +88,68 @@ class FrontendViewController extends Controller
         return ViewHelper::checkViewForApi($this->data, 'frontend.product.product-details');
     }
 
-    public function placeProductOrder (ProductOrderRequest $request)
+    public function placeProductOrder (Request $request)
     {
 
         if (auth()->check())
         {
             try {
                 $emptyStatus = false;
-                foreach (Cart::getContent() as $item)
+                foreach (Cart::getContent() as $itemx)
                 {
-                    $product = Product::find($item->id);
+                    $product = Product::find($itemx->id);
                     if ($product->stock_amount > 0)
                     {
-                        $request['total_amount']  = $item->price;
-                        $request['parent_model_id']  = $item->id;
-                         ParentOrder::orderProduct($request);
-                        $product->stock_amount = $product->stock_amount -1;
-                        if ($product->stock_amount == 0)
-                        {
-                            $product->is_stock = 0;
-                        }
-                        $product->save();
+                        $emptyStatus = false;
                     } else {
                         $emptyStatus = true;
                     }
                 }
-
                 if ($emptyStatus == true)
                 {
                     return redirect()->back()->with('error', 'Product Out of Stock.');
                 }
-                Cart::clear();
-                return redirect()->route('front.home')->with('success', 'Products ordered submitted successfully.');
+                if ($request->payment_method == 'ssl')
+                {
+                    $request['details_url'] = url()->previous();
+                    $request['model_name'] = 'product';
+                    $request['ordered_for'] = 'product';
+                    \session()->put('requestData', $request->all());
+                    return CheckoutController::sendOrderRequestToSSLZ(Cart::getTotal(), 'books');
+                } elseif ($request->payment_method == 'cod')
+                {
+                    $this->validate($request, [
+                        'vendor'    => 'required',
+                        'paid_to'   => ['required', 'regex:/^(?:\+88|88)?(01[3-9]\d{8})$/'],
+                        'paid_from' => ['required', 'regex:/^(?:\+88|88)?(01[3-9]\d{8})$/'],
+                        'txt_id'    => 'required',
+                    ]);
+                    foreach (Cart::getContent() as $item)
+                    {
+                        $product = Product::find($item->id);
+//                        if ($product->stock_amount > 0)
+//                        {
+                            $request['total_amount']  = $item->price;
+                            $request['parent_model_id']  = $item->id;
+                            ParentOrder::orderProduct($request);
+                            $product->stock_amount = $product->stock_amount -1;
+                            if ($product->stock_amount == 0)
+                            {
+                                $product->is_stock = 0;
+                            }
+                            $product->save();
+//                        } else {
+//                            $emptyStatus = true;
+//                        }
+                    }
+//                    if ($emptyStatus == true)
+//                    {
+//                        return redirect()->back()->with('error', 'Product Out of Stock.');
+//                    }
+                    Cart::clear();
+                    return redirect()->route('front.home')->with('success', 'Products ordered submitted successfully.');
+                }
+
             } catch (\Exception $exception)
             {
                 return back()->with('error',$exception->getMessage());

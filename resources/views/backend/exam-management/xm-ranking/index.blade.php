@@ -33,7 +33,7 @@
                                 <td>{{ $examResult->total_provided_ans ?? 0 }}</td>
                                 <td>{{ $examResult->total_right_ans ?? 0 }}</td>
                                 <td>{{ $examResult->total_wrong_ans ?? 0 }}</td>
-                                <td>{{ $examResult->xm_type == 'exam' ? '-'.$examResult->total_wrong_ans * $examResult->exam_negative_mark : '' }}</td>
+                                <td>{{ $examResult->xm_type == 'exam' ? '-'.$examResult->total_wrong_ans * ($req_form == 'course' ? $examResult->courseSectionContent->exam_negative_mark : $examResult->batchExamSectionContent->exam_negative_mark) : '' }}</td>
                                 <td>{{ \Carbon\CarbonInterval::seconds($examResult->required_time)->cascade()->forHumans() }}</td>
                             </tr>
                         @endforeach

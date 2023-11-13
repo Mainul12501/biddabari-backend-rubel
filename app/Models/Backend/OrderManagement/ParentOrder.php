@@ -10,6 +10,7 @@ use App\Models\Backend\ProductManagement\Product;
 use App\Models\Backend\UserManagement\Student;
 use App\Models\Scopes\Searchable;
 use App\Models\User;
+use Darryldecode\Cart\Facades\CartFacade as Cart;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -37,6 +38,9 @@ class ParentOrder extends Model
         'status',
         'contact_status',
         'is_free_course',
+        'bank_tran_id',
+        'gateway_val_id',
+        'gateway_status',
     ];
 
     protected $searchableFields = ['*'];
@@ -62,6 +66,26 @@ class ParentOrder extends Model
             'coupon_code'               => $request->coupon_code,
             'coupon_amount'             => $request->coupon_amount,
             'batch_exam_subscription_id' => isset($request->batch_exam_subscription_id) ?? null,
+        ]);
+    }
+    public static function placeOrderAfterGatewayPayment($request, $requestData , $parentOrderId = null)
+    {
+        return ParentOrder::updateOrCreate(['id' => $parentOrderId], [
+            'parent_model_id'           => $requestData->model_id,
+            'user_id'                   => ViewHelper::loggedUser()->id,
+            'order_invoice_number'      => $request->tran_id,
+            'ordered_for'               => $requestData->ordered_for,
+            'payment_method'            => $requestData->payment_method,
+            'paid_amount'               => $request->amount,
+            'total_amount'              => $requestData->total_amount,
+            'coupon_code'               => $requestData->coupon_code,
+            'coupon_amount'             => $requestData->coupon_amount,
+            'bank_tran_id'              => $request->bank_tran_id,
+            'gateway_val_id'             => $request->gateway_val_id,
+            'gateway_status'             => $request->gateway_status,
+            'status'                    => 'approved',
+            'payment_status'            => 'complete',
+            'batch_exam_subscription_id' => isset($requestData->batch_exam_subscription_id) ?? null,
         ]);
     }
     public static function assignNewStudentToModel($orderedForm, $request, $id = null)
@@ -104,6 +128,38 @@ class ParentOrder extends Model
             'coupon_amount'             => $request->coupon_amount,
             'batch_exam_subscription_id' => isset($request->batch_exam_subscription_id) ?? null,
         ]);
+    }
+
+    public static function orderProductThroughSSL($requestData, $request, $parentOrderId = null)
+    {
+        foreach (Cart::getContent() as $item)
+        {
+            ParentOrder::updateOrCreate(['id' => $parentOrderId], [
+                'parent_model_id'           => $item->id,
+                'user_id'                   => ViewHelper::loggedUser()->id,
+                'order_invoice_number'      => $request->tran_id,
+                'ordered_for'               => 'product',
+                'payment_method'            => $requestData->payment_method,
+                'paid_amount'               => $request->amount,
+                'total_amount'              => Cart::getTotal(),
+//                'coupon_code'               => $requestData->coupon_code,
+//                'coupon_amount'             => $requestData->coupon_amount,
+                'bank_tran_id'              => $request->bank_tran_id,
+                'gateway_val_id'             => $request->gateway_val_id,
+                'gateway_status'             => $request->gateway_status,
+                'status'                    => 'approved',
+                'payment_status'            => 'complete',
+//                'batch_exam_subscription_id' => isset($requestData->batch_exam_subscription_id) ?? null,
+            ]);
+            $product = Product::find($item->id);
+            $product->stock_amount = $product->stock_amount -1;
+            if ($product->stock_amount == 0)
+            {
+                $product->is_stock = 0;
+            }
+            $product->save();
+        }
+        Cart::clear();
     }
 
     public static function generateOrderNumber ()

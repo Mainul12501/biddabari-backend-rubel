@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\FrontExam;
 
 use App\helper\ViewHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Frontend\Checkout\CheckoutController;
 use App\Models\Backend\AdditionalFeatureManagement\Affiliation\AffiliationHistory;
 use App\Models\Backend\AdditionalFeatureManagement\Affiliation\AffiliationRegistration;
 use App\Models\Backend\BatchExamManagement\BatchExam;
@@ -418,6 +419,7 @@ class FrontExamController extends Controller
                             $this->question = QuestionStore::whereId($question_id)->select('id', 'question_type', 'question_mark', 'negative_mark', 'has_all_wrong_ans', 'status')->first();
                             if (is_array($answer))
                             {
+                                ++$this->totalProvidedAns;
                                 if ($this->question->has_all_wrong_ans == 1)
                                 {
 //                                $this->resultNumber -= (int)$this->question->negative_mark;
@@ -651,24 +653,36 @@ class FrontExamController extends Controller
                     return ViewHelper::returEexceptionError('You can not use your own referral code.');
                 }
             }
-            $validator = Validator::make($request->all(), [
-                'paid_to'   => 'required',
-                'paid_from'   => 'required',
-                'txt_id'   => 'required',
-                'vendor'   => 'required',
-                'batch_exam_subscription_id'   => 'required',
-            ]);
-            if ($validator->fails())
+            if ($request->payment_method == 'ssl')
             {
-                return ViewHelper::returEexceptionError($validator->errors());
+                $request['details_url'] = url()->previous();
+                $request['model_name'] = 'batch_exam';
+                $request['model_id'] = $id;
+                $request['affiliate_amount'] = BatchExam::find($id)->affiliate_amount;
+                \session()->put('requestData', $request->all());
+                return CheckoutController::sendOrderRequestToSSLZ($request->total_amount, BatchExam::find($id)->title);
+            } elseif ($request->payment_method == 'cod')
+            {
+                $validator = Validator::make($request->all(), [
+                    'paid_to'   => 'required',
+                    'paid_from'   => 'required',
+                    'txt_id'   => 'required',
+                    'vendor'   => 'required',
+                    'batch_exam_subscription_id'   => 'required',
+                ]);
+                if ($validator->fails())
+                {
+                    return ViewHelper::returEexceptionError($validator->errors());
 //                return back()->withErrors($validator);
+                }
+                ParentOrder::storeXmOrderInfo($request, $id);
+                if (isset($request->rc))
+                {
+                    AffiliationHistory::createNewHistory($request, 'batch_exam', $id, BatchExam::find($id)->affiliate_amount, 'insert');
+                }
+                return ViewHelper::returnSuccessMessage('You successfully purchased this exam.');
             }
-            ParentOrder::storeXmOrderInfo($request, $id);
-            if (isset($request->rc))
-            {
-                AffiliationHistory::createNewHistory($request, 'batch_exam', $id, BatchExam::find($id)->affiliate_amount, 'insert');
-            }
-            return ViewHelper::returnSuccessMessage('You successfully purchased this exam');
+
 //            return back()->with('success', 'You successfully purchased this exam');
         } else {
             return back()->with('error','Please Login First.');

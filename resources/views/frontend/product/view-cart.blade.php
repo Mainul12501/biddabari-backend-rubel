@@ -107,22 +107,22 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <label for="paidTo" class="f-s-20">Paid To</label>
-                                                <input type="number" id="paidTo" required name="paid_to" class="form-control" placeholder="Paid To" />
+                                                <input type="number" id="paidTo"  name="paid_to" class="form-control" placeholder="Paid To" />
                                                 @error('paid_to')<span class="text-danger">{{ $errors->first('paid_to') }}</span>@enderror
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="paidForm" class="f-s-20">Paid Form</label>
-                                                <input type="number" id="paidForm" required name="paid_from" class="form-control" placeholder="Paid Form" />
+                                                <input type="number" id="paidForm"  name="paid_from" class="form-control" placeholder="Paid Form" />
                                                 @error('paid_from')<span class="text-danger">{{ $errors->first('paid_from') }}</span>@enderror
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="transactionId" class="f-s-20">Transaction Id</label>
-                                                <input type="text" id="transactionId" required name="txt_id" class="form-control" placeholder="Transaction Id" />
+                                                <input type="text" id="transactionId"  name="txt_id" class="form-control" placeholder="Transaction Id" />
                                                 @error('txt_id')<span class="text-danger">{{ $errors->first('txt_id') }}</span>@enderror
                                             </div>
                                             <div class="col-md-6 select2-div">
                                                 <label for="vendor" class="f-s-20">Vendor</label>
-                                                <select name="vendor" required id="vendor" class="form-control">
+                                                <select name="vendor"  id="vendor" class="form-control">
                                                     <option value="" selected disabled>Select a Vendor</option>
                                                     <option value="bkash">Bkash</option>
                                                     <option value="nagad">Nagad</option>

@@ -222,7 +222,7 @@ class ExamController extends Controller
                 'user'])->get();
         } elseif ($reqForm == 'batch_exam') {
             $this->examResults = BatchExamResult::where(['batch_exam_section_content_id' => $contentId])->orderBy('result_mark', 'DESC')->orderBy('required_time', 'ASC')->with(['batchExamSectionContent' => function($batchExamSectionContent) {
-                $batchExamSectionContent->select('id',  'course_section_id', 'exam_total_questions','exam_per_question_mark', 'written_total_questions', 'exam_negative_mark')->first();
+                $batchExamSectionContent->select('id', 'batch_exam_section_id', 'exam_total_questions','exam_per_question_mark', 'written_total_questions', 'exam_negative_mark')->first();
             },
                 'user'])->get();
         }

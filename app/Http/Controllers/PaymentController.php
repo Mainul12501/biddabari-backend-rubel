@@ -32,6 +32,7 @@ class PaymentController extends Controller
         $validate = SSLCommerz::validate_payment($request);
         if($validate)
         {
+            return $request;
             return $bankID = $request->bank_tran_id;   //  KEEP THIS bank_tran_id FOR REFUNDING ISSUE
 
             //  Do the rest database saving works

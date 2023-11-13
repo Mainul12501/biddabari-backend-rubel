@@ -13,12 +13,14 @@ use App\Models\Backend\Course\CourseCoupon;
 use App\Models\Backend\OrderManagement\ParentOrder;
 use App\Models\Backend\UserManagement\Student;
 use App\Models\Frontend\CourseOrder\CourseOrder;
+use DGvai\SSLCommerz\SSLCommerz;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 class CheckoutController extends Controller
 {
-    public function placeCourseOrder (OrderSubmitRequest $request)
+//    public function placeCourseOrder (OrderSubmitRequest $request)
+    public function placeCourseOrder (Request $request)
     {
         try {
             if (auth()->check())
@@ -40,8 +42,6 @@ class CheckoutController extends Controller
                     }
                     return back()->with('error', 'Sorry. You already enrolled this course.');
                 }
-//                CourseOrder::saveOrUpdateCourseOrder($request);
-
                 if (isset($request->coupon_code))
                 {
                     $courseCoupon = CourseCoupon::where(['code' => $request->coupon_code, 'course_id' => $request->course_id])->first();
@@ -51,16 +51,37 @@ class CheckoutController extends Controller
                         $request['total_amount']  = $request->total_amount - $courseCoupon->discount_amount;
                     }
                 }
-                $order = ParentOrder::storeXmOrderInfo($request, $request->course_id);
-                if (isset($request->rc))
+//                return $request;
+//                CourseOrder::saveOrUpdateCourseOrder($request);
+                if ($request->payment_method == 'ssl')
                 {
-                    AffiliationHistory::createNewHistory($request, 'course', $request->course_id, Course::find($request->course_id)->affiliate_amount, 'insert');
-                }
-                if (str()->contains(url()->current(), '/api/'))
+                    $request['details_url'] = url()->previous();
+                    $request['model_name'] = 'course';
+                    $request['model_id'] = $request->course_id;
+                    $request['affiliate_amount'] = Course::find($request->course_id)->affiliate_amount;
+                    \session()->put('requestData', $request->all());
+                    return self::sendOrderRequestToSSLZ($request->total_amount, Course::find($request->course_id)->title);
+                } elseif ($request->payment_method == 'cod')
                 {
-                    return response()->json(['message' => 'You Ordered the course successfully.'], 200);
+                    $this->validate($request, [
+                        'vendor'    => 'required',
+                        'paid_to'   => ['required', 'regex:/^(?:\+88|88)?(01[3-9]\d{8})$/'],
+                        'paid_from' => ['required', 'regex:/^(?:\+88|88)?(01[3-9]\d{8})$/'],
+                        'txt_id'    => 'required',
+                    ]);
+                    $order = ParentOrder::storeXmOrderInfo($request, $request->course_id);
+                    if (isset($request->rc))
+                    {
+                        AffiliationHistory::createNewHistory($request, 'course', $request->course_id, Course::find($request->course_id)->affiliate_amount, 'insert');
+                    }
+                    if (str()->contains(url()->current(), '/api/'))
+                    {
+                        return response()->json(['message' => 'You Ordered the course successfully.'], 200);
+                    }
+                    return redirect()->route('front.student.dashboard')->with('success', 'You Ordered the course successfully.');
                 }
-                return redirect()->route('front.student.dashboard')->with('success', 'You Ordered the course successfully.');
+
+
             } else {
                 Session::put('course_redirect_url', url()->current());
                 if (str()->contains(url()->current(), '/api/'))
@@ -71,12 +92,6 @@ class CheckoutController extends Controller
             }
         } catch (\Exception $exception)
         {
-//            if (str()->contains(url()->current(), '/api/'))
-//            {
-//                return response()->json($exception->getMessage());
-//            } else {
-//                return back()->with('error', $exception->getMessage());
-//            }
             return ViewHelper::returEexceptionError($exception->getMessage());
         }
 
@@ -121,5 +136,62 @@ class CheckoutController extends Controller
         } else {
             return redirect()->route('front.student.batch-exam-contents', ['xm_id' => $courseId])->with('success', 'You ordered this Exam successfully.');
         }
+    }
+
+    public static function sendOrderRequestToSSLZ($totalAmount, $contentName)
+    {
+        $sslc = new SSLCommerz();
+        $sslc->amount($totalAmount)
+            ->trxid(ParentOrder::generateOrderNumber())
+            ->product($contentName)
+            ->customer(ViewHelper::loggedUser()->name, ViewHelper::loggedUser()->email ?? 'user@demo.com', ViewHelper::loggedUser()->mobile);
+        return $sslc->make_payment();
+    }
+
+    public function paymentSuccess(Request $request)
+    {
+        try {
+            $validate = SSLCommerz::validate_payment($request);
+            if($validate)
+            {
+                $requestData = (object) \session()->get('requestData');
+                if ($requestData->ordered_for == 'product')
+                {
+                    ParentOrder::orderProductThroughSSL($requestData, $request);
+                } else {
+                    ParentOrder::placeOrderAfterGatewayPayment($request, $requestData);
+                    //  Do the rest database saving works
+                    //  take a look at dd($request->all()) to see what you need
+                    if (isset($requestData->rc))
+                    {
+                        AffiliationHistory::createNewHistory($requestData, $requestData->model_name, $requestData->model_id, $requestData->affiliate_amount, 'insert');
+                    }
+                }
+
+                if (str()->contains(url()->current(), '/api/'))
+                {
+                    return response()->json(['message' => 'You Ordered the course successfully.'], 200);
+                }
+                return redirect()->route('front.student.dashboard')->with('success', 'You Ordered the '.$requestData->model_name.' successfully.');
+            }
+        } catch (\Exception $exception)
+        {
+            return ViewHelper::returEexceptionError($exception->getMessage());
+        }
+    }
+
+    public function paymentFailure (Request $request)
+    {
+        $requestData = \session()->get('requestData');
+        return redirect($requestData['details_url'])->with('error', 'Something went wrong with your payment. Please try again.');
+    }
+    public function paymentCancel (Request $request)
+    {
+        $requestData = \session()->get('requestData');
+        return redirect($requestData['details_url'])->with('error', 'The request was canceled by the user. Payment not completed.');
+    }
+    public function ipn (Request $request)
+    {
+
     }
 }
