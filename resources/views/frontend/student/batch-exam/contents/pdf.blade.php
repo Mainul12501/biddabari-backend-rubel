@@ -4,6 +4,13 @@
 
 @section('student-body')
     <div class="row">
+        <div class="col-12">
+            <p>
+                <a href="" class="float-end nav-link">Download Now</a>
+            </p>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-12">
             <div class="my-box px-3 mx-auto mt-5" style="position: relative!important; height: auto;">
                 <div id="pdf-container"></div>

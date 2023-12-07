@@ -6,7 +6,6 @@ use App\Http\Controllers\Backend\ViewControllers\AdminViewController;
 use App\Http\Controllers\Backend\RolePermissionManagement\Permission\PermissionController;
 use App\Http\Controllers\Backend\RolePermissionManagement\Role\RoleController;
 use App\Http\Controllers\Backend\UserManagement\RegularUser\UserController;
-
 use App\Http\Controllers\Backend\CourseManagement\Course\CourseCategoryController;
 use App\Http\Controllers\Backend\CourseManagement\Course\CourseController;
 use App\Http\Controllers\Backend\CourseManagement\Course\CourseRoutineController;
@@ -49,7 +48,10 @@ use App\Http\Controllers\Backend\ExamManagement\ExamSubscriptionPackageControlle
 use App\Http\Controllers\Backend\OrderManagement\DeliveryOptionController;
 use App\Http\Controllers\Backend\AdditionalFeatureManagement\SiteSettings\SiteSettingsController;
 use App\Http\Controllers\Backend\AdditionalFeatureManagement\Affiliation\AffiliationController;
-
+use App\Http\Controllers\Backend\AdditionalFeatureManagement\NumberCounter\NumberCounterController;
+use App\Http\Controllers\Backend\AdditionalFeatureManagement\OurTeam\OurTeamController;
+use App\Http\Controllers\Backend\AdditionalFeatureManagement\OurServices\OurServicesController;
+use App\Http\Controllers\Backend\AdditionalFeatureManagement\StudentOpinion\StudentOpinionController;
 
 Route::get('/test', function (){
     return bcrypt('superadmin');
@@ -86,6 +88,8 @@ Route::middleware([
     ]);
     Route::post('/course-categories/update/{id}', [CourseCategoryController::class, 'update'])->name('course-categories.update');
     Route::post('course-categories/save-nested-categories', [CourseCategoryController::class, 'saveNestedCategories'])->name('courseCategories.saveNestedCategories');
+    Route::post('courses/save-nested-categories', [CourseController::class, 'saveNestedCourses'])->name('courses.saveNestedCategories');
+    Route::post('course-sections-contents/save-nested-categories', [CourseController::class, 'saveNestedSectionsAndContents'])->name('course.saveNestedSectionsAndContents');
     Route::get('/get-content-for-add-question', [CourseSectionContentController::class, 'getContentForAddQuestion'])->name('get-content-for-add-question');
     Route::get('/get-content-for-add-class-question', [CourseSectionContentController::class, 'getContentForAddClassQuestion'])->name('get-content-for-add-class-question');
     Route::get('/get-ques-by-topic', [CourseSectionContentController::class, 'getQuesByTopic'])->name('get-ques-by-topic');
@@ -105,12 +109,12 @@ Route::middleware([
     Route::get('/show-xm-attendance/{req_from}/{content_id}', [ExamController::class, 'showXmAttendance'])->name('show-xm-attendance');
 
     //    Assign Teacher student to course
-    Route::get('assign-teacher-to-course/{course_id}', [CourseController::class, 'assignTeacherToCourse'])->name('assign-teacher-to-course');
+    Route::get('assign-teacher-to-course/{course_id}/{title?}', [CourseController::class, 'assignTeacherToCourse'])->name('assign-teacher-to-course');
     Route::post('assign-teacher/{course_id}', [CourseController::class, 'assignTeacher'])->name('assign-teacher');
     Route::post('detach-teacher/{course_id}', [CourseController::class, 'detachTeacher'])->name('detach-teacher');
 //    Assign student to course
-    Route::get('assign-student-to-course/{course_id}', [CourseController::class, 'assignStudentToCourse'])->name('assign-student-to-course');
-    Route::post('assign-student/{course_id}', [CourseController::class, 'assignStudent'])->name('assign-student');
+    Route::get('assign-student-to-course/{course_id}/{title?}', [CourseController::class, 'assignStudentToCourse'])->name('assign-student-to-course');
+    Route::post('transfer-student/{course_transfer_to_id}', [CourseController::class, 'assignStudent'])->name('transfer-student');
     Route::post('assign-new-student/{course_id}', [CourseController::class, 'assignNewStudent'])->name('assign-new-student');
     Route::post('detach-student/{course_id}', [CourseController::class, 'detachStudent'])->name('detach-student');
 
@@ -190,6 +194,10 @@ Route::middleware([
         'popup-notifications'   => PopupNotificationsController::class,
         'advertisements'   => AdvertisementController::class,
         'site-settings'   => SiteSettingsController::class,
+        'number-counters'   => NumberCounterController::class,
+        'our-teams'   => OurTeamController::class,
+        'our-services'   => OurServicesController::class,
+        'student-opinions'   => StudentOpinionController::class,
     ]);
 
     //    Notice Management -- done By Riad --need check

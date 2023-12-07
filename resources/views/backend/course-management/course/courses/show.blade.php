@@ -43,7 +43,8 @@
                 </div>
                 <div class="col-md-6 mt-2">
                     <label for="">Featured Video</label>
-                    <input type="text" disabled value="{{ isset($course) ? $course->featured_video_url : '' }}" name="featured_video_url" class="form-control" placeholder="Featured Video" />
+{{--                    <input type="text" disabled value="{{ isset($course) ? $course->featured_video_url : '' }}" name="featured_video_url" class="form-control" placeholder="Featured Video" />--}}
+                    <input type="text" disabled value="{{ isset($course->featured_video_url) ? 'https://www.youtube.com/watch?v='.$course->featured_video_url : '' }}" name="featured_video_url" class="form-control" placeholder="Featured Video" />
                 </div>
                 <div class="col-md-6 mt-2">
                     <p>Featured Banner</p>

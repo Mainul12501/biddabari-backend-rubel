@@ -2,9 +2,12 @@
 
 namespace App\Models\Backend\Course;
 
+use App\Models\Backend\AdditionalFeatureManagement\Affiliation\AffiliationHistory;
+use App\Models\Backend\AdditionalFeatureManagement\SiteSeo;
 use App\Models\Backend\OrderManagement\ParentOrder;
 use App\Models\Backend\UserManagement\Student;
 use App\Models\Backend\UserManagement\Teacher;
+use App\Models\Frontend\AdditionalFeature\ContactMessage;
 use App\Models\Frontend\CourseOrder\CourseOrder;
 use App\Models\Scopes\Searchable;
 use Illuminate\Database\Eloquent\Model;
@@ -57,6 +60,8 @@ class Course extends Model
         'discount_end_date_timestamp',
         'admission_last_date',
         'affiliate_amount',
+        'parent_id',
+        'c_order'
     ];
 
     protected $searchableFields = ['*'];
@@ -101,6 +106,22 @@ class Course extends Model
             {
                 $course->courseCategories()->detach();
             }
+            if (!empty($course->contactMessages))
+            {
+                $course->contactMessages->each->delete();
+            }
+            if (!empty($course->siteSeos))
+            {
+                $course->siteSeos->each->delete();
+            }
+            if (!empty($course->affiliationHistories))
+            {
+                $course->affiliationHistories->each->delete();
+            }
+            if (!empty($course->courses))
+            {
+                $course->courses->each->delete();
+            }
         });
     }
 
@@ -108,6 +129,7 @@ class Course extends Model
 
     public static function createOrUpdateCourse ($request, $id = null)
     {
+        $lastOrder = Course::orderBy("c_order", "DESC")->first();
         if (isset($id))
         {
             self::$course = Course::find($id);
@@ -137,7 +159,8 @@ class Course extends Model
 //        self::$course->featured_video_url       = $request->featured_video_url;
         if (isset($request->featured_video_url))
         {
-            $vidUrlString = explode('https://youtu.be/', $request->featured_video_url)[1];
+//            $vidUrlString = explode('https://youtu.be/', $request->featured_video_url)[1];
+            $vidUrlString = explode('https://www.youtube.com/watch?v=', $request->featured_video_url)[1];
         }
         self::$course->featured_video_url       = isset($vidUrlString) ? $vidUrlString : (isset($id) ? self::$course->featured_video_url : null);
         self::$course->affiliate_amount         = $request->affiliate_amount;
@@ -155,6 +178,7 @@ class Course extends Model
         self::$course->total_file               = $request->total_file;
         self::$course->total_written_exam       = $request->total_written_exam;
         self::$course->admission_last_date      = $request->admission_last_date;
+        self::$course->c_order                  = isset($id) ? self::$course->c_order : (isset($lastOrder) ? $lastOrder->c_order+1 : 1);
         self::$course->status                   = $request->status == 'on' ? 1 : 0;
         self::$course->is_paid                  = $request->is_paid == 'on' ? 1 : 0;
         self::$course->is_featured              = $request->is_featured == 'on' ? 1 : 0;
@@ -247,7 +271,32 @@ class Course extends Model
 
     public function parentOrders()
     {
-        return $this->hasMany(ParentOrder::class, 'parent_model_id');
+        return $this->hasMany(ParentOrder::class, 'parent_model_id')->where('ordered_for', 'course');
+    }
+
+    public function contactMessages()
+    {
+        return $this->hasMany(ContactMessage::class, 'parent_model_id')->where('type', 'course');
+    }
+
+    public function parentComments()
+    {
+        return $this->hasMany(ParentComment::class, 'parent_model_id');
+    }
+
+    public function siteSeos()
+    {
+        return $this->hasMany(SiteSeo::class, 'parent_model_id')->where('model_type', 'course');
+    }
+
+    public function affiliationHistories()
+    {
+        return $this->hasMany(AffiliationHistory::class, 'model_id')->where('model_type', 'course');
+    }
+
+    public function courses()
+    {
+        return $this->hasMany(Course::class, 'parent_id')->orderBy('c_order', 'ASC');
     }
 
     public function courseSectionContents()

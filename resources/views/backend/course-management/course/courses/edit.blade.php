@@ -65,7 +65,8 @@
                 </div>
                 <div class="col-md-6 mt-2">
                     <label for="">Featured Video</label>
-                    <input type="text" value="{{ isset($course->featured_video_url) ? 'https://youtu.be/'.$course->featured_video_url : '' }}" name="featured_video_url" class="form-control" placeholder="Featured Video" />
+{{--                    <input type="text" value="{{ isset($course->featured_video_url) ? 'https://youtu.be/'.$course->featured_video_url : '' }}" name="featured_video_url" class="form-control" placeholder="Featured Video" />--}}
+                    <input type="text" value="{{ isset($course->featured_video_url) ? 'https://www.youtube.com/watch?v='.$course->featured_video_url : '' }}" name="featured_video_url" class="form-control" placeholder="Featured Video" />
                     <span class="text-danger" id="featured_video_url"></span>
                 </div>
                 <div class="col-md-6 mt-2">

@@ -15,6 +15,46 @@ use App\Http\Controllers\Backend\UserManagement\RegularUser\UserController;
 
 use App\Http\Controllers\Backend\AdditionalFeatureManagement\Affiliation\AffiliationController;
 
+Route::get('/transfer-user', function (){
+//    $deleteThis = \App\Models\Learner::where(['photo' => 'users/qB846dOvrkr3MRDd6En3v6ayFtbGijsNIKcgkdrw.jpg', 'name' => 'Shahana Khatun'])->first();
+
+     $learners =  \App\Models\Learner::skip(70000)->take(50000)->get();
+//    return \Illuminate\Support\Facades\DB::table('learners')->select('*')->get();
+//    return $learners =  \App\Models\Learner::all();
+    foreach ($learners as $key => $learner)
+    {
+        $existUser = \App\Models\User::where('mobile', $learner->phone)->first();
+        if (!isset($existUser))
+        {
+            $user = new \App\Models\User();
+            $user->name = $learner->name;
+            $user->email = $learner->email;
+            $user->mobile = $learner->phone;
+            $user->password = $learner->password ?? bcrypt($learner->phone);
+            $user->profile_photo_path = $learner->photo;
+            $user->status = 1;
+            $user->save();
+
+            $user->roles()->sync(4);
+
+            $student = new \App\Models\Backend\UserManagement\Student();
+            $student->user_id   = $user->id;
+            $student->first_name    = $learner->name;
+            $student->email    = $learner->email;
+            $student->mobile    = $learner->phone;
+            $student->image    = $learner->photo;
+            $student->dob    = $learner->dob;
+            $student->gender    = $learner->gender == 'others' ? 'other' : $learner->gender;
+            $student->description    = $learner->introduction;
+            $student->institute_name    = $learner->institution;
+            $student->school    = $learner->school;
+            $student->college    = $learner->college;
+            $student->university    = $learner->varsity;
+            $student->status    = 1;
+            $student->save();
+        }
+    }
+});
 Route::get('/te', function (){
 //    return explode('https://www.youtube.com/watch?v=', 'https://www.youtube.com/watch?v=i0QcjNi2c8E')[1];
 //    return \Illuminate\Support\Facades\Hash::make('superadmin');
@@ -169,12 +209,16 @@ Route::as('front.')->group(function (){
             Route::get('show-batch-exam-answers/{content_id}/{slug?}', [FrontExamController::class, 'showBatchExamAnswers'])->name('show-batch-exam-answers');
             Route::get('show-course-exam-ranking/{content_id}/{slug?}', [FrontExamController::class, 'showCourseExamRanking'])->name('show-course-exam-ranking');
             Route::get('show-batch-exam-ranking/{content_id}/{slug?}', [FrontExamController::class, 'showBatchExamRanking'])->name('show-batch-exam-ranking');
+            Route::post('upload-assignment-files', [FrontExamController::class, 'uploadAssignmentFiles'])->name('upload-assignment-files');
 
             Route::get('today-classes', [FrontViewTwoController::class, 'todayClasses'])->name('today-classes');
             Route::get('today-exams', [FrontViewTwoController::class, 'todayExams'])->name('today-exams');
 //            student affiliation
             Route::get('my-affiliation', [StudentController::class, 'myAffiliation'])->name('my-affiliation');
             Route::get('generate-user-affiliate-code', [AffiliationController::class, 'generateAffiliateCode'])->name('generate-user-affiliate-code');
+
+            Route::post('set-xm-start-status-to-server', [FrontExamController::class, 'setXmStartStatus'])->name('set-xm-start-status-to-server');
+            Route::post('check-if-user-tries-to-reload', [FrontExamController::class, 'setXmDataToSession'])->name('check-if-user-tries-to-reload');
         });
     });
 });

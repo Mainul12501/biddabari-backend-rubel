@@ -40,7 +40,7 @@ class CourseSection extends Model
 
     public static function createOrUpdateCourseSection ($request, $id = null)
     {
-        $lastRecord = static::where('course_id', $request->course_id)->latest()->first();
+        $lastRecord = CourseSection::where('course_id', $request->course_id)->latest()->first();
         if (isset($id))
         {
             self::$courseSection = CourseSection::find($id);

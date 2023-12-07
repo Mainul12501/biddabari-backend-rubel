@@ -106,6 +106,15 @@
                         </select>
                     </div>
                 </div>
+                <div class="row mt-2">
+                    <div class="col-sm-6 mt-2">
+                        <label for="">Is Downloadable</label>
+                        <div class="material-switch">
+                            <input id="someSwitchOptionWarningx" name="can_download_pdf" type="checkbox"  />
+                            <label for="someSwitchOptionWarningx" class="label-info"></label>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="d-none" id="typeVideo">

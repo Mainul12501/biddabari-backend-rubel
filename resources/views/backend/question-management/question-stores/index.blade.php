@@ -9,7 +9,7 @@
                 <div class="card-header bg-warning">
 {{--                    {{ $questionTopic }}--}}
                     <h4 class="float-start text-white">{{ $questionTopic->name }}, {{ $questionTopic->type == 'mcq' ? 'MCQ' : 'Written' }} - ({{ count($questionTopic->questionStores) }})</h4>
-                    <a href="{{ route('export-questions', ['topic_id' => $_GET['topic_id'], 'type' => $_GET['q-type']]) }}" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 m-r-80" title="Import File"><i class="fa-solid fa-arrow-circle-down"></i></a>
+                    <a href="{{ route('export-questions', ['topic_id' => $_GET['topic_id'], 'type' => $_GET['q-type']]) }}" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 m-r-80" title="Export File"><i class="fa-solid fa-arrow-circle-down"></i></a>
                     <button type="button" data-bs-toggle="modal" data-bs-target="#questionStoreImportModal" class="rounded-circle text-white border-5 text-light f-s-22 btn ms-auto m-r-25" title="Import File"><i class="fa-solid fa-paperclip"></i></button>
                     <button type="button" data-bs-toggle="modal" data-bs-target="#questionStoreModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 ms-2 me-3"><i class="fa-solid fa-circle-plus"></i></button>
                 </div>

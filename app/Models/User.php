@@ -2,19 +2,27 @@
 
 namespace App\Models;
 
+use App\Models\Backend\AdditionalFeatureManagement\Affiliation\AffiliationHistory;
+use App\Models\Backend\AdditionalFeatureManagement\Affiliation\AffiliationRegistration;
+use App\Models\Backend\BatchExamManagement\BatchExamResult;
 use App\Models\Backend\BlogManagement\Blog;
+use App\Models\Backend\CircularManagement\Circular;
+use App\Models\Backend\Course\CourseClassExamResult;
+use App\Models\Backend\Course\CourseExamResult;
 use App\Models\Backend\ExamManagement\Exam;
 use App\Models\Backend\ExamManagement\ExamOrder;
 use App\Models\Backend\ExamManagement\ExamResult;
 use App\Models\Backend\ExamManagement\ExamSubscriptionPackage;
 use App\Models\Backend\ExamManagement\SubscriptionOrder;
 use App\Models\Backend\OrderManagement\ParentOrder;
+use App\Models\Backend\QuestionManagement\FavouriteQuestion;
 use App\Models\Backend\QuestionManagement\QuestionOption;
 use App\Models\Backend\QuestionManagement\QuestionStore;
 use App\Models\Backend\QuestionManagement\QuestionTopic;
 use App\Models\Backend\RoleManagement\Role;
 use App\Models\Backend\UserManagement\Student;
 use App\Models\Backend\UserManagement\Teacher;
+use App\Models\Frontend\AdditionalFeature\ContactMessage;
 use App\Models\Frontend\CourseOrder\CourseOrder;
 use App\Models\Scopes\Searchable;
 use Illuminate\Notifications\Notifiable;
@@ -119,6 +127,42 @@ class User extends Authenticatable
             if (!empty($user->examSubscriptionPackages))
             {
                 $user->examSubscriptionPackages()->detach();
+            }
+            if (!empty($user->courseExamResults))
+            {
+                $user->courseExamResults->each->delete();
+            }
+            if (!empty($user->batchExamOrderChecker))
+            {
+                $user->batchExamOrderChecker->each->delete();
+            }
+            if (!empty($user->circulars))
+            {
+                $user->circulars->each->delete();
+            }
+            if (!empty($user->contactMessages))
+            {
+                $user->contactMessages->each->delete();
+            }
+            if (!empty($user->courseClassExamResults))
+            {
+                $user->courseClassExamResults->each->delete();
+            }
+            if (!empty($user->parentOrders2))
+            {
+                $user->parentOrders2->each->delete();
+            }
+            if (!empty($user->affiliationRegistrations))
+            {
+                $user->affiliationRegistrations->each->delete();
+            }
+            if (!empty($user->affiliationHistories))
+            {
+                $user->affiliationHistories->each->delete();
+            }
+            if (!empty($user->favouriteQuestions))
+            {
+                $user->favouriteQuestions()->detach();
             }
         });
     }
@@ -244,6 +288,11 @@ class User extends Authenticatable
         return in_array($this->email, config('auth.super_admins'));
     }
 
+    public function courseExamResults()
+    {
+        return $this->hasMany(CourseExamResult::class);
+    }
+
     public function batchExamResults()
     {
         return $this->hasMany(BatchExamResult::class);
@@ -257,5 +306,50 @@ class User extends Authenticatable
     public function batchExamOrderChecker()
     {
         return $this->hasMany(ParentOrder::class, 'checked_by');
+    }
+
+    public function circulars()
+    {
+        return $this->hasMany(Circular::class);
+    }
+
+    public function contactMessages()
+    {
+        return $this->hasMany(ContactMessage::class);
+    }
+
+    public function parentComments()
+    {
+        return $this->hasMany(ParentComment::class);
+    }
+
+    public function parentComments2()
+    {
+        return $this->hasMany(ParentComment::class, 'checked_by');
+    }
+
+    public function courseClassExamResults()
+    {
+        return $this->hasMany(CourseClassExamResult::class);
+    }
+
+    public function parentOrders2()
+    {
+        return $this->hasMany(ParentOrder::class, 'referrer_id');
+    }
+
+    public function affiliationRegistrations()
+    {
+        return $this->hasMany(AffiliationRegistration::class);
+    }
+
+    public function affiliationHistories()
+    {
+        return $this->hasMany(AffiliationHistory::class);
+    }
+
+    public function favouriteQuestions()
+    {
+        return $this->hasMany(FavouriteQuestion::class);
     }
 }

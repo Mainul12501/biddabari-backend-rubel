@@ -22,7 +22,7 @@
 {{--                                <th>Ext Link</th>--}}
 {{--                                <th>PDF file</th>--}}
 {{--                                <th>Size</th>--}}
-{{--                                <th>Slug</th>--}}
+                                <th>Can Download?</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -37,7 +37,7 @@
 {{--                                        <td>--}}
 {{--                                            <a href="{{ asset($pdfStore->file_url) }}" class="show-pdf" data-id="{{ $pdfStore->id }}">{{ $pdfStore->title }}</a>--}}
 {{--                                        </td>--}}
-{{--                                        <td>{{ $pdfStore->slug }}</td>--}}
+                                        <td>{{ $pdfStore->can_download == 1 ? 'Downloadable' : 'Not Downloadable' }}</td>
                                         <td>
                                             <a href="" data-id="{{ $pdfStore->id }}" class="btn btn-sm btn-secondary show-pdf" title="View Pdf">
                                                 <i class="fa-solid fa-eye"></i>

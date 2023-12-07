@@ -38,6 +38,8 @@
                             <form id="quizForm" action="{{ route('front.student.get-batch-exam-result', ['content_id' => $exam->id, 'slug' => str_replace(' ', '-', $exam->title)]) }}" method="post" class="quiz-form" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="required_time">
+                                <input type="hidden" name="_method" value="post" />
+                                <input type="hidden" id="name" value="">
                                 @if($exam->content_type == 'exam')
                                     @foreach($exam->questionStores as $index => $question)
                                         <div class="mt-2 p-3" id="questionDiv{{ $question->id }}">
@@ -162,6 +164,19 @@
         background: #ffe4d6!important;
         color: black!important;
     }
+
+    .form-card { padding: 10px 2px 20px 25px; border-radius: 10px}
+
+    .check-ans  {
+        border: 1px solid green;
+        padding: 4px 3px 0px 4px;
+        border-radius: 10px;
+    }
+    .cancel-ans  {
+        border: 1px solid red;
+        padding: 4px 3px 0px 4px;
+        border-radius: 10px;
+    }
 </style>
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -218,106 +233,15 @@
         }
     });
 
-    window.onbeforeunload = function (e) {
+
+    document.addEventListener('keydown', (e) => {
         e = e || window.event;
-
-        // For IE and Firefox prior to version 4
-        if (e) {
-            a();
-            e.returnValue = 'Sure?';
-
+        if(e.keyCode == 116){
+            e.preventDefault();
         }
-
-        // For Safari
-        return 'Sure?';
-    };
-    function a()
-    {
-        alert('df');
-    }
-
-    $(document).on('beforeunload', function(event) {
-        // if (event.preventDefault) {
-        //     event.preventDefault();
-        // }
-
-        // event.returnValue = "";
-
-        // Swal.fire({
-        //     title: 'Are you sure to Reload the page?',
-        //     text: "You won't be able to participate again!",
-        //     icon: 'warning',
-        //     showCancelButton: true,
-        //     confirmButtonColor: '#3085d6',
-        //     cancelButtonColor: '#d33',
-        //     confirmButtonText: 'Yes, Confirm!'
-        // }).then((result) => {
-        //     if (result.isConfirmed) {
-        //         $.ajax({
-        //             url: "/te",
-        //             success: function (data){
-        //                 console.log(data);
-        //             }
-        //         })
-        //     }
-        //
-        // })
-        // event.preventDefault();
-
-        // Check if the event is a page reload.
-        // if (event.type === 'beforeunload') {
-        // The user is trying to reload the page.
-
-        // event.returnValue = 'sdf';
-        // $.ajax({
-        //     url: "/te",
-        //     success: function (data){
-        //         console.log(data);
-        //     }
-        // })
-        // }
-
-
-
-        {{--var form = $('#quizForm')[0];--}}
-        {{--var formData = new FormData(form);--}}
-        {{--if (formData)--}}
-        {{--{--}}
-        {{--    $.ajax({--}}
-        {{--        url: "{{ route('front.student.get-course-exam-result', ['content_id' => $exam->id, 'slug' => str_replace(' ', '-', $exam->title)]) }}",--}}
-        {{--        method: "POST",--}}
-        {{--        data: formData,--}}
-        {{--        dataType: "JSON",--}}
-        {{--        contentType: false,--}}
-        {{--        processData: false,--}}
-        {{--        beforeSend: function () {--}}
-
-        {{--            console.log('sending');--}}
-        {{--        },--}}
-        {{--        success: function (data) {--}}
-        {{--            // console.log(data);--}}
-        {{--            console.log('success');--}}
-        {{--        },--}}
-        {{--        error: function (errors) {--}}
-        {{--            if (errors.responseJSON)--}}
-        {{--            {--}}
-        {{--                alert('something wrong');--}}
-        {{--            }--}}
-        {{--        }--}}
-        {{--    })--}}
-        {{--}--}}
-
     });
-
-    // document.addEventListener('keydown', (e) => {
-    //     e = e || window.event;
-    //     if(e.keyCode == 116){
-    //         e.preventDefault();
-    //     }
-    // });
 </script>
 {{--disable page reload start--}}
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
 <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';</script>
@@ -430,6 +354,29 @@
 
     <script>
 
+        const beforeUnloadHandler = (event) => {
+            var form = $('#quizForm')[0];
+            var formData = new FormData(form);
+            $.ajax({
+                url: "{{ route('front.student.check-if-user-tries-to-reload') }}",
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log(response);
+                }
+            });
+
+            // Recommended
+            event.preventDefault();
+
+
+            // Included for legacy support, e.g. Chrome/Edge < 119
+            event.returnValue = true;
+
+        };
+
         @if($exam->exam_is_strict == 1)
             @if(currentDateTimeYmdHi() < dateTimeFormatYmdHi($exam->exam_end_time))
                 {{ $diffTime  = \Illuminate\Support\Carbon::now()->diffInMinutes($exam->exam_end_time) }}
@@ -502,14 +449,32 @@
                     setInterval(function () {
                         $('input[name="required_time"]').val(seconds++);
                     }, 1000)
+
+                    var nameVal = $('#name').val('a');
+                    // send user xm starting status to server
+                    $.ajax({
+                        url: "{{ route('front.student.set-xm-start-status-to-server') }}",
+                        dataType: "JSON",
+                        data: {xmType: "batch_exam", xmUrl: "{!! url()->current() !!}", xmContentId: "{{ $exam->id }}" },
+                        method: "POST",
+                        success: function (response) {
+                            console.log(response);
+                        }
+                    })
+                    if (nameVal !== "") {
+
+                        window.addEventListener("beforeunload", beforeUnloadHandler);
+                    } else {
+                        window.removeEventListener("beforeunload", beforeUnloadHandler);
+                    }
                 }
 
             })
-
-            // if (confirm('Are you sure to start the exam?'))
-            // {
-            //
-            // }
+        })
+        $(document).on('click', '.finish', function () {
+            event.preventDefault();
+            window.removeEventListener("beforeunload", beforeUnloadHandler);
+            document.getElementById('quizForm').submit();
         })
     </script>
 {{--    <script>--}}
@@ -604,6 +569,7 @@
 <script>
     $(document).on('click', '.sticky-submit-btn', function () {
         event.preventDefault();
+        window.removeEventListener("beforeunload", beforeUnloadHandler);
         document.getElementById('quizForm').submit();
     })
 </script>

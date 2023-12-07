@@ -32,6 +32,13 @@
                     <input type="text" class="form-control" required name="title" placeholder="Title" />
                     <span class="text-danger" id="title">{{ $errors->has('title') ? $errors->first('title') : "" }}</span>
                 </div>
+                    <div class="col-sm-6 mt-2">
+                        <label for="">Is Downloadable</label>
+                        <div class="material-switch">
+                            <input id="someSwitchOptionWarning" name="can_download" type="checkbox" checked="">
+                            <label for="someSwitchOptionWarning" class="label-info"></label>
+                        </div>
+                    </div>
             </div>
             <div class="row mt-2">
                 <div class="col-md-4 mt-2">

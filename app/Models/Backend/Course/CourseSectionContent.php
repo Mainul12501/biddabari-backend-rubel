@@ -2,7 +2,9 @@
 
 namespace App\Models\Backend\Course;
 
+use App\Models\Backend\ExamManagement\AssignmentFile;
 use App\Models\Backend\QuestionManagement\QuestionStore;
+use App\Models\Frontend\AdditionalFeature\ContactMessage;
 use App\Models\Scopes\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -88,6 +90,8 @@ class CourseSectionContent extends Model
         'class_xm_duration_in_minutes',
         'written_total_marks',
         'written_pass_mark',
+
+        'can_download_pdf',
     ];
 
     protected $searchableFields = ['*'];
@@ -121,6 +125,18 @@ class CourseSectionContent extends Model
             if (!empty($sectionContent->courseSectionContentsSub))
             {
                 $sectionContent->courseSectionContentsSub->each->delete();
+            }
+            if (!empty($sectionContent->courseClassExamResults))
+            {
+                $sectionContent->courseClassExamResults->each->delete();
+            }
+            if (!empty($sectionContent->contactMessages))
+            {
+                $sectionContent->contactMessages->each->delete();
+            }
+            if (!empty($sectionContent->assignmentFiles))
+            {
+                $sectionContent->assignmentFiles->each->delete();
             }
             if (!empty($sectionContent->questionStores))
             {
@@ -157,6 +173,7 @@ class CourseSectionContent extends Model
         if ($request->content_type == 'pdf')
         {
             self::$courseSectionContent->pdf_link                                   = $request->pdf_link;
+            self::$courseSectionContent->can_download_pdf                           = $request->can_download_pdf == 'on' ? 1 : 0;
             if ($request->pdf_select_form == 1)
             {
                 self::$courseSectionContent->pdf_file                               = fileUpload($request->file('pdf_file'), 'course-section-content/pdf/', 'section-content', (isset($id) ? CourseSectionContent::find($id)->pdf_file : ''));
@@ -393,6 +410,21 @@ class CourseSectionContent extends Model
         return $this->belongsToMany(
             QuestionStore::class,
             'course_section_content_question_store_class'
-        );
+        )->orderBy('id', 'ASC');
+    }
+
+    public function courseClassExamResults()
+    {
+        return $this->hasMany(CourseClassExamResult::class);
+    }
+
+    public function contactMessages()
+    {
+        return $this->hasMany(ContactMessage::class, 'parent_model_id')->where('type', 'course');
+    }
+
+    public function assignmentFiles()
+    {
+        return $this->hasMany(AssignmentFile::class);
     }
 }

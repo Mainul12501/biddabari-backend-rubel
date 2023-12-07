@@ -57,16 +57,16 @@ class AffiliationHistory extends Model
 
     public function course()
     {
-        return $this->belongsTo(Course::class, 'model_id');
+        return $this->belongsTo(Course::class, 'model_id')->where('model_type', 'course');
     }
 
     public function batchExam()
     {
-        return $this->belongsTo(BatchExam::class, 'model_id');
+        return $this->belongsTo(BatchExam::class, 'model_id')->where('model_type', 'batch_exam');
     }
 
     public function product()
     {
-        return $this->belongsTo(Product::class, 'model_id');
+        return $this->belongsTo(Product::class, 'model_id')->where('model_type', 'product');
     }
 }

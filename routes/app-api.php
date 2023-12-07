@@ -12,6 +12,7 @@ use App\Http\Controllers\Frontend\Checkout\CheckoutController;
 use App\Http\Controllers\Frontend\Student\StudentController;
 
 use App\Http\Controllers\Frontend\FrontExam\FrontExamController;
+use App\Http\Controllers\Backend\CourseManagement\Question\QuestionStoreController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +60,8 @@ Route::prefix('v1')->name('api.')->group(function (){
         Route::get('start-course-exam/{content_id}/{slug?}', [AppApiControllerTwo::class, 'startcourseExam']);
         Route::get('start-batch-exam/{content_id}/{slug?}', [AppApiControllerTwo::class, 'startBatchExam']);
         Route::get('start-class-exam/{content_id}/{slug?}', [AppApiControllerTwo::class, 'startClassExam']);
+
+
     });
 
 });

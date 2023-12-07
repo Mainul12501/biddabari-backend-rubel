@@ -112,7 +112,7 @@
                             <a class="nav-link {{ request()->is('student/my-courses') ? 'st-menu-active' : '' }}" href="{{ route('front.student.my-courses') }}">My Courses</a>
                         </li>
                         <li class="nav-item border-1">
-                            <a class="nav-link {{ request()->is('student/my-exams') ? 'st-menu-active' : '' }}" href="{{ route('front.student.my-exams') }}">My Batch Exams</a>
+                            <a class="nav-link {{ request()->is('student/my-exams') ? 'st-menu-active' : '' }}" href="{{ route('front.student.my-exams') }}">My Exams Courses</a>
                         </li>
                         <li class="nav-item border-1">
                             <a class="nav-link {{ request()->is('student/my-orders') ? 'st-menu-active' : '' }}" href="{{ route('front.student.my-orders') }}">My Orders</a>

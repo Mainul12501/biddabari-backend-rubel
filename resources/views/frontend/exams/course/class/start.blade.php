@@ -41,7 +41,7 @@
                                 {{ csrf_field() }}
                                 <input type="hidden" name="required_time">
                                 @foreach($exam->questionStoresForClassXm as $index => $question)
-                                    <div class="mt-2" id="questionDiv{{ $question->id }}">
+                                    <div class="mt-2 que-ele-div" id="questionDiv{{ $question->id }}">
                                         <div class="form-card " id="fildset{{ $question->id }}">
                                             <div class="question-title" id="loop{{ $question->id }}" data-loop="{{ $loop->iteration }}" style="margin-top: 10px">
                                                 <span class="float-start f-s-26">{{ $loop->iteration }}.  &nbsp;</span>
@@ -114,6 +114,18 @@
         /*background: #01a3a4!important;*/
         background: #ffe4d6!important;
         color: black!important;
+    }
+    .que-ele-div { padding: 10px 2px 20px 25px; border-radius: 10px}
+
+    .check-ans  {
+        border: 1px solid green;
+        padding: 4px 3px 0px 4px;
+        border-radius: 10px;
+    }
+    .cancel-ans  {
+        border: 1px solid red;
+        padding: 4px 3px 0px 4px;
+        border-radius: 10px;
     }
 </style>
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>

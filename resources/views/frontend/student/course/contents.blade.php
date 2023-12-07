@@ -39,7 +39,7 @@
                                                                 </a>
                                                             @endif
                                                             @if($courseSectionContent->content_type == 'video')
-                                                                    <a href="javascript:void(0)" class="w-100 open-video-modal" data-has-class-xm="{{ $courseSectionContent->has_class_xm }}" data-complete-class-xm="{{ $courseSectionContent->classXmStatus }}" data-video-link="{{ $courseSectionContent->video_link }}" data-video-vendor="{{ $courseSectionContent->video_vendor }}" data-content-id="{{ $courseSectionContent->id }}">
+                                                                    <a href="javascript:void(0)" class="w-100 open-video-modal" data-has-class-xm="{{ $courseSectionContent->has_class_xm }}" data-complete-class-xm="{{ $courseSectionContent->classXmStatus }}" data-video-link="{{ $courseSectionContent->video_vendor == 'youtube' ? explode('https://www.youtube.com/watch?v=', $courseSectionContent->video_link)[1] : $courseSectionContent->video_link }}" data-video-vendor="{{ $courseSectionContent->video_vendor }}" data-content-id="{{ $courseSectionContent->id }}">
                                                                         <div class="accordion-content-list pt-2 pb-0">
                                                                             <div class="accordion-content-left">
 {{--                                                                                Video--}}
@@ -216,6 +216,13 @@
                 </div>
                 <div class="modal-body p-0">
                     <div class="card card-body p-0" id="pdfContentPrintDiv">
+                        <div class="row">
+                            <div class="col-12">
+                                <p>
+                                    <a href="" class="float-end" download id="pdfDownloadLink"></a>
+                                </p>
+                            </div>
+                        </div>
                         <div class="my-box px-3 mx-auto mt-5" style="position: relative!important; height: auto;">
                             <div id="pdf-container"></div>
                         </div>
@@ -245,14 +252,19 @@
             height: 440px;
             overflow:hidden;
             position:relative;
+
+
+            padding-bottom: 56.25%;
+            padding-top: 25px;
+            /*height: 0;*/
         }
-        .video-container iframe{
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
+        /*.video-container iframe{*/
+        /*    position: absolute;*/
+        /*    top: 0;*/
+        /*    left: 0;*/
+        /*    width: 100%;*/
+        /*    height: 100%;*/
+        /*}*/
         .video-container iframe{
             position: absolute;
             top: -60px;
@@ -465,13 +477,14 @@
                 if (videoVendor == 'youtube')
                 {
                     // const arrayOne = videoLink.split('https://www.youtube.com/watch?v=')
-                    const arrayOne = videoLink.split('https://youtu.be/')
-                    var splitVidUrl = arrayOne[1].split('&')[0];
+                    // const arrayOne = videoLink.split('https://youtu.be/')
+                    // var splitVidUrl = arrayOne[1].split('&')[0];
                     $('.youtube').removeClass('d-none');
                     $('.private').addClass('d-none');
                     $('.vimeo').addClass('d-none');
-                    $('#youtubePlayer').attr('src', 'https://www.youtube.com/embed/'+splitVidUrl+'?rel=0&amp;modestbranding=1');
+                    $('#youtubePlayer').attr('src', 'https://www.youtube.com/embed/'+videoLink+'?rel=0&modestbranding=0&controls=1');
                     $('.video-modal').modal('show');
+                    console.log($(document).find('.ytp-youtube-button'));
                 } else if (videoVendor == 'private')
                 {
                     $('.private').removeClass('d-none');
@@ -535,7 +548,10 @@
                             scale: 1.5,
                             pageImageCompression: "MEDIUM", // FAST, MEDIUM, SLOW(Helps to control the new PDF file size)
                         });
-                        // $('#pdfContentPrintDiv').html(data);
+                        if(data.sectionContent.can_download_pdf == 1 )
+                        {
+                            $('#pdfDownloadLink').attr('href', pdflink).html('Download Now').attr('class', 'btn btn-success btn-sm float-end me-4 mt-2');
+                        }
                         $('.show-pdf-modal').modal('show');
                     }
                 })

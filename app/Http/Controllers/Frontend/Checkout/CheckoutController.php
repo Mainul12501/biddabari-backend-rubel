@@ -55,6 +55,12 @@ class CheckoutController extends Controller
 //                CourseOrder::saveOrUpdateCourseOrder($request);
                 if ($request->payment_method == 'ssl')
                 {
+                    if (str()->contains(url()->current(), '/api/'))
+                    {
+                        $request['parent_model_id'] = $request->id;
+                        ParentOrder::createOrderAfterSsl($request);
+                        return response()->json(['success' => 'Payment completed successfully.']);
+                    }
                     $request['details_url'] = url()->previous();
                     $request['model_name'] = 'course';
                     $request['model_id'] = $request->course_id;

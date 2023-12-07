@@ -132,9 +132,9 @@ class CourseSectionContentController extends Controller
     {
         abort_if(Gate::denies('delete-course-section-content'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $courseSectionContent = CourseSectionContent::find($id);
-        $courseSectionId = $courseSectionContent->course_section_id;
+//        $courseSectionId = $courseSectionContent->course_section_id;
         $courseSectionContent->delete();
-        ViewHelper::reorderSerials('course_section_content', $courseSectionId);
+//        ViewHelper::reorderSerials('course_section_content', $courseSectionId);
         return  back()->with('success', 'Course Content deleted successfully.');
     }
 

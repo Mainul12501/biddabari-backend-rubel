@@ -59,18 +59,20 @@
             <div>
                 <a href="{{ asset($content->assignment_question) }}" class="text-center btn btn-warning " download="download">Download Question</a>
             </div>
-            <div class="mt-3">
-                <p>Done Your assignment? Submit Your Answers Now</p>
-                <form action="" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="course_id" >
-                    <div class="row">
-                        <label for="">Upload Files</label>
-                        <input type="file" name="files" class="float-start" accept="image/*" />
-                    </div>
-                    <input type="submit" class="btn btn-success float-start mt-3 btn-sm" value="Upload"/>
-                </form>
-            </div>
+            @if($content->assignment_end_time_timestamp >= strtotime(currentDateTimeYmdHi()))
+                <div class="mt-3">
+                    <p>Done Your assignment? Submit Your Answers Now</p>
+                    <form action="{{ route('front.student.upload-assignment-files') }}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="course_content_id" value="{{ $content->id }}">
+                        <div class="row">
+                            <label for="">Upload Files</label>
+                            <input type="file" name="files" class="float-start" multiple accept="image/*" />
+                        </div>
+                        <input type="submit" class="btn btn-success float-start mt-3 btn-sm" value="Upload"/>
+                    </form>
+                </div>
+            @endif
         </div>
     @endif
     @if($content->content_type == 'testmoj')

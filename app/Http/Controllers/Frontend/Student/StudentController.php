@@ -271,7 +271,7 @@ class StudentController extends Controller
     public function showPdf($contentId)
     {
         $this->data = [
-            'sectionContent'  => CourseSectionContent::whereId($contentId)->select('id', 'course_section_id', 'content_type', 'title', 'pdf_link', 'pdf_file', 'status')->first(),
+            'sectionContent'  => CourseSectionContent::whereId($contentId)->select('id', 'course_section_id', 'content_type', 'title', 'pdf_link', 'pdf_file', 'status', 'can_download_pdf')->first(),
         ];
         if (\request()->ajax())
         {
@@ -384,9 +384,9 @@ class StudentController extends Controller
     {
         $this->affiliateRegister = AffiliationRegistration::where(['user_id' => ViewHelper::loggedUser()->id])->first();
         $this->data = [
-            'affiliateRegister' => $this->affiliateRegister,
+            'affiliateRegister'  => $this->affiliateRegister,
             'courses'           => Course::where(['status' => 1, 'is_paid' => 1])->get(),
-            'batchExams'           => BatchExam::where(['status' => 1, 'is_paid' => 1])->get(),
+            'batchExams'        => BatchExam::where(['status' => 1, 'is_paid' => 1])->get(),
         ];
         return ViewHelper::checkViewForApi($this->data, 'frontend.student.affiliation.index');
     }

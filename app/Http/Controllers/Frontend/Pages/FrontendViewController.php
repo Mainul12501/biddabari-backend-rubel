@@ -111,6 +111,11 @@ class FrontendViewController extends Controller
                 }
                 if ($request->payment_method == 'ssl')
                 {
+                    if (str()->contains(url()->current(), '/api/'))
+                    {
+                        ParentOrder::createOrderAfterSsl($request);
+                        return response()->json(['success' => 'Payment completed successfully.']);
+                    }
                     $request['details_url'] = url()->previous();
                     $request['model_name'] = 'product';
                     $request['ordered_for'] = 'product';

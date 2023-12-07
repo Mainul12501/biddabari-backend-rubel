@@ -2,10 +2,13 @@
 
 namespace App\Models\Backend\BatchExamManagement;
 
+use App\Models\Backend\AdditionalFeatureManagement\Affiliation\AffiliationHistory;
+use App\Models\Backend\AdditionalFeatureManagement\SiteSeo;
 use App\Models\Backend\ExamManagement\ExamResult;
 use App\Models\Backend\OrderManagement\ParentOrder;
 use App\Models\Backend\UserManagement\Student;
 use App\Models\Backend\UserManagement\Teacher;
+use App\Models\Frontend\AdditionalFeature\ContactMessage;
 use App\Models\Scopes\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -72,6 +75,22 @@ class BatchExam extends Model
             if (count($batchExam->batchExamSubscriptions) > 0)
             {
                 $batchExam->batchExamSubscriptions->each->delete();
+            }
+            if (count($batchExam->contactMessages) > 0)
+            {
+                $batchExam->contactMessages->each->delete();
+            }
+            if (count($batchExam->parentComments) > 0)
+            {
+                $batchExam->parentComments->each->delete();
+            }
+            if (count($batchExam->siteSeos) > 0)
+            {
+                $batchExam->siteSeos->each->delete();
+            }
+            if (count($batchExam->affiliationHistories) > 0)
+            {
+                $batchExam->affiliationHistories->each->delete();
             }
             if (!empty($batchExam->batchExamCategories))
             {
@@ -160,7 +179,7 @@ class BatchExam extends Model
 
     public function parentOrders()
     {
-        return $this->hasMany(ParentOrder::class, 'parent_model_id');
+        return $this->hasMany(ParentOrder::class, 'parent_model_id')->where('ordered_for', 'batch_exam');
     }
 
     public function batchExamCategories()
@@ -186,5 +205,25 @@ class BatchExam extends Model
     public function examResults()
     {
         return $this->hasMany(ExamResult::class);
+    }
+
+    public function contactMessages()
+    {
+        return $this->hasMany(ContactMessage::class, 'parent_model_id')->where('type', 'batch_exam');
+    }
+
+    public function parentComments()
+    {
+        return $this->hasMany(ParentComment::class, 'parent_model_id');
+    }
+
+    public function siteSeos()
+    {
+        return $this->hasMany(SiteSeo::class, 'parent_model_id')->where('model_type', 'batch_exam');
+    }
+
+    public function affiliationHistories()
+    {
+        return $this->hasMany(AffiliationHistory::class, 'model_id')->where('model_type', 'batch_exam');
     }
 }

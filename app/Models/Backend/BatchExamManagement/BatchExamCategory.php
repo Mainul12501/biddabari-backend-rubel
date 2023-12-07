@@ -2,6 +2,7 @@
 
 namespace App\Models\Backend\BatchExamManagement;
 
+use App\Models\Backend\AdditionalFeatureManagement\SiteSeo;
 use App\Models\Scopes\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -33,6 +34,10 @@ class BatchExamCategory extends Model
             if (!empty($batchExamCategory->batchExams))
             {
                 $batchExamCategory->batchExams()->detach();
+            }
+            if (!empty($batchExamCategory->siteSeos))
+            {
+                $batchExamCategory->siteSeos->each->delete();
             }
         });
     }
@@ -68,5 +73,10 @@ class BatchExamCategory extends Model
     public function batchExamsDescOrder()
     {
         return $this->belongsToMany(BatchExam::class)->orderBy('id', 'DESC');
+    }
+
+    public function siteSeos()
+    {
+        return $this->hasMany(SiteSeo::class, 'parent_model_id')->where('model_type', 'batch_exam_category');
     }
 }

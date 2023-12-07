@@ -12,6 +12,9 @@ use App\Http\Controllers\Frontend\Checkout\CheckoutController;
 use App\Http\Controllers\Frontend\Student\StudentController;
 
 use App\Http\Controllers\Frontend\FrontExam\FrontExamController;
+use App\Http\Controllers\Backend\AdditionalFeatureManagement\Affiliation\AffiliationController;
+
+use App\Http\Controllers\Backend\CourseManagement\Question\QuestionStoreController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,6 +87,10 @@ Route::prefix('v1')->name('api.')->group(function (){
 //    temp routes
     Route::post('check-user-status-for-app', [CustomAuthController::class, 'checkUserForApp']);
 
+    Route::get('/favourite-question/{user_id}/{question_id}', [QuestionStoreController::class, 'setFavouriteQuestion'])->name('set-fav-que');
+    Route::get('/delete-favourite-question/{user_id}/{question_id}', [QuestionStoreController::class, 'deleteFavouriteQuestion'])->name('del-fav-que');
+    Route::get('/get-favourite-questions/{user_id}', [QuestionStoreController::class, 'getFavouriteQuestions'])->name('get-favourite-questions');
+
     Route::middleware([
         'auth:sanctum',
         config('jetstream.auth_session'),
@@ -103,7 +110,6 @@ Route::prefix('v1')->name('api.')->group(function (){
             Route::get('batch-exam-contents/{xm_id}/{master?}/{slug?}', [StudentController::class, 'showBatchExamContents']);
             Route::post('order-exam/{xm_cat_id}', [FrontExamController::class, 'orderXm']);
 
-
             Route::post('get-course-exam-result/{content_id}/{slug?}', [FrontExamController::class, 'getCourseExamResult']);
             Route::post('get-course-class-exam-result/{content_id}/{slug?}', [FrontExamController::class, 'getCourseClassExamResult']);
             Route::post('get-batch-exam-result/{content_id}/{slug?}', [FrontExamController::class, 'getBatchExamResult']);
@@ -113,7 +119,11 @@ Route::prefix('v1')->name('api.')->group(function (){
 
             Route::get('today-classes', [FrontViewTwoController::class, 'todayClasses']);
             Route::get('today-exams', [FrontViewTwoController::class, 'todayExams']);
+
+            Route::get('my-affiliation', [StudentController::class, 'myAffiliation'])->name('my-affiliation');
+            Route::get('generate-user-affiliate-code', [AffiliationController::class, 'generateAffiliateCode'])->name('generate-user-affiliate-code');
+
+
         });
     });
-
 });

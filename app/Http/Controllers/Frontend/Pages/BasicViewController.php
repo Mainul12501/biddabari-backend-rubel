@@ -5,7 +5,11 @@ namespace App\Http\Controllers\Frontend\Pages;
 use App\helper\ViewHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\AdditionalFeatureManagement\Advertisement;
+use App\Models\Backend\AdditionalFeatureManagement\NumberCounter\NumberCounter;
+use App\Models\Backend\AdditionalFeatureManagement\OurService\OurService;
+use App\Models\Backend\AdditionalFeatureManagement\OurTeam\OurTeam;
 use App\Models\Backend\AdditionalFeatureManagement\PopupNotification;
+use App\Models\Backend\AdditionalFeatureManagement\StudentOpinion\StudentOpinion;
 use App\Models\Backend\BatchExamManagement\BatchExam;
 use App\Models\Backend\BlogManagement\Blog;
 use App\Models\Backend\BlogManagement\BlogCategory;
@@ -48,7 +52,11 @@ class BasicViewController extends Controller
             'courses'           => $this->courses,
             'products'          => $this->products,
             'homeSliderCourses' => $this->homeSliderCourses,
-            'batchExams' =>     $this->batchExams,
+            'batchExams'        => $this->batchExams,
+            'numberCounters'    => NumberCounter::whereStatus(1)->get(),
+            'ourServices'       => OurService::whereStatus(1)->get(),
+            'ourTeams'          => OurTeam::whereStatus(1)->where(['content_show_type' => 'home_page'])->get(),
+            'studentOpinions'   => StudentOpinion::whereStatus(1)->get(),
         ];
         return ViewHelper::checkViewForApi($this->data, 'frontend.home.home');
     }

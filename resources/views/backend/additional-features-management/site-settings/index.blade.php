@@ -20,13 +20,10 @@
                                 <label for="">Site Title</label>
                                 <input type="text" class="form-control" name="site_title" value="{{ isset($siteSettings) ? $siteSettings->site_title : '' }}" placeholder="Title" title="Title" />
                             </div>
-{{--                            <div class="col-sm-6">--}}
-{{--                                <label for="">Status</label> <br>--}}
-{{--                                <div class="material-switch">--}}
-{{--                                    <input id="someSwitchOptionInfo" name="status" type="checkbox" {{ isset($siteSettings) && $siteSettings->status != 0 ? 'checked' : '' }} />--}}
-{{--                                    <label for="someSwitchOptionInfo" class="label-info"></label>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
+                            <div class="col-sm-6">
+                                <label for="">Our Speech Youtube Url</label>
+                                <input type="text" class="form-control" name="our_speech_video_url" value="{{ isset($siteSettings) ? $siteSettings->our_speech_video_url : '' }}" placeholder="Youtube Link" title="Youtube Link" />
+                            </div>
                             <div class="col-md-12 mt-2">
                                 <label for="">Description</label>
                                 <textarea name="site_meta_description" data-editor="summernote" class="form-control" cols="30" rows="10">{{ isset($siteSettings) ? $siteSettings->site_meta_description : '' }}</textarea>
@@ -64,6 +61,10 @@
                                 <label for="">Default SEO Code On Footer</label>
                                 <textarea name="default_seo_code_on_footer" data-editor="summernote" class="form-control" cols="30" rows="10">{{ isset($siteSettings) ? $siteSettings->default_seo_code_on_footer : '' }}</textarea>
                             </div>
+                            <div class="col-md-12 mt-2">
+                                <label for="">Our Speech</label>
+                                <textarea name="our_speech_text" data-editor="summernote" id="ourSpeech" class="form-control" cols="30" rows="10">{{ isset($siteSettings) ? $siteSettings->our_speech_text : '' }}</textarea>
+                            </div>
                         </div>
                         <div class="row mt-2">
                             <input type="submit" class="col-md-4 mx-auto btn btn-success" value="{{ isset($siteSettings) ? 'Update' : 'Create' }}" />
@@ -91,7 +92,7 @@
 {{--    @include('backend.includes.assets.plugin-files.date-time-picker')--}}
     @include('backend.includes.assets.plugin-files.editor')
     <script>
-        // $('textarea[data-editor="summernote"]').summernote({height:70,inheritPlaceholder: true})
+        $('#ourSpeech').summernote({height:70, inheritPlaceholder: true})
     </script>
     <script>
         $(document).ready(function() {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\OrderManagement;
 
 use App\Http\Controllers\Controller;
+use App\Models\Backend\OrderManagement\ParentOrder;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -12,7 +13,9 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        return view('backend.order-management.payments.index');
+        return view('backend.order-management.payments.index', [
+            'sslPayments'   => ParentOrder::where(['payment_method' => 'ssl'])->latest()->get()
+        ]);
     }
 
     /**

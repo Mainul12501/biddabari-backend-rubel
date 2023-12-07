@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Imports\Backend\QuestionManagement\McqQuestionImport;
 use App\Imports\Backend\QuestionManagement\WrittenQuestionImport;
 use App\Imports\Backend\UsersImport;
+use App\Models\Backend\QuestionManagement\FavouriteQuestion;
 use App\Models\Backend\QuestionManagement\QuestionOption;
 use App\Models\Backend\QuestionManagement\QuestionStore;
 use App\Models\Backend\QuestionManagement\QuestionTopic;
@@ -216,5 +217,38 @@ class QuestionStoreController extends Controller
     public function questionExport($topicId = null, $type = null)
     {
         return Excel::download(new ExportMcqQuestions($topicId, $type), 'mcqQuestions.xlsx');
+    }
+
+    public function setFavouriteQuestion($userId, $questionId)
+    {
+        try {
+            FavouriteQuestion::create([
+                'user_id'   => $userId,
+                'question_store_id'   => $questionId,
+            ]);
+            return \response()->json(['success' => 'Favourite Question Saved Successfully.']);
+        } catch (\Exception $exception)
+        {
+            return \response()->json(['error' => $exception->getMessage()]);
+        }
+    }
+    public function deleteFavouriteQuestion($userId, $questionId)
+    {
+        try {
+            FavouriteQuestion::where([
+                'user_id'   => $userId,
+                'question_store_id'   => $questionId,
+            ])->first()->delete();
+            return \response()->json(['success' => 'Favourite Question deleted Successfully.']);
+        } catch (\Exception $exception)
+        {
+            return \response()->json(['error' => $exception->getMessage()]);
+        }
+    }
+
+    public function getFavouriteQuestions($userId)
+    {
+        $this->questionStores = FavouriteQuestion::where(['user_id' => $userId])->with('questionStore')->get();
+        return \response()->json(['questions' => $this->questionStores]);
     }
 }

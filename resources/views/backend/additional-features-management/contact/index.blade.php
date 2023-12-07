@@ -165,67 +165,6 @@
                         </div>
                     </div>
 
-
-
-
-
-
-{{--                    <div class="row">--}}
-{{--                        <table class="table table-borderless" id="file-datatable">--}}
-{{--                            <thead>--}}
-{{--                            <tr>--}}
-{{--                                <th>#</th>--}}
-{{--                                <th>User Info</th>--}}
-{{--                                <th>Message</th>--}}
-{{--                                <th>Status</th>--}}
-{{--                                <th>Actions</th>--}}
-{{--                            </tr>--}}
-{{--                            </thead>--}}
-{{--                            <tbody>--}}
-{{--                            @if(isset($contacts))--}}
-{{--                                @foreach($contacts as $contact)--}}
-{{--                                    <tr>--}}
-{{--                                        <td>{{ $loop->iteration }}</td>--}}
-{{--                                        <td>--}}
-{{--                                            <span>Name: {{ $contact->user->name }}</span> <br>--}}
-{{--                                            <span>Mobile: {{ $contact->user->mobile }}</span> <br>--}}
-{{--                                            @if($contact->type == 'course')--}}
-{{--                                                <span>{{ $contact->course->title }}</span> <br>--}}
-{{--                                            @elseif($contact->type == 'batch_exam')--}}
-{{--                                                <span>{{ $contact->batchExam->title }}</span> <br>--}}
-{{--                                            @endif--}}
-{{--                                            <span>Date: {{ $contact->created_at->format('M d, Y g:i') }}</span>--}}
-{{--                                        </td>--}}
-{{--                                        <td>{!! str()->words(strip_tags($contact->message), 80) !!}</td>--}}
-{{--                                        <td>--}}
-{{--                                            <a href="" class="badge change-seen-status-{{ $contact->id }} badge-sm bg-primary">{{ $contact->is_seen == 1 ? 'Seen' : 'Unseen' }}</a>--}}
-{{--                                        </td>--}}
-{{--                                        <td>--}}
-{{--                                            @if($contact->is_seen == 0)--}}
-{{--                                                @can('show-contact')--}}
-{{--                                                <a data-contact-id="{{ $contact->id }}" class="btn btn-sm btn-warning change-seen-btn change-seen-btn-{{ $contact->id }}" title="Edit Advertisement">--}}
-{{--                                                    <i class="fa-solid fa-eye"></i>--}}
-{{--                                                </a>--}}
-{{--                                                @endcan--}}
-{{--                                            @endif--}}
-{{--                                            @can('delete-contact')--}}
-{{--                                            <form class="d-inline" action="{{ route('contacts.destroy', $contact->id) }}" method="post" onsubmit="return confirm('Are you sure to delete this? Once deleted, It can not be undone.')">--}}
-{{--                                                @csrf--}}
-{{--                                                @method('delete')--}}
-{{--                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete Advertisement">--}}
-{{--                                                    <i class="fa-solid fa-trash"></i>--}}
-{{--                                                </button>--}}
-{{--                                            </form>--}}
-{{--                                                @endcan--}}
-{{--                                        </td>--}}
-{{--                                    </tr>--}}
-{{--                                @endforeach--}}
-{{--                            @endif--}}
-{{--                            </tbody>--}}
-{{--                        </table>--}}
-{{--                    </div>--}}
-
-
                 </div>
             </div>
         </div>

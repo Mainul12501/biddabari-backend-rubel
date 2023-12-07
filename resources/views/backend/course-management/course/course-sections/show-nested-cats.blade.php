@@ -64,6 +64,14 @@
                         <i class="fe fe-users"></i>
                     </a>
                 @endif
+                @if($sectionContent->content_type == 'video')
+                    <a href="{{ route('content-exam-ranking-download-page',['req_from' => 'course_class_exam', 'content_id' => $sectionContent->id]) }}" data-section-content-id="{{ $sectionContent->id }}" data-xm-type="{{ $sectionContent->content_type }}" class="btn btn-sm btn-primary" title="Download Rankings">
+                        <i class="fe fe-printer"></i>
+                    </a>
+                    <a href="{{ route('show-xm-attendance',['req_from' => 'course_class_exam', 'content_id' => $sectionContent->id]) }}" data-section-content-id="{{ $sectionContent->id }}" data-xm-type="{{ $sectionContent->content_type }}" class="btn btn-sm btn-primary" title="Student Attendance">
+                        <i class="fe fe-users"></i>
+                    </a>
+                @endif
                 @if($sectionContent->content_type == 'pdf' || $sectionContent->content_type == 'video')
                     <a href="" data-course-id="{{ $sectionContent->id }}" data-content-type="{{ $sectionContent->content_type }}" @if($sectionContent->content_type == 'pdf') data-pdf-url="{{ isset($sectionContent->pdf_link) ? $sectionContent->pdf_link : (isset($sectionContent->pdf_file) ? $sectionContent->pdf_file : '') }}" @endif @if($sectionContent->content_type == 'video') data-video-vendor="{{ $sectionContent->video_vendor }}" data-video-url="{{ $sectionContent->video_link }}" @endif class="btn btn-sm mt-1 btn-warning show-pdf-video-btn" title="View Pdf Or Video" >
                         <i class="fa-solid fa-eye"></i>

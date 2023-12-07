@@ -68,6 +68,27 @@ class ParentOrder extends Model
             'batch_exam_subscription_id' => isset($request->batch_exam_subscription_id) ?? null,
         ]);
     }
+
+    public static function createOrderAfterSsl($request)
+    {
+        return ParentOrder::create([
+            'user_id'                   => ViewHelper::loggedUser()->id,
+            'parent_model_id'           => $request->parent_model_id,
+            'order_invoice_number'      => ParentOrder::generateOrderNumber(),
+            'ordered_for'               => $request->ordered_for,
+            'payment_method'            => $request->payment_method,
+            'paid_amount'               => $request->total_amount,
+            'total_amount'              => $request->total_amount,
+            'coupon_code'               => $request->coupon_code,
+            'coupon_amount'             => $request->coupon_amount,
+            'bank_tran_id'              => $request->bank_tran_id,
+            'gateway_val_id'            => $request->gateway_val_id,
+            'gateway_status'            => $request->gateway_status,
+            'status'                    => 'approved',
+            'payment_status'            => 'complete',
+            'batch_exam_subscription_id'=> isset($requestData->batch_exam_subscription_id) ?? null,
+        ]);
+    }
     public static function placeOrderAfterGatewayPayment($request, $requestData , $parentOrderId = null)
     {
         return ParentOrder::updateOrCreate(['id' => $parentOrderId], [
@@ -81,8 +102,8 @@ class ParentOrder extends Model
             'coupon_code'               => $requestData->coupon_code,
             'coupon_amount'             => $requestData->coupon_amount,
             'bank_tran_id'              => $request->bank_tran_id,
-            'gateway_val_id'             => $request->gateway_val_id,
-            'gateway_status'             => $request->gateway_status,
+            'gateway_val_id'            => $request->gateway_val_id,
+            'gateway_status'            => $request->gateway_status,
             'status'                    => 'approved',
             'payment_status'            => 'complete',
             'batch_exam_subscription_id' => isset($requestData->batch_exam_subscription_id) ?? null,
@@ -221,5 +242,9 @@ class ParentOrder extends Model
     public function batchExamSubscription()
     {
         return $this->belongsTo(BatchExamSubscription::class);
+    }
+    public function orderRefferedBy()
+    {
+        return $this->belongsTo(User::class, 'referrer_id');
     }
 }

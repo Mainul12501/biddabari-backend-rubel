@@ -2,6 +2,7 @@
 
 namespace App\Models\Backend\Course;
 
+use App\Models\Backend\AdditionalFeatureManagement\SiteSeo;
 use App\Models\Scopes\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -37,6 +38,14 @@ class CourseCategory extends Model
             if (!empty($courseCategory->courses))
             {
                 $courseCategory->courses()->detach();
+            }
+            if (!empty($courseCategory->siteSeos))
+            {
+                $courseCategory->siteSeos->each->delete();
+            }
+            if (!empty($courseCategory->courseCategoryParent))
+            {
+                $courseCategory->courseCategoryParent->each->delete();
             }
         });
     }
@@ -80,5 +89,9 @@ class CourseCategory extends Model
     public function coursesDescOrder()
     {
         return $this->belongsToMany(Course::class)->orderBy('id', 'DESC');
+    }
+    public function siteSeos()
+    {
+        return $this->hasMany(SiteSeo::class, 'parent_model_id')->where('model_type', 'course_category');
     }
 }

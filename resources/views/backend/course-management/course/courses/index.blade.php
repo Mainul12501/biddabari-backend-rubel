@@ -84,19 +84,19 @@
                                         </td>
                                         <td class="nav flex-column course-links">
                                             @can('assign-course-teacher-page')
-                                                <a href="{{ route('assign-teacher-to-course', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Assigned Teachers">Teachers</a>
+                                                <a href="{{ route('assign-teacher-to-course', ['course_id' => $course->id, 'title' => str_replace(' ', '-', $course->title)]) }}" class="nav-link fw-bold" title="Course Assigned Teachers">Teachers</a>
                                             @endcan
                                             @can('assign-course-student-page')
-                                                <a href="{{ route('assign-student-to-course', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Assigned Students">Students</a>
+                                                <a href="{{ route('assign-student-to-course', ['course_id' => $course->id, 'title' => str_replace(' ', '-', $course->title)]) }}" class="nav-link fw-bold" title="Course Assigned Students">Students</a>
                                             @endcan
                                             @can('manage-course-routine')
-                                                <a href="{{ route('course-routines.index', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Routines">Routines</a>
+                                                <a href="{{ route('course-routines.index', ['course_id' => $course->id, 'title' => str_replace(' ', '-', $course->title)]) }}" class="nav-link fw-bold" title="Course Routines">Routines</a>
                                             @endcan
                                             @can('manage-course-coupon')
-                                                <a href="{{ route('course-coupons.index', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Coupons">Coupons</a>
+                                                <a href="{{ route('course-coupons.index', ['course_id' => $course->id, 'title' => str_replace(' ', '-', $course->title)]) }}" class="nav-link fw-bold" title="Course Coupons">Coupons</a>
                                             @endcan
                                             @can('manage-course-section')
-                                                <a href="{{ route('course-sections.index', ['course_id' => $course->id]) }}" class="nav-link fw-bold" title="Course Content">Content</a>
+                                                <a href="{{ route('course-sections.index', ['course_id' => $course->id, 'title' => str_replace(' ', '-', $course->title)]) }}" class="nav-link fw-bold" title="Course Content">Content</a>
                                             @endcan
                                         </td>
                                         <td> ৳ {{ $course->price }}</td>

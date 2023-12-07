@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\CourseManagement\Course;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\CourseManagement\CourseCreateFormRequest;
+use App\Imports\Backend\StudentTransfer\StudentTransferImport;
 use App\Models\Backend\BatchExamManagement\BatchExam;
 use App\Models\Backend\BatchExamManagement\BatchExamRoutine;
 use App\Models\Backend\BatchExamManagement\BatchExamSection;
@@ -17,13 +18,16 @@ use App\Models\Backend\Course\CourseSectionContent;
 use App\Models\Backend\OrderManagement\ParentOrder;
 use App\Models\Backend\UserManagement\Student;
 use App\Models\Backend\UserManagement\Teacher;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
+use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\Response;
-use function PHPUnit\Runner\validate;
+//use function PHPUnit\Runner\validate;
+use DB;
 
 class CourseController extends Controller
 {
@@ -39,9 +43,9 @@ class CourseController extends Controller
         {
             $this->courses = CourseCategory::find($request->category_id)->coursesDescOrder;
         } else {
-            $this->courses = Course::latest()->get();
+            $this->courses = Course::where('parent_id', 0)->orderBy('c_order', 'ASC')->get();
         }
-        return view('backend.course-management.course.courses.index', [
+        return view('backend.course-management.course.courses.index-drag', [
             'courses'   => $this->courses,
             'courseCategories'  => CourseCategory::whereStatus(1)->where('parent_id', 0)->orderBy('order', 'ASC')->get(),
             'teachers'  => Teacher::whereStatus(1)->get()
@@ -181,32 +185,54 @@ class CourseController extends Controller
         ]);
     }
 
-    public function assignStudent (Request $request, $id)
+    public function assignStudent (Request $request, $transferToId)
     {
         abort_if(Gate::denies('assign-course-student'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $validator = $request->validate([
-            'students' => 'required',
-            'course_id' => 'required',
+            'course_transfer_form_id' => 'required',
+            'student_file' => 'required',
         ]);
-        $this->course = Course::find($id);
-        $oldCourse = Course::find($request->course_id);
-        foreach ($this->course->students as $student)
+        $xlArray = [];
+        $this->course = Course::find($transferToId);
+        $xlArray = Excel::toArray(new StudentTransferImport(), $request->file('student_file'))[0];
+        foreach ($xlArray as $key => $item)
         {
-            foreach ($request->students as $inputStudentId)
+            if ($key != 0)
             {
-//                if ($student->id == $inputStudentId)
-                if ($student->id != $inputStudentId)
+                $user = User::where('mobile', '0'.$item[0])->first();
+                if (isset($user))
                 {
-                    $oldCourse->students()->detach($inputStudentId);
-                    $stParentOrder = ParentOrder::where(['ordered_for' => 'course', 'parent_model_id' => $request->course_id, 'user_id' => Student::find($inputStudentId)->user_id])->first();
-                    $stParentOrder->update([
-                        'parent_model_id' => $id,
-                    ]);
-                    $this->course->students()->attach($inputStudentId);
-//                    return back()->with('error', 'Student Already assigned this course.');
+                    $parentOrder = ParentOrder::where(['user_id' => $user->id, 'parent_model_id' => $this->course->id, 'ordered_for' => 'course'])->first();
+                    if (isset($parentOrder))
+                    {
+                        $parentOrder->parent_model_id = $request->course_transfer_form_id;
+                        $parentOrder->save();
+                    }
+                    $currentStudentId = Student::where('user_id', $user->id)->first()->id;
+                    Course::find($request->course_transfer_form_id)->students()->attach($currentStudentId);
+                    $this->course->students()->detach($currentStudentId);
                 }
             }
         }
+
+//        $oldCourse = Course::find($request->course_id);
+//        foreach ($this->course->students as $student)
+//        {
+//            foreach ($request->students as $inputStudentId)
+//            {
+////                if ($student->id == $inputStudentId)
+//                if ($student->id != $inputStudentId)
+//                {
+//                    $oldCourse->students()->detach($inputStudentId);
+//                    $stParentOrder = ParentOrder::where(['ordered_for' => 'course', 'parent_model_id' => $request->course_id, 'user_id' => Student::find($inputStudentId)->user_id])->first();
+//                    $stParentOrder->update([
+//                        'parent_model_id' => $id,
+//                    ]);
+//                    $this->course->students()->attach($inputStudentId);
+////                    return back()->with('error', 'Student Already assigned this course.');
+//                }
+//            }
+//        }
 //        $this->course->students()->attach($request->students);
         return back()->with('success', 'Student assigned to course Successfully.');
     }
@@ -322,4 +348,155 @@ class CourseController extends Controller
         }
 
     }
+
+    public function saveNestedSectionsAndContents (Request $request)
+    {
+        $json = $request->nested_category_array;
+        $decoded_json = json_decode($json, TRUE);
+
+        $simplified_list = [];
+        $this->recur1($decoded_json, $simplified_list);
+
+        DB::beginTransaction();
+        try {
+            $info = [
+                "success" => FALSE,
+            ];
+//            return $decoded_json;
+//            foreach($simplified_list as $k => $v){
+//                $category = CourseCategory::find($v['category_id']);
+//                $category->fill([
+//                    "parent_id" => $v['parent_id'],
+//                    "order" => $v['sort_order'],
+//                ]);
+//
+//                $category->save();
+//            }
+
+            foreach ($decoded_json as $sectionOrder => $section)
+            {
+                $courseSection = CourseSection::find($section['id']);
+                if (isset($courseSection))
+                {
+                    $courseSection->order = ++$sectionOrder;
+                    $courseSection->save();
+
+                    foreach ($section['children'] as $contentOrder => $content)
+                    {
+                        $courseContent = CourseSectionContent::find( $content['id']);
+                        if (isset($courseContent))
+                        {
+                            $courseContent->order = ++$contentOrder;
+                            $courseContent->save();
+                        }
+                    }
+                }
+            }
+
+            DB::commit();
+            $info['success'] = TRUE;
+        } catch (\Exception $e) {
+            DB::rollback();
+            $info['success'] = FALSE;
+        }
+
+        if($info['success']){
+            $request->session()->flash('success', "All Orders updated.");
+        }else{
+            $request->session()->flash('error', "Something went wrong while updating...");
+        }
+        if ($request->ajax())
+        {
+            return response()->json('Order Updated');
+        } else {
+            return redirect(route('course-categories.index'));
+        }
+    }
+
+    public function saveNestedCourses (Request $request)
+    {
+        $json = $request->nested_category_array;
+        $decoded_json = json_decode($json, TRUE);
+
+        $simplified_list = [];
+        $this->recur1($decoded_json, $simplified_list);
+
+        DB::beginTransaction();
+        try {
+            $info = [
+                "success" => FALSE,
+            ];
+
+            foreach($simplified_list as $k => $v){
+                $category = Course::find($v['category_id']);
+                $category->fill([
+                    "parent_id" => $v['parent_id'],
+                    "c_order" => $v['sort_order'],
+                ]);
+
+                $category->save();
+            }
+
+            DB::commit();
+            $info['success'] = TRUE;
+        } catch (\Exception $e) {
+            DB::rollback();
+            $info['success'] = FALSE;
+        }
+
+        if($info['success']){
+            $request->session()->flash('success', "All Courses updated.");
+        }else{
+            $request->session()->flash('error', "Something went wrong while updating...");
+        }
+        if ($request->ajax())
+        {
+            return response()->json('Order Updated');
+        } else {
+            return redirect(route('courses.index'));
+        }
+    }
+
+    public function recur1($nested_array=[], &$simplified_list=[]){
+
+        static $counter = 0;
+
+        foreach($nested_array as $k => $v){
+
+            $sort_order = $k+1;
+            $simplified_list[] = [
+                "category_id" => $v['id'],
+                "parent_id" => 0,
+                "sort_order" => $sort_order
+            ];
+
+            if(!empty($v["children"])){
+                $counter+=1;
+                $this->recur2($v['children'], $simplified_list, $v['id']);
+            }
+
+        }
+    }
+
+    public function recur2($sub_nested_array=[], &$simplified_list=[], $parent_id = NULL){
+
+        static $counter = 0;
+
+        foreach($sub_nested_array as $k => $v){
+
+            $sort_order = $k+1;
+            $simplified_list[] = [
+                "category_id" => $v['id'],
+                "parent_id" => $parent_id,
+                "sort_order" => $sort_order
+            ];
+
+            if(!empty($v["children"])){
+                $counter+=1;
+                return $this->recur2($v['children'], $simplified_list, $v['id']);
+            }
+        }
+    }
+
+
 }

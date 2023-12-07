@@ -11,7 +11,7 @@
                     <a href="{{ route('courses.index') }}" title="Back to Courses" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 m-r-80"><i class="fa-solid fa-arrow-left"></i></a>
                     @can('assign-course-student')
                         <button type="button" data-bs-toggle="modal" data-bs-target="#coursesModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 me-4"><i class="fa-solid fa-circle-plus"></i></button>
-{{--                        <button type="button" data-bs-toggle="modal" data-bs-target="#transferCourseStudentsModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 m-r-50"><i class="fe fe-users"></i></button>--}}
+                        <button type="button" data-bs-toggle="modal" data-bs-target="#transferCourseStudentsModal" class="rounded-circle text-white border-5 text-light f-s-22 btn position-absolute end-0 m-r-50"><i class="fe fe-users"></i></button>
                     @endcan
                 </div>
                 <div class="card-body">
@@ -140,19 +140,18 @@
     <div class="modal fade modal-div" id="transferCourseStudentsModal" data-modal-parent="coursesModal" >
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content" id="modalForm">
-                <form action="{{ route('assign-student', ['course_id' => $course->id]) }}" method="post" enctype="multipart/form-data" id="coursesForm">
+                <form action="{{ route('transfer-student', ['course_transfer_to_id' => $course->id]) }}" method="post" enctype="multipart/form-data" id="coursesForm">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Transfer Students</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
                     </div>
-                    {{--                    <input type="hidden" name="category_id" >--}}
                     <div class="modal-body">
                         <div class="card card-body">
                             <div class="row">
                                 <div class="col-md-6 mt-2 select2-div">
                                     <label for="">Transfer From</label>
-                                    <select name="course_id" required class="form-control select2"  data-placeholder="Select Course" >
+                                    <select name="course_transfer_form_id" required class="form-control select2"  data-placeholder="Select Course" >
                                         <option label="Select Course"></option>
                                         @if(isset($students))
                                             @foreach($courses as $publishedCourse)
@@ -163,16 +162,12 @@
                                     <span class="text-danger" id="course_id">{{ $errors->has('course_id') ? $errors->first('course_id') : '' }}</span>
                                 </div>
                                 <div class="col-md-6 mt-2 select2-div">
-                                    <label for="">Assign Students</label>
-                                    <select name="students[]" required multiple class="form-control select2"  data-placeholder="Assign Student" >
-                                        <option label="Assign Students"></option>
-                                        @if(isset($students))
-                                            @foreach($students as $student)
-                                                <option value="{{ $student->id }}" {{--@foreach($course->students as $selectedStudent) @if($student->id == $selectedStudent->id) selected @endif @endforeach--}} >{{ $student->user->mobile }}</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                    <span class="text-danger" id="students">{{ $errors->has('students') ? $errors->first('students') : '' }}</span>
+                                    <label for="">Import Excel</label> <br>
+                                    <a href="{{ asset('backend/import-file-samples/student-course-transfer-import-sample.xlsx') }}" download class="btn btn-sm btn-success mt-2">Download Sample</a>
+                                    <div class="mt-2">
+                                        <input type="file" name="student_file" class="form-control" />
+                                        <span class="text-danger">Make sure no number starts with 0.</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

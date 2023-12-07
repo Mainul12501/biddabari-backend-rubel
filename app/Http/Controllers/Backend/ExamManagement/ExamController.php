@@ -8,6 +8,7 @@ use App\Models\Backend\BatchExamManagement\BatchExamResult;
 use App\Models\Backend\BatchExamManagement\BatchExamSection;
 use App\Models\Backend\BatchExamManagement\BatchExamSectionContent;
 use App\Models\Backend\Course\Course;
+use App\Models\Backend\Course\CourseClassExamResult;
 use App\Models\Backend\Course\CourseExamResult;
 use App\Models\Backend\Course\CourseSection;
 use App\Models\Backend\Course\CourseSectionContent;
@@ -225,6 +226,12 @@ class ExamController extends Controller
                 $batchExamSectionContent->select('id', 'batch_exam_section_id', 'exam_total_questions','exam_per_question_mark', 'written_total_questions', 'exam_negative_mark')->first();
             },
                 'user'])->get();
+        } elseif ($reqForm == 'course_class_exam')
+        {
+            $this->examResults = CourseClassExamResult::where(['course_section_content_id' => $contentId])->orderBy('result_mark', 'DESC')->orderBy('required_time', 'ASC')->with(['courseSectionContent' => function($courseSectionContent) {
+                $courseSectionContent->select('id', 'course_section_id','class_xm_mark', 'class_xm_duration_in_minutes')->first();
+            },
+                'user'])->get();
         }
         return view('backend.exam-management.xm-ranking.index', [
             'examResults'   => $this->examResults,
@@ -246,6 +253,12 @@ class ExamController extends Controller
             $baseType = $content->batchExamSection->batchExam;
             $this->enrolledUsers = BatchExam::find($baseType->id)->students;
             $this->xmParticipateUsers = BatchExamResult::where(['batch_exam_section_content_id' => $contentId])->get(['id', 'user_id', 'batch_exam_section_content_id']);
+        } elseif ($reqForm == 'course_class_exam')
+        {
+            $content = CourseSectionContent::find($contentId);
+            $baseType = $content->courseSection->course;
+            $this->enrolledUsers = Course::find($baseType->id)->students;
+            $this->xmParticipateUsers = CourseExamResult::where(['course_section_content_id' => $contentId])->get(['id', 'user_id', 'course_section_content_id']);
         }
         foreach ($this->enrolledUsers as $enrolledUser)
         {

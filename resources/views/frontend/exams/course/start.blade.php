@@ -39,9 +39,11 @@
                             <form id="quizForm" action="{{ route('front.student.get-course-exam-result', ['content_id' => $exam->id, 'slug' => str_replace(' ', '-', $exam->title)]) }}" method="post" class="quiz-form" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="required_time">
+                                <input type="hidden" name="_method" value="post" />
+                                <input type="hidden" id="name" value="">
                                 @if($exam->content_type == 'exam')
                                     @foreach($exam->questionStores as $index => $question)
-                                        <div class="mt-2" id="questionDiv{{ $question->id }}">
+                                        <div class="mt-2 que-ele-div" id="questionDiv{{ $question->id }}">
                                             <div class="form-card " id="fildset{{ $question->id }}">
                                                 <div class="question-title" id="loop{{ $question->id }}" data-loop="{{ $loop->iteration }}" style="margin-top: 10px">
                                                     <span class="float-start f-s-26">{{ $loop->iteration }}.  &nbsp;</span>
@@ -168,6 +170,20 @@
         background: #ffe4d6!important;
         color: black!important;
     }
+
+    .form-card { padding: 10px 2px 20px 25px; border-radius: 10px}
+
+    .check-ans  {
+        border: 1px solid green;
+        padding: 4px 3px 0px 4px;
+        border-radius: 10px;
+    }
+    .cancel-ans  {
+        border: 1px solid red;
+        padding: 4px 3px 0px 4px;
+        border-radius: 10px;
+    }
+
 </style>
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -186,30 +202,27 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-{{--disable page back button start--}}
+
+{{--disable page reload start--}}
 <script>
+    // // disable page back button
     window.history.pushState(null, null, window.location.href);
     window.onpopstate = function() {
         window.history.pushState(null, null, window.location.href);
     };
-</script>
-{{--disable page back button end--}}
-
-{{--disable page reload start--}}
-<script>
-    // stop F5 key reload
+    // // stop F5 key reload
     $(window).on('keydown', function (event) {
         if (event.keyCode === 116) {
             event.preventDefault();
         }
     })
-
-    // disable right button
+    //
+    // // disable right button
     document.addEventListener('contextmenu', function(event) {
         event.preventDefault();
     });
-
-    // disable ctrl R reload
+    //
+    // // disable ctrl R reload
     document.addEventListener('keydown', function(event) {
         if (event.ctrlKey && event.key === 'r') {
             event.preventDefault(); // Prevent the default behavior of Ctrl + R
@@ -218,25 +231,6 @@
         }
     });
 
-    window.onbeforeunload = function (e) {
-        e = e || window.event;
-
-        // For IE and Firefox prior to version 4
-        if (e) {
-            e.returnValue = 'Sure?';
-
-        }
-
-        // For Safari
-        return 'Sure?';
-    };
-
-    // document.addEventListener('keydown', (e) => {
-    //     e = e || window.event;
-    //     if(e.keyCode == 116){
-    //         e.preventDefault();
-    //     }
-    // });
 </script>
 {{--disable page reload start--}}
 
@@ -355,6 +349,29 @@
 {{--    <script> var sliderTimer = 6000;</script>--}}
     <script>
 
+        const beforeUnloadHandler = (event) => {
+            var form = $('#quizForm')[0];
+            var formData = new FormData(form);
+            $.ajax({
+                url: "{{ route('front.student.check-if-user-tries-to-reload') }}",
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log(response);
+                }
+            });
+
+            // Recommended
+            event.preventDefault();
+
+
+            // Included for legacy support, e.g. Chrome/Edge < 119
+            event.returnValue = true;
+
+        };
+
         @if($exam->exam_is_strict == 1)
             @if(currentDateTimeYmdHi() < dateTimeFormatYmdHi($exam->exam_end_time))
                 {{ $diffTime  = \Illuminate\Support\Carbon::now()->diffInMinutes($exam->exam_end_time) }}
@@ -438,7 +455,27 @@
                             });
                             // toastr.success('You Most Submit Your Answer script Within 10 minutes.')
                         }
-                    }, 1000)
+                    }, 1000);
+
+
+                    var nameVal = $('#name').val('a');
+                    // send user xm starting status to server
+                    $.ajax({
+                        url: "{{ route('front.student.set-xm-start-status-to-server') }}",
+                        dataType: "JSON",
+                        data: {xmType: "course", xmUrl: "{!! url()->current() !!}", xmContentId: "{{ $exam->id }}" },
+                        method: "POST",
+                        success: function (response) {
+                            console.log(response);
+                        }
+                    })
+                    if (nameVal !== "") {
+
+                        window.addEventListener("beforeunload", beforeUnloadHandler);
+                    } else {
+                        window.removeEventListener("beforeunload", beforeUnloadHandler);
+                    }
+
                 }
 
             })
@@ -449,26 +486,38 @@
             //
             // }
         })
+        // $(window).unload(function () {
+        //     window.removeEventListener("beforeunload", beforeUnloadHandler);
+        // })
+        $(document).on('click', '.finish', function () {
+            event.preventDefault();
+            window.removeEventListener("beforeunload", beforeUnloadHandler);
+            document.getElementById('quizForm').submit();
+        })
     </script>
-{{--    <script>--}}
-{{--        "use strict";--}}
-{{--        $(document).ready(function () {--}}
-{{--            // timmer calling start--}}
-{{--            var currentTime = new Date();--}}
-{{--            currentTime.setMinutes(currentTime.getMinutes() + {!! isset($exam) ? ($exam->content_type == 'exam' ? $exam->exam_duration_in_minutes : $exam->written_exam_duration_in_minutes) : 1 !!}); //set custom time instead 60--}}
-
-
-{{--            $('.flipTimer').flipTimer({--}}
-{{--                direction: 'down',--}}
-{{--                date: currentTime,--}}
-{{--                callback: function () {--}}
-{{--                    $('body .action-button.finish').remove();--}}
-{{--                    $('#quizForm').submit();--}}
-{{--                },--}}
-{{--            });--}}
-{{--            // timmer calling end--}}
-{{--        });--}}
-{{--    </script>--}}
+    <script>
+        // // Check if form data exists in local storage
+        // const formData = localStorage.getItem('formData');
+        //
+        // if (formData) {
+        //     // Populate form fields with stored data
+        //
+        //     document.getElementById('quizForm').innerHTML = formData;
+        //     console.log(formData);
+        //
+        //     // Submit the form
+        //     document.getElementById('quizForm').submit();
+        //     // Clear local storage
+        //     localStorage.removeItem('formData');
+        //     // reload page
+        //     window.reload();
+        // }
+        // // Save form data to local storage before page reload
+        // window.addEventListener('beforeunload', function () {
+        //     // localStorage.setItem('formData', document.getElementById('quizForm').innerHTML);
+        //     localStorage.setItem('formData', $('quizForm').serialize());
+        // });
+    </script>
 
 
 
@@ -545,6 +594,7 @@
 <script>
     $(document).on('click', '.sticky-submit-btn', function () {
         event.preventDefault();
+        window.removeEventListener("beforeunload", beforeUnloadHandler);
         document.getElementById('quizForm').submit();
     })
 </script>

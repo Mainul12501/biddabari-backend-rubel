@@ -2,6 +2,8 @@
 
 namespace App\Models\Backend\BlogManagement;
 
+use App\Models\Backend\AdditionalFeatureManagement\SiteSeo;
+use App\Models\Frontend\AdditionalFeature\ContactMessage;
 use App\Models\Scopes\Searchable;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -54,5 +56,15 @@ class Blog extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function contactMessages()
+    {
+        return $this->hasMany(ContactMessage::class, 'parent_model_id')->where('type', 'blog');
+    }
+
+    public function siteSeos()
+    {
+        return $this->hasMany(SiteSeo::class, 'parent_model_id')->where('model_type', 'blog');
     }
 }

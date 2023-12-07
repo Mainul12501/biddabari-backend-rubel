@@ -4,6 +4,7 @@ namespace App\Models\Backend\BatchExamManagement;
 
 use App\Models\Backend\ExamManagement\ExamResult;
 use App\Models\Backend\QuestionManagement\QuestionStore;
+use App\Models\Frontend\AdditionalFeature\ContactMessage;
 use App\Models\Scopes\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -70,6 +71,22 @@ class BatchExamSectionContent extends Model
             if (!empty($sectionContent->batchExamSectionContents))
             {
                 $sectionContent->batchExamSectionContents->each->delete();
+            }
+            if (!empty($sectionContent->batchExamResults))
+            {
+                $sectionContent->batchExamResults->each->delete();
+            }
+            if (!empty($sectionContent->examResults))
+            {
+                $sectionContent->examResults->each->delete();
+            }
+            if (!empty($sectionContent->contactMessages))
+            {
+                $sectionContent->contactMessages->each->delete();
+            }
+            if (!empty($sectionContent->questionStores))
+            {
+                $sectionContent->questionStores()->detach();
             }
         });
     }
@@ -245,5 +262,10 @@ class BatchExamSectionContent extends Model
     public function examResults()
     {
         return $this->hasMany(ExamResult::class);
+    }
+
+    public function contactMessages()
+    {
+        return $this->hasMany(ContactMessage::class, 'parent_model_id')->where('type', 'batch_exam_content');
     }
 }
